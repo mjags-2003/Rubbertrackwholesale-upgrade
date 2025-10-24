@@ -298,23 +298,76 @@ async def import_products(file: UploadFile = File(...), current_user = Depends(g
         else:
             df = pd.read_excel(io.BytesIO(contents))
         
-        # Column mapping from spreadsheet format to our database format
-        column_mapping = {
-            'comp_name': 'brand',
-            'machine_model': 'title',  # We'll combine with other fields
-            'track_size': 'size',
-            'Price': 'price',
-            'eng_description': 'description',
-            'title_h1': 'seo_title',
-            'sub_title_h2': 'title',  # Use as main title
-            'page_title': 'seo_title',
-            'eng_metakeyword': 'seo_keywords',
-            'eng_meta_desc': 'seo_description',
-            'shown_main_listin': 'in_stock'
-        }
+        # Detect format type based on columns
+        columns = set(df.columns.str.lower().str.strip())
         
-        # Rename columns to match our format
-        df = df.rename(columns=column_mapping)
+        # Rubber Tracks format
+        if 'comp_name' in columns or 'track_size' in columns:
+            column_mapping = {
+                'comp_name': 'brand',
+                'machine_model': 'title_suffix',
+                'track_size': 'size',
+                'Price': 'price',
+                'eng_description': 'description',
+                'title_h1': 'seo_title',
+                'sub_title_h2': 'title',
+                'page_title': 'seo_title',
+                'eng_metakeyword': 'seo_keywords',
+                'eng_meta_desc': 'seo_description',
+                'shown_main_listin': 'in_stock'
+            }
+            category = "Rubber Tracks"
+        
+        # Rollers, Sprockets, Idlers format (unified handling)
+        elif 'part number' in columns or 'part_number' in columns:
+            # Determine category based on file content or column names
+            if 'roller' in columns or any('roller' in str(col).lower() for col in df.columns):
+                if 'idler' in columns or any('idler' in str(col).lower() for col in df.columns):
+                    category = "Idlers"
+                else:
+                    category = "Rollers"
+            elif 'sprocket' in columns or any('sprocket' in str(col).lower() for col in df.columns):
+                category = "Sprockets"
+            else:
+                category = "Undercarriage Parts"
+            
+            # Column mapping for undercarriage parts
+            column_mapping = {
+                'Machine Model': 'machine_model',
+                'machine_model': 'machine_model',
+                'Roller': 'item_type',
+                'ITEM': 'item_type',
+                'item': 'item_type',
+                'Bottom / Front': 'position',
+                'Front / Rear Idler': 'position',
+                'Part Number': 'part_number',
+                'part_number': 'part_number',
+                'Alternate Part numbers': 'alternate_parts',
+                'alternate_part_numbers': 'alternate_parts',
+                'SKU': 'sku',
+                'sku': 'sku',
+                'Fits following machine models': 'fits_models',
+                'fits_following_machine_models': 'fits_models',
+                'Description': 'description',
+                'description': 'description'
+            }
+        else:
+            raise HTTPException(status_code=400, detail="Unrecognized file format. Please use the provided templates.")
+        
+        # Rename columns (case-insensitive matching)
+        df_cols_lower = {col: col.lower().strip() for col in df.columns}
+        reverse_mapping = {v.lower(): k for k, v in column_mapping.items() if k.lower() in df_cols_lower.values()}
+        
+        # Actual renaming
+        rename_dict = {}
+        for col in df.columns:
+            col_lower = col.lower().strip()
+            for template_col, target_col in column_mapping.items():
+                if template_col.lower() == col_lower:
+                    rename_dict[col] = target_col
+                    break
+        
+        df = df.rename(columns=rename_dict)
         
         success_count = 0
         error_count = 0
