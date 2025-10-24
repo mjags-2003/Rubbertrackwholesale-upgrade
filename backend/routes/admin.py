@@ -1199,3 +1199,116 @@ async def delete_section(section_id: str, current_user: AdminUser = Depends(get_
     
     return {"success": True, "message": "Section deleted successfully"}
 
+
+
+# ============= MACHINE MODEL ROUTES =============
+
+@router.get("/machine-models", dependencies=[Depends(get_current_user)])
+async def get_machine_models(brand: Optional[str] = None):
+    """Get all machine models, optionally filtered by brand"""
+    query = {"brand": brand} if brand else {}
+    models = await machine_models_collection.find(query).sort("brand", 1).sort("model_name", 1).to_list(length=None)
+    return [serialize_doc(model) for model in models]
+
+
+@router.post("/machine-models", dependencies=[Depends(get_current_user)])
+async def create_machine_model(model: MachineModel):
+    """Create a new machine model"""
+    model_dict = model.model_dump(by_alias=True, exclude={"id"})
+    model_dict["created_at"] = datetime.utcnow()
+    model_dict["updated_at"] = datetime.utcnow()
+    
+    # Auto-generate full_name if not provided
+    if not model_dict.get("full_name"):
+        model_dict["full_name"] = f"{model_dict['brand']} {model_dict['model_name']}"
+    
+    try:
+        result = await machine_models_collection.insert_one(model_dict)
+        created_model = await machine_models_collection.find_one({"_id": result.inserted_id})
+        return serialize_doc(created_model)
+    except Exception as e:
+        if "duplicate key" in str(e).lower():
+            raise HTTPException(status_code=400, detail=f"Model {model_dict['model_name']} already exists for {model_dict['brand']}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/machine-models/{model_id}", dependencies=[Depends(get_current_user)])
+async def get_machine_model(model_id: str):
+    """Get machine model by ID"""
+    if not ObjectId.is_valid(model_id):
+        raise HTTPException(status_code=400, detail="Invalid model ID")
+    
+    model = await machine_models_collection.find_one({"_id": ObjectId(model_id)})
+    if not model:
+        raise HTTPException(status_code=404, detail="Machine model not found")
+    
+    return serialize_doc(model)
+
+
+@router.put("/machine-models/{model_id}", dependencies=[Depends(get_current_user)])
+async def update_machine_model(model_id: str, model: MachineModel):
+    """Update machine model"""
+    if not ObjectId.is_valid(model_id):
+        raise HTTPException(status_code=400, detail="Invalid model ID")
+    
+    model_dict = model.model_dump(by_alias=True, exclude={"id"})
+    model_dict["updated_at"] = datetime.utcnow()
+    
+    # Auto-generate full_name if not provided
+    if not model_dict.get("full_name"):
+        model_dict["full_name"] = f"{model_dict['brand']} {model_dict['model_name']}"
+    
+    result = await machine_models_collection.update_one(
+        {"_id": ObjectId(model_id)},
+        {"$set": model_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Machine model not found")
+    
+    updated_model = await machine_models_collection.find_one({"_id": ObjectId(model_id)})
+    return serialize_doc(updated_model)
+
+
+@router.delete("/machine-models/{model_id}", dependencies=[Depends(get_current_user)])
+async def delete_machine_model(model_id: str, current_user: AdminUser = Depends(get_current_user)):
+    """Delete machine model"""
+    if not ObjectId.is_valid(model_id):
+        raise HTTPException(status_code=400, detail="Invalid model ID")
+    
+    result = await machine_models_collection.delete_one({"_id": ObjectId(model_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Machine model not found")
+    
+    return {"success": True, "message": "Machine model deleted successfully"}
+
+
+@router.post("/machine-models/bulk-import", dependencies=[Depends(get_current_user)])
+async def bulk_import_machine_models(models: List[Dict[str, str]]):
+    """Bulk import machine models from machineModels.js structure"""
+    imported_count = 0
+    skipped_count = 0
+    
+    for brand, model_list in models:
+        for model_name in model_list:
+            existing = await machine_models_collection.find_one({"brand": brand, "model_name": model_name})
+            if not existing:
+                model_dict = {
+                    "brand": brand,
+                    "model_name": model_name,
+                    "full_name": f"{brand} {model_name}",
+                    "created_at": datetime.utcnow(),
+                    "updated_at": datetime.utcnow()
+                }
+                await machine_models_collection.insert_one(model_dict)
+                imported_count += 1
+            else:
+                skipped_count += 1
+    
+    return {
+        "success": True,
+        "imported": imported_count,
+        "skipped": skipped_count,
+        "message": f"Imported {imported_count} models, skipped {skipped_count} existing"
+    }
+
