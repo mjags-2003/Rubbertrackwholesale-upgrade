@@ -210,6 +210,34 @@ class Blog(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+# Section Model (for managing homepage/page sections dynamically)
+class Section(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    section_type: str  # 'hero', 'features', 'cta', 'testimonials', 'content'
+    page: str = "home"  # 'home', 'about', 'contact', etc.
+    title: Optional[str] = None
+    heading1: Optional[str] = None  # H1 tag
+    heading2: Optional[str] = None  # H2 tag
+    content: Optional[str] = None  # Rich text HTML content
+    button_text: Optional[str] = None
+    button_link: Optional[str] = None
+    background_image: Optional[str] = None
+    images: Optional[List[str]] = []
+    order: int = 0  # Display order on page
+    is_published: bool = True
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+    custom_css: Optional[str] = None
+    custom_data: Optional[Dict[str, Any]] = {}  # For additional custom fields
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Order Model
 class OrderItem(BaseModel):
     product_id: str
