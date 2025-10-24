@@ -375,33 +375,69 @@ async def import_products(file: UploadFile = File(...), current_user = Depends(g
         
         for index, row in df.iterrows():
             try:
-                # Generate SKU if not provided
-                sku = f"RT-{row.get('size', 'UNKNOWN').replace('x', '-')}-{index}"
-                
-                # Parse price (remove currency symbols if present)
-                price_str = str(row.get('price', '0')).replace('$', '').replace(',', '').strip()
-                try:
-                    price = float(price_str)
-                except:
-                    price = 0.0
-                
-                # Parse in_stock field
-                in_stock_val = str(row.get('in_stock', 'Yes')).strip().lower()
-                in_stock = in_stock_val in ['yes', 'true', '1', 'y']
-                
-                # Parse keywords (comma-separated or convert to list)
-                keywords_str = str(row.get('seo_keywords', '')).strip()
-                seo_keywords = [k.strip() for k in keywords_str.split(',') if k.strip()] if keywords_str else []
-                
-                # Create product title
-                brand = str(row.get('brand', 'Universal')).strip()
-                machine_model = str(row.get('machine_model', '')).strip() if pd.notna(row.get('machine_model')) else ''
-                size = str(row.get('size', '')).strip()
-                
-                if machine_model:
-                    title = f"{brand} {machine_model} Rubber Track {size}"
+                # Check if this is rubber tracks format or undercarriage parts format
+                if category == "Rubber Tracks":
+                    # Rubber tracks format processing
+                    sku = f"RT-{row.get('size', 'UNKNOWN').replace('x', '-')}-{index}"
+                    price_str = str(row.get('price', '0')).replace('$', '').replace(',', '').strip()
+                    try:
+                        price = float(price_str)
+                    except:
+                        price = 0.0
+                    
+                    in_stock_val = str(row.get('in_stock', 'Yes')).strip().lower()
+                    in_stock = in_stock_val in ['yes', 'true', '1', 'y']
+                    
+                    keywords_str = str(row.get('seo_keywords', '')).strip()
+                    seo_keywords = [k.strip() for k in keywords_str.split(',') if k.strip()] if keywords_str else []
+                    
+                    brand = str(row.get('brand', 'Universal')).strip()
+                    machine_model = str(row.get('title_suffix', '')).strip() if pd.notna(row.get('title_suffix')) else ''
+                    size = str(row.get('size', '')).strip()
+                    
+                    if machine_model:
+                        title = f"{brand} {machine_model} Rubber Track {size}"
+                    else:
+                        title = str(row.get('title', f"{brand} Rubber Track {size}")).strip()
+                    
+                    part_number = sku
+                    
                 else:
-                    title = str(row.get('title', f"{brand} Rubber Track {size}")).strip()
+                    # Undercarriage parts format processing
+                    sku = str(row.get('sku', f"{category[:3].upper()}-{index}")).strip()
+                    part_number = str(row.get('part_number', sku)).strip()
+                    
+                    # Extract machine model and brand
+                    machine_model_full = str(row.get('machine_model', '')).strip()
+                    if machine_model_full:
+                        # Try to extract brand from machine model
+                        parts = machine_model_full.split()
+                        brand = parts[0] if parts else "Universal"
+                        machine_model = ' '.join(parts[1:]) if len(parts) > 1 else machine_model_full
+                    else:
+                        brand = "Universal"
+                        machine_model = ""
+                    
+                    # Get item type and position
+                    item_type = str(row.get('item_type', category)).strip()
+                    position = str(row.get('position', '')).strip()
+                    
+                    # Create title
+                    if position:
+                        title = f"{brand} {machine_model} {position} {item_type}".strip()
+                    else:
+                        title = f"{brand} {machine_model} {item_type}".strip()
+                    
+                    # Get price (default to reasonable price for undercarriage parts)
+                    price = 189.99 if category == "Rollers" else (429.99 if category == "Sprockets" else 349.99)
+                    
+                    # Other fields
+                    size = "N/A"
+                    description = str(row.get('description', f'Premium {item_type} for {brand} {machine_model}')).strip()
+                    
+                    # SEO fields
+                    seo_keywords = [f"{brand.lower()} {item_type.lower()}", part_number.lower(), category.lower()]
+                    in_stock = True
                 
                 # Check if brand exists, if not use "Universal"
                 existing_brand = await brands_collection.find_one({"name": brand})
