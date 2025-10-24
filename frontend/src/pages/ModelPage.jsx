@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ChevronRight, Package, Wrench, Cog, Circle } from 'lucide-react';
+import { ChevronRight, Boxes, Cog, Disc3, Circle } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import axios from 'axios';
 
