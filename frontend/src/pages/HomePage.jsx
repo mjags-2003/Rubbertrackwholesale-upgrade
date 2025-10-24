@@ -192,7 +192,7 @@ const HomePage = () => {
       <section 
         className="py-20 bg-cover bg-center relative"
         style={{
-          backgroundImage: `linear-gradient(rgba(249, 115, 22, 0.9), rgba(234, 88, 12, 0.9)), url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&h=600&fit=crop')`
+          backgroundImage: `linear-gradient(rgba(249, 115, 22, 0.9), rgba(234, 88, 12, 0.9)), url('https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1600&h=600&fit=crop')`
         }}
       >
         <div className="container mx-auto px-4 text-center">
