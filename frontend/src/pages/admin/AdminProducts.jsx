@@ -156,9 +156,11 @@ const AdminProducts = () => {
     setEditingProduct(product);
     setFormData({
       ...product,
+      machine_models: product.machine_models || [],
       seo_keywords: Array.isArray(product.seo_keywords) ? product.seo_keywords.join(', ') : '',
       alt_tags: product.alt_tags || [''],
-      images: product.images.length > 0 ? product.images : ['']
+      images: product.images.length > 0 ? product.images : [''],
+      canonical_url: product.canonical_url || ''
     });
     setDialogOpen(true);
   };
