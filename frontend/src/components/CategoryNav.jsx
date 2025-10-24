@@ -113,7 +113,7 @@ const CategoryNav = () => {
                   className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-3 focus:outline-none focus:border-orange-500"
                 >
                   <option value="">Select Model</option>
-                  {machineModels[selectedBrand]?.map(model => (
+                  {getCurrentModels().map(model => (
                     <option key={model} value={model}>{model}</option>
                   ))}
                 </select>
