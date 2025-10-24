@@ -541,6 +541,19 @@ const AdminProducts = () => {
                 </div>
 
                 <div>
+                  <Label>Canonical URL</Label>
+                  <Input
+                    value={formData.canonical_url}
+                    onChange={(e) => setFormData({ ...formData, canonical_url: e.target.value })}
+                    className="bg-slate-800 border-slate-700"
+                    placeholder="/product/product-slug (auto-generated if empty)"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Canonical URL prevents duplicate content SEO issues
+                  </p>
+                </div>
+
+                <div>
                   <Label>Image Alt Tags</Label>
                   {formData.alt_tags.map((tag, index) => (
                     <Input
