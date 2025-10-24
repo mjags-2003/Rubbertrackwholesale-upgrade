@@ -14,6 +14,7 @@ db = client[db_name]
 
 # Collections
 brands_collection = db.brands
+machine_models_collection = db.machine_models
 categories_collection = db.categories
 products_collection = db.products
 customers_collection = db.customers
