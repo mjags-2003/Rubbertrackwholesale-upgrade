@@ -8,22 +8,32 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import BrandsPage from './pages/BrandsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminLayout from './components/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
 import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/brands" element={<BrandsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
+          {/* Public Routes */}
+          <Route path="/" element={<><Navbar /><HomePage /><Footer /></>} />
+          <Route path="/products" element={<><Navbar /><ProductsPage /><Footer /></>} />
+          <Route path="/product/:id" element={<><Navbar /><ProductDetailPage /><Footer /></>} />
+          <Route path="/brands" element={<><Navbar /><BrandsPage /><Footer /></>} />
+          <Route path="/about" element={<><Navbar /><AboutPage /><Footer /></>} />
+          <Route path="/contact" element={<><Navbar /><ContactPage /><Footer /></>} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+          </Route>
         </Routes>
-        <Footer />
         <Toaster />
       </BrowserRouter>
     </div>
