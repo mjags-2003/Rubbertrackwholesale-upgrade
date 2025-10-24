@@ -201,10 +201,10 @@ const HomePage = () => {
       >
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">
-            Need Help Finding the Right Part?
+            Need Help Finding the Right Rubber Track, Sprocket, Roller or Idler?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Our expert team is ready to help you find the perfect rubber tracks and undercarriage parts for your equipment.
+            Our expert team is ready to help you find the perfect rubber tracks, sprockets, rollers, idlers and undercarriage parts for your equipment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contact">
