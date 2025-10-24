@@ -259,3 +259,16 @@ async def get_brand_models(brand: str):
         "total_models": len(models)
     }
 
+
+# Pages Endpoints (CMS)
+@router.get("/pages/slug/{slug}")
+async def get_page_by_slug(slug: str):
+    """Get page content by slug (public endpoint)"""
+    from database import pages_collection
+    page = await pages_collection.find_one({"slug": slug, "is_published": True})
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+    
+    return serialize_doc(page)
+
+
