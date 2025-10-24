@@ -134,9 +134,10 @@ const AdminBlogs = () => {
               </div>
               <div>
                 <Label>Content *</Label>
-                <div className="bg-white rounded-md">
-                  <ReactQuill theme="snow" value={formData.content} onChange={(value) => setFormData({ ...formData, content: value })} modules={modules} className="text-black" style={{ minHeight: '250px' }} />
-                </div>
+                <TipTapEditor
+                  content={formData.content}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
+                />
               </div>
               <div>
                 <Label>Excerpt</Label>
