@@ -499,6 +499,7 @@ const AdminProducts = () => {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
 
         {/* Import Products Dialog */}
         <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
