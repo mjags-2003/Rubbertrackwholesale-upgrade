@@ -26,6 +26,24 @@ class Brand(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+
+# Machine Model (for brand-specific models like Bobcat T190, John Deere 317G, etc.)
+class MachineModel(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    brand: str  # Brand name (e.g., "Bobcat", "John Deere")
+    model_name: str  # Model name (e.g., "T190", "317G")
+    full_name: Optional[str] = None  # Full name (e.g., "Bobcat T190")
+    description: Optional[str] = None
+    product_image: Optional[str] = None  # URL to model image
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Category Model
 class Category(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
