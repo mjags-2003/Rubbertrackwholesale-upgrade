@@ -18,6 +18,7 @@ const AdminLayout = () => {
     { path: '/admin/brands', label: 'Brands', icon: Tag },
     { path: '/admin/categories', label: 'Categories', icon: FolderOpen },
     { path: '/admin/pages', label: 'Pages (CMS)', icon: FileText },
+    { path: '/admin/sections', label: 'Homepage Sections', icon: Layout },
     { path: '/admin/blog-categories', label: 'Blog Categories', icon: FolderTree },
     { path: '/admin/blogs', label: 'Blogs', icon: BookOpen },
     { path: '/admin/faqs', label: 'FAQs', icon: HelpCircle },
