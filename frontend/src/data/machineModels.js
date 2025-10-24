@@ -59,7 +59,7 @@ export const machineModels = {
   ],
   'John Deere': [
     '315D', '317', '317G', '319D', '319E', '323D', '323E', '325G', '329D', '329E', '331D', 
-    '331E', '331G', '333D', '333E', '333G'
+    '331E', '331G', '333D', '333E', '333G', 'CT322', 'CT332'
   ],
   'Kobelco': [
     'SK25SR', 'SK27SR', 'SK30SR', 'SK35SR', 'SK45SR', 'SK55SR'
