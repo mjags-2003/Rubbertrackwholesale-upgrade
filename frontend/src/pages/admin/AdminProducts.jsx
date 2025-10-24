@@ -268,13 +268,77 @@ const AdminProducts = () => {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Products Management</h1>
-        <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
-          <DialogTrigger asChild>
-            <Button className="bg-orange-500 hover:bg-orange-600">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-3">
+          <Dialog open={bulkImportDialog} onOpenChange={setBulkImportDialog}>
+            <DialogTrigger asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Upload className="h-4 w-4 mr-2" />
+                Bulk Import
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-slate-900 border-slate-800 text-white">
+              <DialogHeader>
+                <DialogTitle>Bulk Import Products</DialogTitle>
+                <DialogDescription className="text-slate-400">
+                  Upload a CSV file to import multiple products at once
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Product Type</Label>
+                  <select
+                    value={importType}
+                    onChange={(e) => setImportType(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-white"
+                  >
+                    <option value="rubber_tracks">Rubber Tracks</option>
+                    <option value="bottom_rollers">Bottom Rollers</option>
+                    <option value="sprockets">Sprockets</option>
+                    <option value="idlers">Idlers</option>
+                  </select>
+                </div>
+
+                <div>
+                  <Label>CSV File</Label>
+                  <Input
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                    className="bg-slate-800 border-slate-700"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    onClick={handleDownloadTemplate}
+                    className="flex-1 bg-slate-700 hover:bg-slate-600"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Template
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleBulkImport}
+                    disabled={!selectedFile || importing}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    {importing ? 'Importing...' : 'Import'}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
+            <DialogTrigger asChild>
+              <Button className="bg-orange-500 hover:bg-orange-600">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            </DialogTrigger>
           <DialogContent className="bg-slate-900 border-slate-800 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
