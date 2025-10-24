@@ -831,3 +831,299 @@ async def delete_page(page_id: str, current_user = Depends(get_current_user)):
     
     return {"success": True, "message": "Page deleted successfully"}
 
+
+
+# Redirects Management (301)
+@router.get("/redirects")
+async def get_all_redirects(current_user = Depends(get_current_user)):
+    """Get all redirects"""
+    from database import redirects_collection
+    redirects = await redirects_collection.find().sort("created_at", -1).to_list(100)
+    return [serialize_doc(r) for r in redirects]
+
+
+@router.post("/redirects")
+async def create_redirect(redirect: Redirect, current_user = Depends(get_current_user)):
+    """Create new redirect"""
+    from database import redirects_collection
+    redirect_dict = redirect.dict(by_alias=True, exclude={"id"})
+    
+    # Check if from_url already exists
+    existing = await redirects_collection.find_one({"from_url": redirect_dict["from_url"]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Redirect for this URL already exists")
+    
+    result = await redirects_collection.insert_one(redirect_dict)
+    created = await redirects_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created)
+
+
+@router.put("/redirects/{redirect_id}")
+async def update_redirect(redirect_id: str, redirect: Redirect, current_user = Depends(get_current_user)):
+    """Update redirect"""
+    from database import redirects_collection
+    if not ObjectId.is_valid(redirect_id):
+        raise HTTPException(status_code=400, detail="Invalid redirect ID")
+    
+    redirect_dict = redirect.dict(by_alias=True, exclude={"id"})
+    result = await redirects_collection.update_one(
+        {"_id": ObjectId(redirect_id)},
+        {"$set": redirect_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Redirect not found")
+    
+    updated = await redirects_collection.find_one({"_id": ObjectId(redirect_id)})
+    return serialize_doc(updated)
+
+
+@router.delete("/redirects/{redirect_id}")
+async def delete_redirect(redirect_id: str, current_user = Depends(get_current_user)):
+    """Delete redirect"""
+    from database import redirects_collection
+    if not ObjectId.is_valid(redirect_id):
+        raise HTTPException(status_code=400, detail="Invalid redirect ID")
+    
+    result = await redirects_collection.delete_one({"_id": ObjectId(redirect_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Redirect not found")
+    
+    return {"success": True, "message": "Redirect deleted successfully"}
+
+
+# Reviews Management
+@router.get("/reviews")
+async def get_all_reviews(current_user = Depends(get_current_user)):
+    """Get all reviews"""
+    from database import reviews_collection
+    reviews = await reviews_collection.find().sort("created_at", -1).to_list(500)
+    return [serialize_doc(r) for r in reviews]
+
+
+@router.post("/reviews")
+async def create_review(review: Review, current_user = Depends(get_current_user)):
+    """Create review (admin)"""
+    from database import reviews_collection
+    review_dict = review.dict(by_alias=True, exclude={"id"})
+    result = await reviews_collection.insert_one(review_dict)
+    created = await reviews_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created)
+
+
+@router.put("/reviews/{review_id}/approve")
+async def approve_review(review_id: str, current_user = Depends(get_current_user)):
+    """Approve review"""
+    from database import reviews_collection
+    if not ObjectId.is_valid(review_id):
+        raise HTTPException(status_code=400, detail="Invalid review ID")
+    
+    result = await reviews_collection.update_one(
+        {"_id": ObjectId(review_id)},
+        {"$set": {"is_approved": True}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    
+    return {"success": True, "message": "Review approved"}
+
+
+@router.delete("/reviews/{review_id}")
+async def delete_review(review_id: str, current_user = Depends(get_current_user)):
+    """Delete review"""
+    from database import reviews_collection
+    if not ObjectId.is_valid(review_id):
+        raise HTTPException(status_code=400, detail="Invalid review ID")
+    
+    result = await reviews_collection.delete_one({"_id": ObjectId(review_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    
+    return {"success": True, "message": "Review deleted successfully"}
+
+
+# FAQs Management
+@router.get("/faqs")
+async def get_all_faqs(current_user = Depends(get_current_user)):
+    """Get all FAQs"""
+    from database import faqs_collection
+    faqs = await faqs_collection.find().sort("order", 1).to_list(200)
+    return [serialize_doc(f) for f in faqs]
+
+
+@router.post("/faqs")
+async def create_faq(faq: FAQ, current_user = Depends(get_current_user)):
+    """Create FAQ"""
+    from database import faqs_collection
+    faq_dict = faq.dict(by_alias=True, exclude={"id"})
+    result = await faqs_collection.insert_one(faq_dict)
+    created = await faqs_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created)
+
+
+@router.put("/faqs/{faq_id}")
+async def update_faq(faq_id: str, faq: FAQ, current_user = Depends(get_current_user)):
+    """Update FAQ"""
+    from database import faqs_collection
+    if not ObjectId.is_valid(faq_id):
+        raise HTTPException(status_code=400, detail="Invalid FAQ ID")
+    
+    faq_dict = faq.dict(by_alias=True, exclude={"id"})
+    faq_dict["updated_at"] = datetime.utcnow()
+    
+    result = await faqs_collection.update_one(
+        {"_id": ObjectId(faq_id)},
+        {"$set": faq_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ not found")
+    
+    updated = await faqs_collection.find_one({"_id": ObjectId(faq_id)})
+    return serialize_doc(updated)
+
+
+@router.delete("/faqs/{faq_id}")
+async def delete_faq(faq_id: str, current_user = Depends(get_current_user)):
+    """Delete FAQ"""
+    from database import faqs_collection
+    if not ObjectId.is_valid(faq_id):
+        raise HTTPException(status_code=400, detail="Invalid FAQ ID")
+    
+    result = await faqs_collection.delete_one({"_id": ObjectId(faq_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ not found")
+    
+    return {"success": True, "message": "FAQ deleted successfully"}
+
+
+# Blog Categories Management
+@router.get("/blog-categories")
+async def get_all_blog_categories(current_user = Depends(get_current_user)):
+    """Get all blog categories"""
+    from database import blog_categories_collection
+    categories = await blog_categories_collection.find().sort("name", 1).to_list(100)
+    return [serialize_doc(c) for c in categories]
+
+
+@router.post("/blog-categories")
+async def create_blog_category(category: BlogCategory, current_user = Depends(get_current_user)):
+    """Create blog category"""
+    from database import blog_categories_collection
+    category_dict = category.dict(by_alias=True, exclude={"id"})
+    
+    # Check if slug exists
+    existing = await blog_categories_collection.find_one({"slug": category_dict["slug"]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Category with this slug already exists")
+    
+    result = await blog_categories_collection.insert_one(category_dict)
+    created = await blog_categories_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created)
+
+
+@router.put("/blog-categories/{category_id}")
+async def update_blog_category(category_id: str, category: BlogCategory, current_user = Depends(get_current_user)):
+    """Update blog category"""
+    from database import blog_categories_collection
+    if not ObjectId.is_valid(category_id):
+        raise HTTPException(status_code=400, detail="Invalid category ID")
+    
+    category_dict = category.dict(by_alias=True, exclude={"id"})
+    result = await blog_categories_collection.update_one(
+        {"_id": ObjectId(category_id)},
+        {"$set": category_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    updated = await blog_categories_collection.find_one({"_id": ObjectId(category_id)})
+    return serialize_doc(updated)
+
+
+@router.delete("/blog-categories/{category_id}")
+async def delete_blog_category(category_id: str, current_user = Depends(get_current_user)):
+    """Delete blog category"""
+    from database import blog_categories_collection
+    if not ObjectId.is_valid(category_id):
+        raise HTTPException(status_code=400, detail="Invalid category ID")
+    
+    result = await blog_categories_collection.delete_one({"_id": ObjectId(category_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    return {"success": True, "message": "Category deleted successfully"}
+
+
+# Blogs Management
+@router.get("/blogs")
+async def get_all_blogs(current_user = Depends(get_current_user)):
+    """Get all blogs"""
+    from database import blogs_collection
+    blogs = await blogs_collection.find().sort("created_at", -1).to_list(200)
+    return [serialize_doc(b) for b in blogs]
+
+
+@router.post("/blogs")
+async def create_blog(blog: Blog, current_user = Depends(get_current_user)):
+    """Create blog"""
+    from database import blogs_collection
+    blog_dict = blog.dict(by_alias=True, exclude={"id"})
+    
+    # Check if slug exists
+    existing = await blogs_collection.find_one({"slug": blog_dict["slug"]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Blog with this slug already exists")
+    
+    # Set published_at if publishing
+    if blog_dict.get("is_published") and not blog_dict.get("published_at"):
+        blog_dict["published_at"] = datetime.utcnow()
+    
+    result = await blogs_collection.insert_one(blog_dict)
+    created = await blogs_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created)
+
+
+@router.put("/blogs/{blog_id}")
+async def update_blog(blog_id: str, blog: Blog, current_user = Depends(get_current_user)):
+    """Update blog"""
+    from database import blogs_collection
+    if not ObjectId.is_valid(blog_id):
+        raise HTTPException(status_code=400, detail="Invalid blog ID")
+    
+    blog_dict = blog.dict(by_alias=True, exclude={"id"})
+    blog_dict["updated_at"] = datetime.utcnow()
+    
+    # Set published_at if newly publishing
+    if blog_dict.get("is_published"):
+        existing = await blogs_collection.find_one({"_id": ObjectId(blog_id)})
+        if existing and not existing.get("is_published"):
+            blog_dict["published_at"] = datetime.utcnow()
+    
+    result = await blogs_collection.update_one(
+        {"_id": ObjectId(blog_id)},
+        {"$set": blog_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    
+    updated = await blogs_collection.find_one({"_id": ObjectId(blog_id)})
+    return serialize_doc(updated)
+
+
+@router.delete("/blogs/{blog_id}")
+async def delete_blog(blog_id: str, current_user = Depends(get_current_user)):
+    """Delete blog"""
+    from database import blogs_collection
+    if not ObjectId.is_valid(blog_id):
+        raise HTTPException(status_code=400, detail="Invalid blog ID")
+    
+    result = await blogs_collection.delete_one({"_id": ObjectId(blog_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    
+    return {"success": True, "message": "Blog deleted successfully"}
+
