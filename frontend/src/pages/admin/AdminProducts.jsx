@@ -180,6 +180,79 @@ const AdminProducts = () => {
     });
   };
 
+  const handleImport = async () => {
+    if (!importFile) {
+      toast({
+        title: "Error",
+        description: "Please select a file to import",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setImporting(true);
+    const formData = new FormData();
+    formData.append('file', importFile);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await axios.post(`${API}/admin/products/import`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      toast({
+        title: "Import Complete",
+        description: response.data.message
+      });
+
+      setImportDialogOpen(false);
+      setImportFile(null);
+      fetchProducts();
+    } catch (error) {
+      toast({
+        title: "Import Failed",
+        description: error.response?.data?.detail || "Failed to import products",
+        variant: "destructive"
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await axios.get(`${API}/admin/products/import-template`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Create downloadable CSV
+      const blob = new Blob([response.data.content], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = response.data.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast({
+        title: "Template Downloaded",
+        description: "Use this template to prepare your product data"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to download template",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
