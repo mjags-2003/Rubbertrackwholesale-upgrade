@@ -3,8 +3,8 @@
 ## 🎯 PROJECT OVERVIEW
 E-commerce platform for rubber tracks and undercarriage parts with comprehensive SEO features, CMS, blog system, and admin panel.
 
-**Live URL:** https://tracksplus.preview.emergentagent.com
-**Admin URL:** https://tracksplus.preview.emergentagent.com/admin/login
+**Live URL:** https://tracks-ecom.preview.emergentagent.com
+**Admin URL:** https://tracks-ecom.preview.emergentagent.com/admin/login
 **Admin Credentials:** Username: `admin` | Password: `admin123`
 
 ---
