@@ -20,6 +20,7 @@ customers_collection = db.customers
 orders_collection = db.orders
 admin_users_collection = db.admin_users
 contact_messages_collection = db.contact_messages
+pages_collection = db.pages
 
 
 async def init_db():
@@ -38,5 +39,7 @@ async def init_db():
     
     await admin_users_collection.create_index("username", unique=True)
     await admin_users_collection.create_index("email", unique=True)
+    
+    await pages_collection.create_index("slug", unique=True)
     
     print("✅ Database indexes created successfully")
