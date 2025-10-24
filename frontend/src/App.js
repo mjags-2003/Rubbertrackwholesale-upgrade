@@ -26,6 +26,9 @@ import AdminReviews from './pages/admin/AdminReviews';
 import AdminFAQs from './pages/admin/AdminFAQs';
 import AdminBlogCategories from './pages/admin/AdminBlogCategories';
 import AdminBlogs from './pages/admin/AdminBlogs';
+import AdminOrders from './pages/admin/AdminOrders';
+import AdminCustomers from './pages/admin/AdminCustomers';
+import AdminMessages from './pages/admin/AdminMessages';
 import { Toaster } from './components/ui/toaster';
 
 function App() {
