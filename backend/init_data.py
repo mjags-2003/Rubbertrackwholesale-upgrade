@@ -80,12 +80,19 @@ async def init_brands():
         {"name": "Yanmar", "slug": "yanmar", "description": "Rubber tracks for Yanmar excavators", "seo_title": "Yanmar Rubber Tracks & Parts | Rubber Track Wholesale", "seo_description": "Quality Yanmar rubber tracks. OEM specifications, wholesale prices.", "seo_keywords": ["yanmar rubber tracks", "yanmar parts"], "created_at": datetime.utcnow(), "updated_at": datetime.utcnow()},
     ]
     
-    count = await db.brands.count_documents({})
-    if count == 0:
-        await db.brands.insert_many(brands)
-        print(f"✅ {len(brands)} brands created")
+    # Insert brands if they don't exist (check by slug)
+    added_count = 0
+    for brand in brands:
+        existing = await db.brands.find_one({"slug": brand["slug"]})
+        if not existing:
+            await db.brands.insert_one(brand)
+            added_count += 1
+    
+    total_count = await db.brands.count_documents({})
+    if added_count > 0:
+        print(f"✅ {added_count} new brands created (Total: {total_count})")
     else:
-        print(f"ℹ️  {count} brands already exist")
+        print(f"ℹ️  All brands already exist (Total: {total_count})")
 
 
 async def init_categories():
