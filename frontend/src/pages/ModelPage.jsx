@@ -162,7 +162,7 @@ const ModelPage = () => {
             <p className="text-xl text-slate-300 mb-6">
               Premium quality rubber tracks, sprockets, idlers, and rollers for your {brandName} {modelName}
             </p>
-            <div className="flex gap-4 text-slate-400">
+            <div className="flex gap-4 text-slate-400 mb-8">
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-orange-500" />
                 <span>{total_products} Products Available</span>
@@ -172,6 +172,51 @@ const ModelPage = () => {
                 <span>In Stock & Ready to Ship</span>
               </div>
             </div>
+
+            {/* Quick Category Navigation */}
+            {total_products > 0 && (
+              <div className="bg-slate-950/50 rounded-lg p-4 border border-slate-800">
+                <p className="text-slate-300 text-sm font-semibold mb-3">Shop by Category:</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {products.rubber_tracks.length > 0 && (
+                    <a 
+                      href="#rubber-tracks"
+                      className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                    >
+                      <Package className="h-4 w-4" />
+                      Rubber Tracks ({products.rubber_tracks.length})
+                    </a>
+                  )}
+                  {products.sprockets.length > 0 && (
+                    <a 
+                      href="#sprockets"
+                      className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                    >
+                      <Cog className="h-4 w-4" />
+                      Sprockets ({products.sprockets.length})
+                    </a>
+                  )}
+                  {products.idlers.length > 0 && (
+                    <a 
+                      href="#idlers"
+                      className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                    >
+                      <Circle className="h-4 w-4" />
+                      Idlers ({products.idlers.length})
+                    </a>
+                  )}
+                  {products.rollers.length > 0 && (
+                    <a 
+                      href="#rollers"
+                      className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                    >
+                      <Wrench className="h-4 w-4" />
+                      Rollers ({products.rollers.length})
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
