@@ -37,13 +37,30 @@ async def get_products(
         query["category"] = category
     
     if search:
-        # Search in title, sku, part_number, size
-        query["$or"] = [
+        # Normalize search term (remove spaces, convert to lowercase)
+        search_normalized = search.replace(" ", "").lower()
+        
+        # Build comprehensive search query
+        search_conditions = [
             {"title": {"$regex": search, "$options": "i"}},
             {"sku": {"$regex": search, "$options": "i"}},
             {"part_number": {"$regex": search, "$options": "i"}},
-            {"size": {"$regex": search, "$options": "i"}}
+            {"size": {"$regex": search, "$options": "i"}},
+            {"brand": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}},
         ]
+        
+        # Add normalized size search (handles formats like 400x86x52, 300x52.5x74)
+        # This helps match sizes even with spacing variations
+        search_conditions.append({"size": {"$regex": search_normalized, "$options": "i"}})
+        
+        # Search in machine model specifications
+        search_conditions.append({"specifications.machine_model": {"$regex": search, "$options": "i"}})
+        
+        # Search in fits_models field (for undercarriage parts)
+        search_conditions.append({"specifications.fits_models": {"$regex": search, "$options": "i"}})
+        
+        query["$or"] = search_conditions
     
     # Sorting
     sort_options = {
