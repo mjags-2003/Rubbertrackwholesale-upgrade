@@ -19,6 +19,7 @@ import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminBrands from './pages/admin/AdminBrands';
+import AdminMachineModels from './pages/admin/AdminMachineModels';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminPages from './pages/admin/AdminPages';
 import AdminSections from './pages/admin/AdminSections';
