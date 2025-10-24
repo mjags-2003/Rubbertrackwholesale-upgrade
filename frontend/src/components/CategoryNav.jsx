@@ -111,6 +111,8 @@ const CategoryNav = () => {
               <div>
                 <label className="block text-slate-300 mb-2 font-semibold">Machine Model</label>
                 <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
                   className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-3 focus:outline-none focus:border-orange-500"
                 >
                   <option value="">Select Model</option>
@@ -121,9 +123,9 @@ const CategoryNav = () => {
               </div>
             </div>
 
-            <Link to={`/products?brand=${selectedBrand}`}>
+            <Link to={selectedModel ? `/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}` : `/products?brand=${selectedBrand}`}>
               <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-md transition-colors text-lg">
-                Search Parts
+                {selectedModel ? 'View Available Parts' : 'Search Parts'}
               </button>
             </Link>
           </CardContent>
