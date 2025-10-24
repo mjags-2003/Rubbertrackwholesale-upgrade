@@ -39,6 +39,7 @@ async def init_db():
     await products_collection.create_index("category")
     
     await brands_collection.create_index("slug", unique=True)
+    await machine_models_collection.create_index([("brand", 1), ("model_name", 1)], unique=True)
     await categories_collection.create_index("slug", unique=True)
     
     await customers_collection.create_index("email", unique=True)
