@@ -21,6 +21,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminBrands from './pages/admin/AdminBrands';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminPages from './pages/admin/AdminPages';
+import AdminSections from './pages/admin/AdminSections';
 import AdminRedirects from './pages/admin/AdminRedirects';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminFAQs from './pages/admin/AdminFAQs';
