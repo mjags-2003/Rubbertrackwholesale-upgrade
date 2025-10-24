@@ -431,27 +431,82 @@ async def import_products(file: UploadFile = File(...), current_user = Depends(g
 
 
 # Download Import Template
-@router.get("/products/import-template")
-async def download_import_template(current_user = Depends(get_current_user)):
-    """Download a CSV template for bulk import"""
+@router.get("/products/import-template/{template_type}")
+async def download_import_template(template_type: str, current_user = Depends(get_current_user)):
+    """Download a CSV template for bulk import - supports different product types"""
     
-    template_data = {
-        'comp_name': ['Bobcat', 'Kubota', 'Caterpillar'],
-        'machine_model': ['T190', 'SVL95', '247B MTL'],
-        'track_size': ['450x86x56', '400x72x74', '320x86x52'],
-        'Price': [1299.99, 1580.00, 1340.00],
-        'eng_description': [
-            'Premium rubber track for Bobcat T190 compact track loader',
-            'High-performance rubber track designed for Kubota SVL95',
-            'OEM quality rubber track for Caterpillar 247B Multi Terrain Loader'
-        ],
-        'title_h1': ['Bobcat T190 Rubber Track', 'Kubota SVL95 Rubber Track', 'Cat 247B MTL Rubber Track'],
-        'sub_title_h2': ['Premium Quality', 'OEM Specifications', 'Superior Performance'],
-        'page_title': ['Bobcat T190 Rubber Track | Wholesale', 'Kubota SVL95 Track | Best Price', 'Cat 247B Track | Free Shipping'],
-        'eng_metakeyword': ['bobcat tracks, t190, rubber tracks', 'kubota tracks, svl95', 'caterpillar tracks, 247b'],
-        'eng_meta_desc': ['Buy Bobcat T190 rubber tracks. Free shipping available.', 'Premium Kubota SVL95 tracks at wholesale prices.', 'Caterpillar 247B tracks in stock. Order now.'],
-        'shown_main_listin': ['Yes', 'Yes', 'Yes']
-    }
+    if template_type == "rubber-tracks":
+        template_data = {
+            'comp_name': ['Bobcat', 'Kubota', 'Caterpillar'],
+            'machine_model': ['T190', 'SVL95', '247B MTL'],
+            'track_size': ['450x86x56', '400x72x74', '320x86x52'],
+            'Price': [1299.99, 1580.00, 1340.00],
+            'eng_description': [
+                'Premium rubber track for Bobcat T190 compact track loader',
+                'High-performance rubber track designed for Kubota SVL95',
+                'OEM quality rubber track for Caterpillar 247B Multi Terrain Loader'
+            ],
+            'title_h1': ['Bobcat T190 Rubber Track', 'Kubota SVL95 Rubber Track', 'Cat 247B MTL Rubber Track'],
+            'sub_title_h2': ['Premium Quality', 'OEM Specifications', 'Superior Performance'],
+            'page_title': ['Bobcat T190 Rubber Track | Wholesale', 'Kubota SVL95 Track | Best Price', 'Cat 247B Track | Free Shipping'],
+            'eng_metakeyword': ['bobcat tracks, t190, rubber tracks', 'kubota tracks, svl95', 'caterpillar tracks, 247b'],
+            'eng_meta_desc': ['Buy Bobcat T190 rubber tracks. Free shipping available.', 'Premium Kubota SVL95 tracks at wholesale prices.', 'Caterpillar 247B tracks in stock. Order now.'],
+            'shown_main_listin': ['Yes', 'Yes', 'Yes']
+        }
+        filename = "rubber_tracks_import_template.csv"
+    
+    elif template_type == "bottom-rollers":
+        template_data = {
+            'Machine Model': ['Bobcat T190', 'Kubota SVL95', 'Caterpillar 247B'],
+            'Roller': ['Bottom Roller', 'Bottom Roller', 'Bottom Roller'],
+            'Bottom / Front': ['Bottom', 'Bottom', 'Bottom'],
+            'Part Number': ['6813501', 'V0515-25112', '248-6275'],
+            'Alternate Part numbers': ['6813501-ALT', 'V0515-ALT', '248-6275-ALT'],
+            'SKU': ['BR-BOB-T190', 'BR-KUB-SVL95', 'BR-CAT-247B'],
+            'Fits following machine models': ['Bobcat T190, T200, T550', 'Kubota SVL95, SVL97', 'Cat 247B, 257B, 267B'],
+            'Description': [
+                'Heavy-duty bottom roller for Bobcat T190. Single flange design with sealed bearings.',
+                'Premium bottom roller for Kubota SVL95. Double flange, maintenance-free sealed bearings.',
+                'OEM quality bottom roller for Caterpillar 247B MTL. Heavy-duty construction.'
+            ]
+        }
+        filename = "bottom_rollers_import_template.csv"
+    
+    elif template_type == "sprockets":
+        template_data = {
+            'Machine Model': ['Bobcat T190', 'Kubota SVL95', 'Caterpillar 247B'],
+            'ITEM': ['Drive Sprocket', 'Drive Sprocket', 'Drive Sprocket'],
+            'Part Number': ['6813502', 'V0515-25113', '248-6276'],
+            'Alternate Part numbers': ['6813502-ALT', 'V0515-ALT', '248-6276-ALT'],
+            'SKU': ['SPR-BOB-T190', 'SPR-KUB-SVL95', 'SPR-CAT-247B'],
+            'Fits following machine models': ['Bobcat T190, T200, T550', 'Kubota SVL95, SVL97', 'Cat 247B, 257B, 267B'],
+            'Description': [
+                'Precision-machined drive sprocket for Bobcat T190. 15 teeth, hardened steel.',
+                'Heavy-duty drive sprocket for Kubota SVL95. Heat-treated for durability.',
+                'OEM specification drive sprocket for Caterpillar 247B MTL. 17 teeth.'
+            ]
+        }
+        filename = "sprockets_import_template.csv"
+    
+    elif template_type == "idlers":
+        template_data = {
+            'Machine Model': ['Bobcat T190', 'Kubota SVL95', 'Caterpillar 247B'],
+            'Roller': ['Front Idler', 'Front Idler', 'Front Idler'],
+            'Front / Rear Idler': ['Front', 'Front', 'Front'],
+            'Part Number': ['6813503', 'V0515-25114', '248-6277'],
+            'Alternate Part numbers': ['6813503-ALT', 'V0515-ALT', '248-6277-ALT'],
+            'SKU': ['IDL-BOB-T190', 'IDL-KUB-SVL95', 'IDL-CAT-247B'],
+            'Fits following machine models': ['Bobcat T190, T200, T550', 'Kubota SVL95, SVL97', 'Cat 247B, 257B, 267B'],
+            'Description': [
+                'Front idler wheel for Bobcat T190. Heavy-duty bearings and sealed construction.',
+                'Premium front idler for Kubota SVL95. Greaseable design with double sealed bearings.',
+                'OEM quality front idler for Caterpillar 247B MTL. Maintenance-free sealed.'
+            ]
+        }
+        filename = "idlers_import_template.csv"
+    
+    else:
+        raise HTTPException(status_code=400, detail="Invalid template type. Options: rubber-tracks, bottom-rollers, sprockets, idlers")
     
     df = pd.DataFrame(template_data)
     
@@ -460,7 +515,7 @@ async def download_import_template(current_user = Depends(get_current_user)):
     df.to_csv(csv_buffer, index=False)
     
     return {
-        "filename": "product_import_template.csv",
+        "filename": filename,
         "content": csv_buffer.getvalue()
     }
 
