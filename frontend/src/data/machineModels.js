@@ -1,5 +1,6 @@
 // Complete machine models database for all brands
 // Sourced from United Skid Tracks - Industry standard models
+// Last updated: Comprehensive scan of unitedskidtracks.com
 
 export const machineModels = {
   'ASV': [
@@ -10,6 +11,9 @@ export const machineModels = {
   ],
   'Barreto': [
     '1324TK', '1624TK', '1824TK', '1836TK', '2024TK', '20RTK', '2324TK', '23RTK', '23TKD', '825TKL'
+  ],
+  'Baumalight': [
+    'TRL620D', 'TRL620Y'
   ],
   'Bobcat': [
     '864', 'MT52', 'MT55', 'MT85', 'MT100', 'T62', 'T64', 'T66', 'T76', 'T86', 'T110', 'T140', 
