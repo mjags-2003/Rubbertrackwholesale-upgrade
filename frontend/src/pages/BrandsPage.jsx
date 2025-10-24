@@ -10,7 +10,7 @@ const BrandsPage = () => {
       <section 
         className="bg-slate-900 py-20 border-b border-slate-800 bg-cover bg-center relative"
         style={{
-          backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=1600&h=600&fit=crop')`
+          backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1625936123395-c44e3370d8fd?w=1600&h=600&fit=crop')`
         }}
       >
         <div className="container mx-auto px-4 text-center">
