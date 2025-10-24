@@ -12,6 +12,8 @@ import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
+import AdminBrands from './pages/admin/AdminBrands';
+import AdminCategories from './pages/admin/AdminCategories';
 import { Toaster } from './components/ui/toaster';
 
 function App() {
