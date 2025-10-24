@@ -17,22 +17,22 @@ const CategoryNav = () => {
   const productTypes = [
     { 
       name: 'Rubber Tracks', 
-      icon: 'https://customer-assets.emergentagent.com/job_5a213ce3-2aa7-426d-a6c4-f19be54712e0/artifacts/u7zm7846_image.png',
+      icon: 'https://customer-assets.emergentagent.com/job_tracksplus/artifacts/duk6146m_track.png',
       link: '/products?category=Rubber Tracks'
     },
     { 
       name: 'Sprockets', 
-      icon: 'https://customer-assets.emergentagent.com/job_5a213ce3-2aa7-426d-a6c4-f19be54712e0/artifacts/o3gpqgne_image.png',
+      icon: 'https://customer-assets.emergentagent.com/job_tracksplus/artifacts/zdgzvt3c_all.png',
       link: '/products?category=Sprockets'
     },
     { 
       name: 'Rollers', 
-      icon: 'https://customer-assets.emergentagent.com/job_5a213ce3-2aa7-426d-a6c4-f19be54712e0/artifacts/134ihz8i_image.png',
+      icon: 'https://customer-assets.emergentagent.com/job_tracksplus/artifacts/zdgzvt3c_all.png',
       link: '/products?category=Rollers'
     },
     { 
       name: 'Idlers', 
-      icon: 'https://customer-assets.emergentagent.com/job_5a213ce3-2aa7-426d-a6c4-f19be54712e0/artifacts/134ihz8i_image.png',
+      icon: 'https://customer-assets.emergentagent.com/job_tracksplus/artifacts/zdgzvt3c_all.png',
       link: '/products?category=Idlers'
     }
   ];
