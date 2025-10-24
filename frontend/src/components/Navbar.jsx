@@ -140,6 +140,20 @@ const Navbar = () => {
                 Brands
               </Link>
               <Link
+                to="/blog"
+                className="block text-slate-200 hover:text-orange-500 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              <Link
+                to="/faqs"
+                className="block text-slate-200 hover:text-orange-500 transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                FAQs
+              </Link>
+              <Link
                 to="/about"
                 className="block text-slate-200 hover:text-orange-500 transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
