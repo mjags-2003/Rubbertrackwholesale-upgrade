@@ -44,6 +44,9 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Category Navigation */}
+      <CategoryNav />
+
       {/* Features */}
       <section className="py-16 bg-slate-900">
         <div className="container mx-auto px-4">
