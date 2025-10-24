@@ -123,11 +123,53 @@ const CategoryNav = () => {
               </div>
             </div>
 
-            <Link to={selectedModel ? `/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}` : `/products?brand=${selectedBrand}`}>
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-md transition-colors text-lg">
-                {selectedModel ? 'View Available Parts' : 'Search Parts'}
-              </button>
-            </Link>
+            {/* Show category links when model is selected */}
+            {selectedModel ? (
+              <div className="space-y-3">
+                <p className="text-slate-300 text-sm font-semibold">View parts for {selectedBrand} {selectedModel}:</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Link 
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rubber-tracks`}
+                    className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                  >
+                    <Package className="h-4 w-4" />
+                    Rubber Tracks
+                  </Link>
+                  <Link 
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#sprockets`}
+                    className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                  >
+                    <Cog className="h-4 w-4" />
+                    Sprockets
+                  </Link>
+                  <Link 
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#idlers`}
+                    className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                  >
+                    <Circle className="h-4 w-4" />
+                    Idlers
+                  </Link>
+                  <Link 
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rollers`}
+                    className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
+                  >
+                    <Wrench className="h-4 w-4" />
+                    Rollers
+                  </Link>
+                </div>
+                <Link to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}`}>
+                  <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-md transition-colors text-lg">
+                    View All Parts
+                  </button>
+                </Link>
+              </div>
+            ) : (
+              <Link to={`/products?brand=${selectedBrand}`}>
+                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-6 rounded-md transition-colors text-lg">
+                  Search Parts
+                </button>
+              </Link>
+            )}
           </CardContent>
         </Card>
 
