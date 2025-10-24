@@ -21,6 +21,11 @@ orders_collection = db.orders
 admin_users_collection = db.admin_users
 contact_messages_collection = db.contact_messages
 pages_collection = db.pages
+redirects_collection = db.redirects
+reviews_collection = db.reviews
+faqs_collection = db.faqs
+blog_categories_collection = db.blog_categories
+blogs_collection = db.blogs
 
 
 async def init_db():
@@ -41,5 +46,11 @@ async def init_db():
     await admin_users_collection.create_index("email", unique=True)
     
     await pages_collection.create_index("slug", unique=True)
+    await redirects_collection.create_index("from_url", unique=True)
+    await reviews_collection.create_index("product_id")
+    await faqs_collection.create_index("category")
+    await blog_categories_collection.create_index("slug", unique=True)
+    await blogs_collection.create_index("slug", unique=True)
+    await blogs_collection.create_index("category_id")
     
     print("✅ Database indexes created successfully")
