@@ -214,16 +214,10 @@ const AdminPages = () => {
 
               <div>
                 <Label>Page Content (Rich Text) *</Label>
-                <div className="bg-white rounded-md">
-                  <ReactQuill
-                    theme="snow"
-                    value={formData.content}
-                    onChange={(value) => setFormData({ ...formData, content: value })}
-                    modules={modules}
-                    formats={formats}
-                    className="text-black"
-                    style={{ minHeight: '300px' }}
-                  />
+                <TipTapEditor
+                  content={formData.content}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
+                />
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
                   Rich text editor with support for: headings, lists, links, images, YouTube videos, formatting
