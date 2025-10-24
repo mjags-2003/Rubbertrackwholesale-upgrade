@@ -96,10 +96,10 @@ const ModelPage = () => {
   };
 
   const categoryIcons = {
-    rubber_tracks: <Package className="h-6 w-6" />,
+    rubber_tracks: <Boxes className="h-6 w-6" />,
     sprockets: <Cog className="h-6 w-6" />,
-    idlers: <Circle className="h-6 w-6" />,
-    rollers: <Wrench className="h-6 w-6" />
+    idlers: <Disc3 className="h-6 w-6" />,
+    rollers: <Circle className="h-6 w-6" />
   };
 
   const categoryTitles = {
