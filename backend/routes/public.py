@@ -168,3 +168,94 @@ async def submit_contact(message: ContactMessage):
         "message": "Thank you for contacting us. We'll get back to you within 24 hours.",
         "id": str(result.inserted_id)
     }
+
+
+# Machine Model Endpoints
+@router.get("/models/{brand}/{model}")
+async def get_model_products(brand: str, model: str):
+    """Get all products available for a specific machine model with full SEO data"""
+    # Normalize brand and model for search
+    brand_normalized = brand.replace("-", " ").title()
+    model_normalized = model.upper()
+    
+    # Find products that match this brand and model
+    query = {
+        "brand": {"$regex": f"^{brand_normalized}$", "$options": "i"},
+        "$or": [
+            {"machine_models": {"$regex": f"^{model_normalized}$", "$options": "i"}},
+            {"title": {"$regex": model_normalized, "$options": "i"}},
+            {"part_number": {"$regex": model_normalized, "$options": "i"}}
+        ]
+    }
+    
+    products = await products_collection.find(query).to_list(100)
+    
+    # Group products by category
+    products_by_category = {
+        "rubber_tracks": [],
+        "sprockets": [],
+        "idlers": [],
+        "rollers": []
+    }
+    
+    for product in products:
+        product_data = serialize_doc(product)
+        category_lower = product.get("category", "").lower()
+        
+        if "track" in category_lower:
+            products_by_category["rubber_tracks"].append(product_data)
+        elif "sprocket" in category_lower:
+            products_by_category["sprockets"].append(product_data)
+        elif "idler" in category_lower:
+            products_by_category["idlers"].append(product_data)
+        elif "roller" in category_lower:
+            products_by_category["rollers"].append(product_data)
+    
+    # Get brand info
+    brand_doc = await brands_collection.find_one({"name": {"$regex": f"^{brand_normalized}$", "$options": "i"}})
+    
+    return {
+        "brand": brand_normalized,
+        "model": model_normalized,
+        "brand_info": serialize_doc(brand_doc) if brand_doc else None,
+        "products": products_by_category,
+        "total_products": len(products),
+        "seo": {
+            "title": f"{brand_normalized} {model_normalized} Parts - Rubber Tracks, Sprockets, Idlers & Rollers",
+            "description": f"Shop {brand_normalized} {model_normalized} rubber tracks, sprockets, idlers, and rollers. Premium quality undercarriage parts in stock with fast shipping.",
+            "canonical": f"/models/{brand.lower()}/{model.lower()}",
+            "keywords": [
+                f"{brand_normalized} {model_normalized}",
+                f"{brand_normalized} {model_normalized} tracks",
+                f"{brand_normalized} {model_normalized} parts",
+                "rubber tracks",
+                "sprockets",
+                "idlers",
+                "rollers"
+            ]
+        }
+    }
+
+
+@router.get("/models/{brand}")
+async def get_brand_models(brand: str):
+    """Get all models available for a specific brand"""
+    brand_normalized = brand.replace("-", " ").title()
+    
+    # Get all products for this brand
+    products = await products_collection.find({
+        "brand": {"$regex": f"^{brand_normalized}$", "$options": "i"}
+    }).to_list(1000)
+    
+    # Extract unique models
+    models = set()
+    for product in products:
+        if product.get("machine_models"):
+            models.update(product["machine_models"])
+    
+    return {
+        "brand": brand_normalized,
+        "models": sorted(list(models)),
+        "total_models": len(models)
+    }
+
