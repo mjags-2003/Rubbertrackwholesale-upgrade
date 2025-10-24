@@ -1128,3 +1128,74 @@ async def delete_blog(blog_id: str, current_user = Depends(get_current_user)):
     
     return {"success": True, "message": "Blog deleted successfully"}
 
+
+
+# ============= SECTION ROUTES (CMS Sections) =============
+
+@router.get("/sections", dependencies=[Depends(get_current_user)])
+async def get_sections(page: Optional[str] = None):
+    """Get all sections, optionally filtered by page"""
+    query = {"page": page} if page else {}
+    sections = await sections_collection.find(query).sort("order", 1).to_list(length=None)
+    return [serialize_doc(section) for section in sections]
+
+
+@router.post("/sections", dependencies=[Depends(get_current_user)])
+async def create_section(section: Section):
+    """Create a new section"""
+    section_dict = section.model_dump(by_alias=True, exclude={"id"})
+    section_dict["created_at"] = datetime.utcnow()
+    section_dict["updated_at"] = datetime.utcnow()
+    
+    result = await sections_collection.insert_one(section_dict)
+    
+    created_section = await sections_collection.find_one({"_id": result.inserted_id})
+    return serialize_doc(created_section)
+
+
+@router.get("/sections/{section_id}", dependencies=[Depends(get_current_user)])
+async def get_section(section_id: str):
+    """Get section by ID"""
+    if not ObjectId.is_valid(section_id):
+        raise HTTPException(status_code=400, detail="Invalid section ID")
+    
+    section = await sections_collection.find_one({"_id": ObjectId(section_id)})
+    if not section:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    return serialize_doc(section)
+
+
+@router.put("/sections/{section_id}", dependencies=[Depends(get_current_user)])
+async def update_section(section_id: str, section: Section):
+    """Update section"""
+    if not ObjectId.is_valid(section_id):
+        raise HTTPException(status_code=400, detail="Invalid section ID")
+    
+    section_dict = section.model_dump(by_alias=True, exclude={"id"})
+    section_dict["updated_at"] = datetime.utcnow()
+    
+    result = await sections_collection.update_one(
+        {"_id": ObjectId(section_id)},
+        {"$set": section_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    updated_section = await sections_collection.find_one({"_id": ObjectId(section_id)})
+    return serialize_doc(updated_section)
+
+
+@router.delete("/sections/{section_id}", dependencies=[Depends(get_current_user)])
+async def delete_section(section_id: str, current_user: AdminUser = Depends(get_current_user)):
+    """Delete section"""
+    if not ObjectId.is_valid(section_id):
+        raise HTTPException(status_code=400, detail="Invalid section ID")
+    
+    result = await sections_collection.delete_one({"_id": ObjectId(section_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Section not found")
+    
+    return {"success": True, "message": "Section deleted successfully"}
+
