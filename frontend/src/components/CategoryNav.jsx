@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Package, Cog, Circle, Wrench } from 'lucide-react';
+import { ChevronDown, Boxes, Cog, Disc3, Circle } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
 import { machineModels, excavatorModels } from '../data/machineModels';
 
