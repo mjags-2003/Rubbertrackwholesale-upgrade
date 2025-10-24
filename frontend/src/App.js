@@ -16,6 +16,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminBrands from './pages/admin/AdminBrands';
 import AdminCategories from './pages/admin/AdminCategories';
+import AdminPages from './pages/admin/AdminPages';
 import { Toaster } from './components/ui/toaster';
 
 function App() {
