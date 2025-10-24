@@ -34,6 +34,8 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="brands" element={<AdminBrands />} />
+            <Route path="categories" element={<AdminCategories />} />
           </Route>
         </Routes>
         <Toaster />
