@@ -42,10 +42,12 @@ const AdminProducts = () => {
     in_stock: true,
     stock_quantity: 0,
     specifications: {},
+    machine_models: [],
     seo_title: '',
     seo_description: '',
     seo_keywords: [],
-    alt_tags: ['']
+    alt_tags: [''],
+    canonical_url: ''
   });
 
   // Bulk Import States
