@@ -47,6 +47,11 @@ function App() {
               <Route path="brands" element={<AdminBrands />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="pages" element={<AdminPages />} />
+              <Route path="redirects" element={<AdminRedirects />} />
+              <Route path="reviews" element={<AdminReviews />} />
+              <Route path="faqs" element={<AdminFAQs />} />
+              <Route path="blog-categories" element={<AdminBlogCategories />} />
+              <Route path="blogs" element={<AdminBlogs />} />
             </Route>
           </Routes>
           <Toaster />
