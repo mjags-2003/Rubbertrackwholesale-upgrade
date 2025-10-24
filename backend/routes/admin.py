@@ -753,3 +753,81 @@ async def get_dashboard_stats(current_user = Depends(get_current_user)):
         "unread_messages": unread_messages,
         "recent_orders": [serialize_doc(o) for o in recent_orders]
     }
+
+
+# Pages Management (CMS)
+@router.get("/pages")
+async def get_all_pages(current_user = Depends(get_current_user)):
+    """Get all pages"""
+    from database import pages_collection
+    pages = await pages_collection.find().sort("created_at", -1).to_list(100)
+    return [serialize_doc(p) for p in pages]
+
+
+@router.get("/pages/{page_id}")
+async def get_page(page_id: str, current_user = Depends(get_current_user)):
+    """Get page by ID"""
+    from database import pages_collection
+    if not ObjectId.is_valid(page_id):
+        raise HTTPException(status_code=400, detail="Invalid page ID")
+    
+    page = await pages_collection.find_one({"_id": ObjectId(page_id)})
+    if not page:
+        raise HTTPException(status_code=404, detail="Page not found")
+    
+    return serialize_doc(page)
+
+
+@router.post("/pages")
+async def create_page(page: Page, current_user = Depends(get_current_user)):
+    """Create new page"""
+    from database import pages_collection
+    page_dict = page.dict(by_alias=True, exclude={"id"})
+    
+    # Check if slug already exists
+    existing = await pages_collection.find_one({"slug": page_dict["slug"]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Page with this slug already exists")
+    
+    result = await pages_collection.insert_one(page_dict)
+    created_page = await pages_collection.find_one({"_id": result.inserted_id})
+    
+    return serialize_doc(created_page)
+
+
+@router.put("/pages/{page_id}")
+async def update_page(page_id: str, page: Page, current_user = Depends(get_current_user)):
+    """Update page"""
+    from database import pages_collection
+    if not ObjectId.is_valid(page_id):
+        raise HTTPException(status_code=400, detail="Invalid page ID")
+    
+    page_dict = page.dict(by_alias=True, exclude={"id"})
+    page_dict["updated_at"] = datetime.utcnow()
+    
+    result = await pages_collection.update_one(
+        {"_id": ObjectId(page_id)},
+        {"$set": page_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Page not found")
+    
+    updated_page = await pages_collection.find_one({"_id": ObjectId(page_id)})
+    return serialize_doc(updated_page)
+
+
+@router.delete("/pages/{page_id}")
+async def delete_page(page_id: str, current_user = Depends(get_current_user)):
+    """Delete page"""
+    from database import pages_collection
+    if not ObjectId.is_valid(page_id):
+        raise HTTPException(status_code=400, detail="Invalid page ID")
+    
+    result = await pages_collection.delete_one({"_id": ObjectId(page_id)})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Page not found")
+    
+    return {"success": True, "message": "Page deleted successfully"}
+
