@@ -48,6 +48,12 @@ const AdminProducts = () => {
     alt_tags: ['']
   });
 
+  // Bulk Import States
+  const [bulkImportDialog, setBulkImportDialog] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [importType, setImportType] = useState('rubber_tracks');
+  const [importing, setImporting] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (!token) {
