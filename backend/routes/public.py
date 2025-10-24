@@ -268,6 +268,194 @@ async def get_page_by_slug(slug: str):
     page = await pages_collection.find_one({"slug": slug, "is_published": True})
     if not page:
         raise HTTPException(status_code=404, detail="Page not found")
+
+
+# Reviews Endpoints (Public)
+@router.get("/products/{product_id}/reviews")
+async def get_product_reviews(product_id: str):
+    """Get approved reviews for a product"""
+    from database import reviews_collection
+    reviews = await reviews_collection.find({
+        "product_id": product_id,
+        "is_approved": True
+    }).sort("created_at", -1).to_list(100)
+    
+    return [serialize_doc(r) for r in reviews]
+
+
+@router.post("/products/{product_id}/reviews")
+async def submit_review(product_id: str, review: Review):
+    """Submit a product review (public)"""
+    from database import reviews_collection
+    review_dict = review.dict(by_alias=True, exclude={"id"})
+    review_dict["product_id"] = product_id
+    review_dict["is_approved"] = False  # Needs admin approval
+    
+    result = await reviews_collection.insert_one(review_dict)
+    
+    return {
+        "success": True,
+        "message": "Review submitted successfully. It will appear after admin approval.",
+        "id": str(result.inserted_id)
+    }
+
+
+# FAQs Endpoints (Public)
+@router.get("/faqs")
+async def get_published_faqs(category: Optional[str] = None):
+    """Get published FAQs"""
+    from database import faqs_collection
+    query = {"is_published": True}
+    if category:
+        query["category"] = category
+    
+    faqs = await faqs_collection.find(query).sort("order", 1).to_list(100)
+    return [serialize_doc(f) for f in faqs]
+
+
+# Blog Endpoints (Public)
+@router.get("/blogs")
+async def get_published_blogs(category_id: Optional[str] = None, limit: int = 10, skip: int = 0):
+    """Get published blogs"""
+    from database import blogs_collection
+    query = {"is_published": True}
+    if category_id:
+        query["category_id"] = category_id
+    
+    blogs = await blogs_collection.find(query).sort("published_at", -1).skip(skip).limit(limit).to_list(limit)
+    total = await blogs_collection.count_documents(query)
+    
+    return {
+        "blogs": [serialize_doc(b) for b in blogs],
+        "total": total,
+        "page": skip // limit + 1,
+        "pages": (total + limit - 1) // limit
+    }
+
+
+@router.get("/blogs/slug/{slug}")
+async def get_blog_by_slug(slug: str):
+    """Get blog by slug"""
+    from database import blogs_collection
+    blog = await blogs_collection.find_one({"slug": slug, "is_published": True})
+    if not blog:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    
+    return serialize_doc(blog)
+
+
+@router.get("/blog-categories")
+async def get_blog_categories():
+    """Get all blog categories"""
+    from database import blog_categories_collection
+    categories = await blog_categories_collection.find().sort("name", 1).to_list(100)
+    return [serialize_doc(c) for c in categories]
+
+
+# XML Sitemap (Dynamic)
+@router.get("/sitemap.xml")
+async def generate_sitemap():
+    """Generate dynamic XML sitemap"""
+    from database import products_collection, blogs_collection, pages_collection, brands_collection
+    from fastapi.responses import Response
+    
+    # Base URL - get from environment or use default
+    base_url = "https://tracksplus.preview.emergentagent.com"
+    
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # Homepage
+    xml_content += f'''  <url>
+    <loc>{base_url}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>\n'''
+    
+    # Static pages
+    static_pages = [
+        ("/about", "monthly", "0.8"),
+        ("/contact", "monthly", "0.8"),
+        ("/products", "daily", "0.9"),
+        ("/brands", "weekly", "0.7"),
+    ]
+    
+    for url, freq, priority in static_pages:
+        xml_content += f'''  <url>
+    <loc>{base_url}{url}</loc>
+    <changefreq>{freq}</changefreq>
+    <priority>{priority}</priority>
+  </url>\n'''
+    
+    # Products
+    products = await products_collection.find({"in_stock": True}).to_list(1000)
+    for product in products:
+        product_id = str(product["_id"])
+        xml_content += f'''  <url>
+    <loc>{base_url}/product/{product_id}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>\n'''
+    
+    # Brands
+    brands = await brands_collection.find().to_list(100)
+    for brand in brands:
+        brand_name = brand["name"].lower().replace(" ", "-")
+        xml_content += f'''  <url>
+    <loc>{base_url}/brands/{brand_name}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n'''
+    
+    # Blogs
+    blogs = await blogs_collection.find({"is_published": True}).to_list(200)
+    for blog in blogs:
+        xml_content += f'''  <url>
+    <loc>{base_url}/blog/{blog["slug"]}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>\n'''
+    
+    # CMS Pages
+    cms_pages = await pages_collection.find({"is_published": True}).to_list(100)
+    for page in cms_pages:
+        if page["slug"] not in ["home"]:  # Skip home as it's already added
+            xml_content += f'''  <url>
+    <loc>{base_url}/{page["slug"]}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>\n'''
+    
+    xml_content += '</urlset>'
+    
+    return Response(content=xml_content, media_type="application/xml")
+
+
+# Robots.txt
+@router.get("/robots.txt")
+async def get_robots():
+    """Generate robots.txt"""
+    from fastapi.responses import Response
+    
+    base_url = "https://tracksplus.preview.emergentagent.com"
+    
+    robots_content = f"""User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/admin/
+
+# Disallow search parameters to prevent duplicate content
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+
+# Sitemap
+Sitemap: {base_url}/api/sitemap.xml
+"""
+    
+    return Response(content=robots_content, media_type="text/plain")
+
     
     return serialize_doc(page)
 
