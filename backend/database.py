@@ -47,6 +47,7 @@ async def init_db():
     await admin_users_collection.create_index("email", unique=True)
     
     await pages_collection.create_index("slug", unique=True)
+    await sections_collection.create_index([("page", 1), ("order", 1)])
     await redirects_collection.create_index("from_url", unique=True)
     await reviews_collection.create_index("product_id")
     await faqs_collection.create_index("category")
