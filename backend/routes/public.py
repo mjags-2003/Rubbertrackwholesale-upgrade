@@ -460,3 +460,23 @@ Sitemap: {base_url}/api/sitemap.xml
     return serialize_doc(page)
 
 
+
+
+# ============= SECTION ROUTES =============
+
+@router.get("/sections")
+async def get_public_sections(page: Optional[str] = "home"):
+    """Get published sections for a page"""
+    sections = await sections_collection.find({
+        "page": page,
+        "is_published": True
+    }).sort("order", 1).to_list(length=None)
+    
+    def serialize_doc(doc):
+        if doc and "_id" in doc:
+            doc["id"] = str(doc["_id"])
+            del doc["_id"]
+        return doc
+    
+    return [serialize_doc(section) for section in sections]
+
