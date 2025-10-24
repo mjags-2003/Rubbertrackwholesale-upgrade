@@ -118,6 +118,98 @@ class Page(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+
+# Redirect Model (301 Management)
+class Redirect(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    from_url: str  # Old URL
+    to_url: str    # New URL
+    redirect_type: int = 301  # 301 permanent, 302 temporary
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+# Review Model
+class Review(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    product_id: str
+    customer_name: str
+    customer_email: Optional[EmailStr] = None
+    rating: int = Field(ge=1, le=5)  # 1-5 stars
+    title: str
+    comment: str
+    is_verified: bool = False
+    is_approved: bool = False
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+# FAQ Model
+class FAQ(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    question: str
+    answer: str
+    category: Optional[str] = "General"
+    product_id: Optional[str] = None  # Link to specific product
+    order: int = 0  # Display order
+    is_published: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+# Blog Category Model
+class BlogCategory(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    name: str
+    slug: str
+    description: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+# Blog Model
+class Blog(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    title: str
+    slug: str
+    content: str  # Rich text HTML
+    excerpt: Optional[str] = None
+    featured_image: Optional[str] = None
+    category_id: Optional[str] = None
+    author: str = "Admin"
+    tags: Optional[List[str]] = []
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+    meta_keywords: Optional[List[str]] = []
+    is_published: bool = False
+    published_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Order Model
 class OrderItem(BaseModel):
     product_id: str
