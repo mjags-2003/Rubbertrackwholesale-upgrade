@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, Tag, FolderOpen, ShoppingCart, Users, MessageSquare, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, FolderOpen, ShoppingCart, Users, MessageSquare, LogOut, FileText } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
 const AdminLayout = () => {
@@ -17,6 +17,7 @@ const AdminLayout = () => {
     { path: '/admin/products', label: 'Products', icon: Package },
     { path: '/admin/brands', label: 'Brands', icon: Tag },
     { path: '/admin/categories', label: 'Categories', icon: FolderOpen },
+    { path: '/admin/pages', label: 'Pages (CMS)', icon: FileText },
     { path: '/admin/orders', label: 'Orders', icon: ShoppingCart },
     { path: '/admin/customers', label: 'Customers', icon: Users },
     { path: '/admin/messages', label: 'Messages', icon: MessageSquare },
