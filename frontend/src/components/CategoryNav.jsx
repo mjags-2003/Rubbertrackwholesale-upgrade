@@ -140,7 +140,7 @@ const CategoryNav = () => {
                     to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rubber-tracks`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
-                    <Package className="h-4 w-4" />
+                    <Boxes className="h-4 w-4" />
                     Rubber Tracks
                   </Link>
                   <Link 
@@ -154,14 +154,14 @@ const CategoryNav = () => {
                     to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#idlers`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
-                    <Circle className="h-4 w-4" />
+                    <Disc3 className="h-4 w-4" />
                     Idlers
                   </Link>
                   <Link 
                     to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rollers`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
-                    <Wrench className="h-4 w-4" />
+                    <Circle className="h-4 w-4" />
                     Rollers
                   </Link>
                 </div>
