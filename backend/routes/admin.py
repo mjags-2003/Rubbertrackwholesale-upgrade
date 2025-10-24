@@ -6,7 +6,8 @@ import pandas as pd
 import io
 from models import (
     Product, Brand, Category, Order, Customer, 
-    AdminUser, ContactMessage, Page
+    AdminUser, ContactMessage, Page, Redirect, Review, FAQ,
+    BlogCategory, Blog
 )
 from database import (
     products_collection, brands_collection, categories_collection,
