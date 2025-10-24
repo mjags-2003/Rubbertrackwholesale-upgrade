@@ -7,6 +7,7 @@ import { machineModels, excavatorModels } from '../data/machineModels';
 const CategoryNav = () => {
   const [selectedCategory, setSelectedCategory] = useState('Track Loaders');
   const [selectedBrand, setSelectedBrand] = useState('Bobcat');
+  const [selectedModel, setSelectedModel] = useState('');
 
   const categories = [
     { id: 'track-loaders', name: 'Track Loaders', icon: '🚜' },
