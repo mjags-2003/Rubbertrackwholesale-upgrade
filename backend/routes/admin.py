@@ -277,6 +277,193 @@ async def update_category(category_id: str, category: Category, current_user = D
     category.slug = create_slug(category.name)
     
     category_dict = category.dict(by_alias=True, exclude={"id"})
+
+
+# Bulk Import Products
+@router.post("/products/import")
+async def import_products(file: UploadFile = File(...), current_user = Depends(get_current_user)):
+    """Bulk import products from CSV or Excel file"""
+    
+    # Validate file type
+    if not (file.filename.endswith('.csv') or file.filename.endswith('.xlsx') or file.filename.endswith('.xls')):
+        raise HTTPException(status_code=400, detail="File must be CSV or Excel format")
+    
+    try:
+        # Read file content
+        contents = await file.read()
+        
+        # Parse based on file type
+        if file.filename.endswith('.csv'):
+            df = pd.read_csv(io.BytesIO(contents))
+        else:
+            df = pd.read_excel(io.BytesIO(contents))
+        
+        # Column mapping from spreadsheet format to our database format
+        column_mapping = {
+            'comp_name': 'brand',
+            'machine_model': 'title',  # We'll combine with other fields
+            'track_size': 'size',
+            'Price': 'price',
+            'eng_description': 'description',
+            'title_h1': 'seo_title',
+            'sub_title_h2': 'title',  # Use as main title
+            'page_title': 'seo_title',
+            'eng_metakeyword': 'seo_keywords',
+            'eng_meta_desc': 'seo_description',
+            'shown_main_listin': 'in_stock'
+        }
+        
+        # Rename columns to match our format
+        df = df.rename(columns=column_mapping)
+        
+        success_count = 0
+        error_count = 0
+        errors = []
+        
+        for index, row in df.iterrows():
+            try:
+                # Generate SKU if not provided
+                sku = f"RT-{row.get('size', 'UNKNOWN').replace('x', '-')}-{index}"
+                
+                # Parse price (remove currency symbols if present)
+                price_str = str(row.get('price', '0')).replace('$', '').replace(',', '').strip()
+                try:
+                    price = float(price_str)
+                except:
+                    price = 0.0
+                
+                # Parse in_stock field
+                in_stock_val = str(row.get('in_stock', 'Yes')).strip().lower()
+                in_stock = in_stock_val in ['yes', 'true', '1', 'y']
+                
+                # Parse keywords (comma-separated or convert to list)
+                keywords_str = str(row.get('seo_keywords', '')).strip()
+                seo_keywords = [k.strip() for k in keywords_str.split(',') if k.strip()] if keywords_str else []
+                
+                # Create product title
+                brand = str(row.get('brand', 'Universal')).strip()
+                machine_model = str(row.get('machine_model', '')).strip() if pd.notna(row.get('machine_model')) else ''
+                size = str(row.get('size', '')).strip()
+                
+                if machine_model:
+                    title = f"{brand} {machine_model} Rubber Track {size}"
+                else:
+                    title = str(row.get('title', f"{brand} Rubber Track {size}")).strip()
+                
+                # Check if brand exists, if not use "Universal"
+                existing_brand = await brands_collection.find_one({"name": brand})
+                if not existing_brand:
+                    brand = "Universal"
+                
+                # Create product object
+                product_data = {
+                    "sku": sku,
+                    "title": title,
+                    "description": str(row.get('description', f'Premium rubber track for {brand}')).strip(),
+                    "price": price,
+                    "brand": brand,
+                    "category": "Rubber Tracks",  # Default category
+                    "size": size,
+                    "part_number": str(row.get('part_number', sku)).strip() if 'part_number' in row else sku,
+                    "images": [],  # Can be added later
+                    "in_stock": in_stock,
+                    "stock_quantity": 10 if in_stock else 0,
+                    "specifications": {
+                        "machine_model": machine_model,
+                        "warranty": "1 Year"
+                    },
+                    "seo_title": str(row.get('seo_title', title + ' | Rubber Track Wholesale')).strip(),
+                    "seo_description": str(row.get('seo_description', f'Buy {title} at wholesale prices. Free shipping available.')).strip(),
+                    "seo_keywords": seo_keywords,
+                    "alt_tags": [f"{title} - rubber track"],
+                    "created_at": datetime.utcnow(),
+                    "updated_at": datetime.utcnow()
+                }
+                
+                # Generate schema markup
+                product_data["schema_markup"] = {
+                    "@context": "https://schema.org/",
+                    "@type": "Product",
+                    "name": title,
+                    "description": product_data["description"],
+                    "sku": sku,
+                    "brand": {
+                        "@type": "Brand",
+                        "name": brand
+                    },
+                    "offers": {
+                        "@type": "Offer",
+                        "url": f"https://rubbertrackwholesale.com/product/{sku}",
+                        "priceCurrency": "USD",
+                        "price": str(price),
+                        "availability": "https://schema.org/InStock" if in_stock else "https://schema.org/OutOfStock"
+                    }
+                }
+                
+                # Check if product with same SKU exists
+                existing = await products_collection.find_one({"sku": sku})
+                if existing:
+                    # Update existing product
+                    await products_collection.update_one(
+                        {"sku": sku},
+                        {"$set": product_data}
+                    )
+                else:
+                    # Insert new product
+                    await products_collection.insert_one(product_data)
+                
+                success_count += 1
+                
+            except Exception as e:
+                error_count += 1
+                errors.append(f"Row {index + 2}: {str(e)}")
+        
+        return {
+            "success": True,
+            "message": f"Import completed. {success_count} products imported/updated, {error_count} errors",
+            "success_count": success_count,
+            "error_count": error_count,
+            "errors": errors[:10]  # Return first 10 errors only
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to process file: {str(e)}")
+
+
+# Download Import Template
+@router.get("/products/import-template")
+async def download_import_template(current_user = Depends(get_current_user)):
+    """Download a CSV template for bulk import"""
+    
+    template_data = {
+        'comp_name': ['Bobcat', 'Kubota', 'Caterpillar'],
+        'machine_model': ['T190', 'SVL95', '247B MTL'],
+        'track_size': ['450x86x56', '400x72x74', '320x86x52'],
+        'Price': [1299.99, 1580.00, 1340.00],
+        'eng_description': [
+            'Premium rubber track for Bobcat T190 compact track loader',
+            'High-performance rubber track designed for Kubota SVL95',
+            'OEM quality rubber track for Caterpillar 247B Multi Terrain Loader'
+        ],
+        'title_h1': ['Bobcat T190 Rubber Track', 'Kubota SVL95 Rubber Track', 'Cat 247B MTL Rubber Track'],
+        'sub_title_h2': ['Premium Quality', 'OEM Specifications', 'Superior Performance'],
+        'page_title': ['Bobcat T190 Rubber Track | Wholesale', 'Kubota SVL95 Track | Best Price', 'Cat 247B Track | Free Shipping'],
+        'eng_metakeyword': ['bobcat tracks, t190, rubber tracks', 'kubota tracks, svl95', 'caterpillar tracks, 247b'],
+        'eng_meta_desc': ['Buy Bobcat T190 rubber tracks. Free shipping available.', 'Premium Kubota SVL95 tracks at wholesale prices.', 'Caterpillar 247B tracks in stock. Order now.'],
+        'shown_main_listin': ['Yes', 'Yes', 'Yes']
+    }
+    
+    df = pd.DataFrame(template_data)
+    
+    # Convert to CSV
+    csv_buffer = io.StringIO()
+    df.to_csv(csv_buffer, index=False)
+    
+    return {
+        "filename": "product_import_template.csv",
+        "content": csv_buffer.getvalue()
+    }
+
     result = await categories_collection.update_one(
         {"_id": ObjectId(category_id)},
         {"$set": category_dict}
