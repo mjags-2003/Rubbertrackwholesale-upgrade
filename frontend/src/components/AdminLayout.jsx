@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, Tag, FolderOpen, ShoppingCart, Users, MessageSquare, LogOut } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { Button } from '../components/ui/button';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
