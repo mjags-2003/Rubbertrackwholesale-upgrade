@@ -444,30 +444,38 @@ async def import_products(file: UploadFile = File(...), current_user = Depends(g
                 if not existing_brand:
                     brand = "Universal"
                 
-                # Create product object
+                # Create product object (common for both formats)
                 product_data = {
                     "sku": sku,
                     "title": title,
-                    "description": str(row.get('description', f'Premium rubber track for {brand}')).strip(),
+                    "description": description if 'description' in locals() else str(row.get('description', f'Premium {category} for {brand}')).strip(),
                     "price": price,
                     "brand": brand,
-                    "category": "Rubber Tracks",  # Default category
-                    "size": size,
-                    "part_number": str(row.get('part_number', sku)).strip() if 'part_number' in row else sku,
-                    "images": [],  # Can be added later
+                    "category": category,
+                    "size": size if 'size' in locals() else "N/A",
+                    "part_number": part_number,
+                    "images": [],
                     "in_stock": in_stock,
                     "stock_quantity": 10 if in_stock else 0,
                     "specifications": {
-                        "machine_model": machine_model,
-                        "warranty": "1 Year"
+                        "machine_model": machine_model if 'machine_model' in locals() else "",
+                        "warranty": "1 Year" if category == "Rubber Tracks" else "6 Months"
                     },
-                    "seo_title": str(row.get('seo_title', title + ' | Rubber Track Wholesale')).strip(),
-                    "seo_description": str(row.get('seo_description', f'Buy {title} at wholesale prices. Free shipping available.')).strip(),
+                    "seo_title": str(row.get('seo_title', title + ' | Rubber Track Wholesale')).strip() if 'seo_title' in row else title + ' | Rubber Track Wholesale',
+                    "seo_description": str(row.get('seo_description', f'Buy {title} at wholesale prices. Free shipping available.')).strip() if 'seo_description' in row else f'Buy {title} at wholesale prices. Free shipping available.',
                     "seo_keywords": seo_keywords,
-                    "alt_tags": [f"{title} - rubber track"],
+                    "alt_tags": [f"{title}"],
                     "created_at": datetime.utcnow(),
                     "updated_at": datetime.utcnow()
                 }
+                
+                # Add alternate part numbers if present
+                if 'alternate_parts' in row and pd.notna(row.get('alternate_parts')):
+                    product_data["specifications"]["alternate_parts"] = str(row['alternate_parts']).strip()
+                
+                # Add fits models if present
+                if 'fits_models' in row and pd.notna(row.get('fits_models')):
+                    product_data["specifications"]["fits_models"] = str(row['fits_models']).strip()
                 
                 # Generate schema markup
                 product_data["schema_markup"] = {
