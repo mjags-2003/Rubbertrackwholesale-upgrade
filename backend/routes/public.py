@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
-from models import Product, Brand, Category, ContactMessage
+from models import Product, Brand, Category, ContactMessage, Review, FAQ, Blog, BlogCategory
 from database import products_collection, brands_collection, categories_collection, contact_messages_collection
 from bson import ObjectId
 from datetime import datetime
