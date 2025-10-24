@@ -225,8 +225,10 @@ const ModelPage = () => {
           {Object.entries(products).map(([category, items]) => {
             if (items.length === 0) return null;
 
+            const anchorId = category.replace('_', '-'); // e.g., rubber_tracks -> rubber-tracks
+
             return (
-              <div key={category} className="mb-12">
+              <div key={category} id={anchorId} className="mb-12 scroll-mt-20">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="text-orange-500">
                     {categoryIcons[category]}
