@@ -42,6 +42,10 @@ function App() {
             <Route path="/about" element={<><Navbar /><AboutPage /><Footer /></>} />
             <Route path="/contact" element={<><Navbar /><ContactPage /><Footer /></>} />
             <Route path="/models/:brand/:model" element={<><Navbar /><ModelPage /><Footer /></>} />
+            <Route path="/faqs" element={<><Navbar /><FAQPage /><Footer /></>} />
+            <Route path="/blog" element={<><Navbar /><BlogListPage /><Footer /></>} />
+            <Route path="/blog/:slug" element={<><Navbar /><BlogDetailPage /><Footer /></>} />
+            <Route path="*" element={<><Navbar /><NotFoundPage /><Footer /></>} />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
