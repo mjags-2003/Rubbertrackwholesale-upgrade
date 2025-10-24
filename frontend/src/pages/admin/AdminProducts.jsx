@@ -555,6 +555,7 @@ const AdminProducts = () => {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Search */}
