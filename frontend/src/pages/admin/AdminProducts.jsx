@@ -521,6 +521,22 @@ const AdminProducts = () => {
                 </div>
 
                 <div>
+                  <Label>Compatible Machine Models (comma separated)</Label>
+                  <Input
+                    value={formData.machine_models.join(', ')}
+                    onChange={(e) => {
+                      const models = e.target.value.split(',').map(m => m.trim()).filter(m => m);
+                      setFormData({ ...formData, machine_models: models });
+                    }}
+                    className="bg-slate-800 border-slate-700"
+                    placeholder="e.g., T750, T770, T870"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Enter machine models this part fits (improves SEO and helps customers find parts)
+                  </p>
+                </div>
+
+                <div>
                   <Label>Image Alt Tags</Label>
                   {formData.alt_tags.map((tag, index) => (
                     <Input
