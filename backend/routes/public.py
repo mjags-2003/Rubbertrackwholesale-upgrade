@@ -93,7 +93,10 @@ async def advanced_search(
     query: str,
     limit: int = Query(default=20, le=50)
 ):
-    """Advanced search by size, part number, or any field"""
+    """Advanced search by size, part number, machine model, or any field"""
+    # Normalize query (remove spaces, lowercase for size matching)
+    query_normalized = query.replace(" ", "").lower()
+    
     search_query = {
         "$or": [
             {"title": {"$regex": query, "$options": "i"}},
@@ -101,7 +104,15 @@ async def advanced_search(
             {"part_number": {"$regex": query, "$options": "i"}},
             {"size": {"$regex": query, "$options": "i"}},
             {"brand": {"$regex": query, "$options": "i"}},
-            {"description": {"$regex": query, "$options": "i"}}
+            {"description": {"$regex": query, "$options": "i"}},
+            # Normalized size search for formats like 400x86x52, 300x52.5x74
+            {"size": {"$regex": query_normalized, "$options": "i"}},
+            # Machine model search in specifications
+            {"specifications.machine_model": {"$regex": query, "$options": "i"}},
+            # Compatible models search
+            {"specifications.fits_models": {"$regex": query, "$options": "i"}},
+            # Alternate part numbers
+            {"specifications.alternate_parts": {"$regex": query, "$options": "i"}}
         ]
     }
     
