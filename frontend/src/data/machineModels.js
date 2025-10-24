@@ -69,7 +69,7 @@ export const machineModels = {
   ],
   'Kubota': [
     'SCL1000', 'SCL1000R', 'SVL65', 'SVL65-2', 'SVL75', 'SVL75-2', 'SVL75-2C', 'SVL75-3', 
-    'SVL90', 'SVL90-2', 'SVL95', 'SVL95-2', 'SVL95-2S', 'SVL95-3', 'SVL97', 'SVL97-2', 'SVL97-2C'
+    'SVL90', 'SVL90-2', 'SVL95', 'SVL95-2', 'SVL95-2S', 'SVL95-3', 'SVL97', 'SVL97-2', 'SVL97-2C', 'SVL97-3'
   ],
   'Mustang': [
     'MTL16', 'MTL20', 'MTL25', 'MTL316', 'MTL320', 'MTL325', '1500R', '1700RT', '1750R', 
