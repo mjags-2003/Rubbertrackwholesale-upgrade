@@ -59,6 +59,7 @@ function App() {
               <Route path="brands" element={<AdminBrands />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="pages" element={<AdminPages />} />
+              <Route path="sections" element={<AdminSections />} />
               <Route path="redirects" element={<AdminRedirects />} />
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="faqs" element={<AdminFAQs />} />
