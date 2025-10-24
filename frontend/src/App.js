@@ -50,9 +50,8 @@ function App() {
             <Route path="/faqs" element={<><Navbar /><FAQPage /><Footer /></>} />
             <Route path="/blog" element={<><Navbar /><BlogListPage /><Footer /></>} />
             <Route path="/blog/:slug" element={<><Navbar /><BlogDetailPage /><Footer /></>} />
-            <Route path="*" element={<><Navbar /><NotFoundPage /><Footer /></>} />
             
-            {/* Admin Routes */}
+            {/* Admin Routes - MUST BE BEFORE WILDCARD */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="dashboard" element={<AdminDashboard />} />
@@ -71,6 +70,9 @@ function App() {
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="messages" element={<AdminMessages />} />
             </Route>
+
+            {/* 404 - MUST BE LAST */}
+            <Route path="*" element={<><Navbar /><NotFoundPage /><Footer /></>} />
           </Routes>
           <Toaster />
         </BrowserRouter>
