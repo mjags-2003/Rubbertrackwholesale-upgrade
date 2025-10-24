@@ -59,6 +59,7 @@ class Product(BaseModel):
     in_stock: bool = True
     stock_quantity: int = 0
     specifications: Dict[str, Any] = {}
+    machine_models: Optional[List[str]] = []  # e.g., ["T750", "T770", "T870"]
     
     # SEO Fields
     seo_title: Optional[str] = None
@@ -67,6 +68,7 @@ class Product(BaseModel):
     meta_tags: Optional[Dict[str, str]] = {}
     schema_markup: Optional[Dict[str, Any]] = {}
     alt_tags: Optional[List[str]] = []
+    canonical_url: Optional[str] = None
     
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
