@@ -183,6 +183,77 @@ const AdminProducts = () => {
     });
   };
 
+  // Bulk Import Functions
+  const handleDownloadTemplate = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await axios.get(`${API}/admin/products/bulk-import/template`, {
+        params: { product_type: importType },
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${importType}_template.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+
+      toast({ title: "Success", description: "Template downloaded successfully" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to download template",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleBulkImport = async () => {
+    if (!selectedFile) {
+      toast({
+        title: "Error",
+        description: "Please select a file to import",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('product_type', importType);
+
+      const response = await axios.post(`${API}/admin/products/bulk-import`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      toast({
+        title: "Success",
+        description: `Imported ${response.data.imported_count} products successfully`
+      });
+
+      setBulkImportDialog(false);
+      setSelectedFile(null);
+      fetchProducts();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Failed to import products",
+        variant: "destructive"
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const filteredProducts = products.filter(product =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
