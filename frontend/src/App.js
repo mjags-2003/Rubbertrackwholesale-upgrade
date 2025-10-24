@@ -41,6 +41,7 @@ function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="brands" element={<AdminBrands />} />
               <Route path="categories" element={<AdminCategories />} />
+              <Route path="pages" element={<AdminPages />} />
             </Route>
           </Routes>
           <Toaster />
