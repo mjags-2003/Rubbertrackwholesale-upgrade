@@ -52,8 +52,10 @@ function App() {
             <Route path="/blog" element={<><Navbar /><BlogListPage /><Footer /></>} />
             <Route path="/blog/:slug" element={<><Navbar /><BlogDetailPage /><Footer /></>} />
             
-            {/* Admin Routes - MUST BE BEFORE WILDCARD */}
+            {/* Admin Login - Standalone Route */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
+            
+            {/* Admin Panel Routes */}
             <Route path="/admin/*" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
