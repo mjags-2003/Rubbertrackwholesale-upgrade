@@ -164,11 +164,11 @@ const ModelPage = () => {
             </p>
             <div className="flex gap-4 text-slate-400 mb-8">
               <div className="flex items-center gap-2">
-                <Package className="h-5 w-5 text-orange-500" />
+                <Boxes className="h-5 w-5 text-orange-500" />
                 <span>{total_products} Products Available</span>
               </div>
               <div className="flex items-center gap-2">
-                <Circle className="h-3 w-3 text-green-500" />
+                <Circle className="h-3 w-3 text-green-500 fill-current" />
                 <span>In Stock & Ready to Ship</span>
               </div>
             </div>
