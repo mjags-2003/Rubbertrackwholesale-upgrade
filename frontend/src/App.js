@@ -34,6 +34,7 @@ import AdminMessages from './pages/admin/AdminMessages';
 import { Toaster } from './components/ui/toaster';
 
 function App() {
+  // Admin routes fixed - React Router v7 compatibility
   return (
     <HelmetProvider>
       <div className="App">
