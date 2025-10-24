@@ -29,9 +29,6 @@ const AdminProducts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
-  const [importing, setImporting] = useState(false);
-  const [importFile, setImportFile] = useState(null);
   const [formData, setFormData] = useState({
     sku: '',
     title: '',
