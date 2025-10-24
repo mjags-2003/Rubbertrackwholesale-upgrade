@@ -499,10 +499,9 @@ const AdminProducts = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
 
-      {/* Import Products Dialog */}
-      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        {/* Import Products Dialog */}
+        <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
         <DialogContent className="bg-slate-900 border-slate-800 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>Bulk Import Products</DialogTitle>
