@@ -21,6 +21,7 @@ orders_collection = db.orders
 admin_users_collection = db.admin_users
 contact_messages_collection = db.contact_messages
 pages_collection = db.pages
+sections_collection = db.sections
 redirects_collection = db.redirects
 reviews_collection = db.reviews
 faqs_collection = db.faqs
