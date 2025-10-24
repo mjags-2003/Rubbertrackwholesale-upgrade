@@ -96,6 +96,28 @@ class Customer(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+
+# Page Model (CMS for managing site content)
+class Page(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    slug: str  # URL slug like 'home', 'about', 'contact'
+    title: str
+    content: str  # Rich text HTML content
+    page_type: str  # 'home', 'about', 'contact', 'custom'
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+    meta_keywords: Optional[List[str]] = []
+    sections: Optional[List[Dict[str, Any]]] = []  # For structured page sections
+    is_published: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Order Model
 class OrderItem(BaseModel):
     product_id: str
