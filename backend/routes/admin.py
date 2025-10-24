@@ -6,13 +6,13 @@ import pandas as pd
 import io
 from models import (
     Product, Brand, Category, Order, Customer, 
-    AdminUser, ContactMessage, Page, Redirect, Review, FAQ,
+    AdminUser, ContactMessage, Page, Section, Redirect, Review, FAQ,
     BlogCategory, Blog
 )
 from database import (
     products_collection, brands_collection, categories_collection,
     orders_collection, customers_collection, admin_users_collection,
-    contact_messages_collection
+    contact_messages_collection, sections_collection
 )
 from auth import (
     verify_password, get_password_hash, create_access_token,
