@@ -34,30 +34,6 @@ const AdminPages = () => {
     is_published: true
   });
 
-  // Quill modules with video and link support
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'align': [] }],
-      ['link', 'image', 'video'],
-      ['blockquote', 'code-block'],
-      ['clean']
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'color', 'background',
-    'list', 'bullet',
-    'align',
-    'link', 'image', 'video',
-    'blockquote', 'code-block'
-  ];
-
   useEffect(() => {
     fetchPages();
   }, []);
