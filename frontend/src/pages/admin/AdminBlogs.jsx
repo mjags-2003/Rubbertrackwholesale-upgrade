@@ -19,10 +19,6 @@ const AdminBlogs = () => {
   const [editingBlog, setEditingBlog] = useState(null);
   const [formData, setFormData] = useState({ title: '', slug: '', content: '', excerpt: '', featured_image: '', category_id: '', tags: '', meta_title: '', meta_description: '', meta_keywords: '', is_published: false });
 
-  const modules = {
-    toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image', 'video'], ['clean']]
-  };
-
   useEffect(() => { fetchBlogs(); fetchCategories(); }, []);
 
   const fetchBlogs = async () => {
