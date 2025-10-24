@@ -183,7 +183,7 @@ const ModelPage = () => {
                       href="#rubber-tracks"
                       className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                     >
-                      <Package className="h-4 w-4" />
+                      <Boxes className="h-4 w-4" />
                       Rubber Tracks ({products.rubber_tracks.length})
                     </a>
                   )}
@@ -201,7 +201,7 @@ const ModelPage = () => {
                       href="#idlers"
                       className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                     >
-                      <Circle className="h-4 w-4" />
+                      <Disc3 className="h-4 w-4" />
                       Idlers ({products.idlers.length})
                     </a>
                   )}
@@ -210,7 +210,7 @@ const ModelPage = () => {
                       href="#rollers"
                       className="bg-slate-800 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                     >
-                      <Wrench className="h-4 w-4" />
+                      <Circle className="h-4 w-4" />
                       Rollers ({products.rollers.length})
                     </a>
                   )}
