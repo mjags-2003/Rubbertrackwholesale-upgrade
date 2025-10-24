@@ -37,6 +37,14 @@ const CategoryNav = () => {
     }
   ];
 
+  // Icon mapping for category links
+  const categoryIconComponents = {
+    'Rubber Tracks': <Boxes className="h-4 w-4" />,
+    'Sprockets': <Cog className="h-4 w-4" />,
+    'Idlers': <Disc3 className="h-4 w-4" />,
+    'Rollers': <Circle className="h-4 w-4" />
+  };
+
   // Get all brands from both machine models and excavator models
   const trackLoaderBrands = Object.keys(machineModels).sort();
   const excavatorBrands = Object.keys(excavatorModels).sort();
