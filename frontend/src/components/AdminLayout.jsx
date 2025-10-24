@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, Tag, FolderOpen, ShoppingCart, Users, MessageSquare, LogOut, FileText, Repeat, Star, HelpCircle, FolderTree, BookOpen, Layout } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, FolderOpen, ShoppingCart, Users, MessageSquare, LogOut, FileText, Repeat, Star, HelpCircle, FolderTree, BookOpen, Layout, Settings } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
 const AdminLayout = () => {
