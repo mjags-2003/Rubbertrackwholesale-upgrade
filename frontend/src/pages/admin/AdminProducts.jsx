@@ -577,6 +577,7 @@ const AdminProducts = () => {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
 
       {/* Search */}
       <div className="mb-6">
