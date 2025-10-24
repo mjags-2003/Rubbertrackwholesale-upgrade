@@ -218,7 +218,6 @@ const AdminPages = () => {
                   content={formData.content}
                   onChange={(value) => setFormData({ ...formData, content: value })}
                 />
-                </div>
                 <p className="text-xs text-slate-500 mt-1">
                   Rich text editor with support for: headings, lists, links, images, YouTube videos, formatting
                 </p>
