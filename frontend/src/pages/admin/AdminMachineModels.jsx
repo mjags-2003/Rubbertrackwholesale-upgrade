@@ -62,6 +62,15 @@ const AdminMachineModels = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setModels(response.data);
+      
+      // Calculate brand counts
+      if (!selectedBrand) {
+        const counts = {};
+        response.data.forEach(model => {
+          counts[model.brand] = (counts[model.brand] || 0) + 1;
+        });
+        setBrandCounts(counts);
+      }
     } catch (error) {
       toast({
         title: "Error",
