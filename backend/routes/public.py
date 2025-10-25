@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional
-from models import Product, Brand, Category, ContactMessage, Review, FAQ, Blog, BlogCategory, Section
-from database import products_collection, brands_collection, categories_collection, contact_messages_collection, sections_collection
+from models import Product, Brand, Category, ContactMessage, Review, FAQ, Blog, BlogCategory, Section, MachineModel
+from database import products_collection, brands_collection, categories_collection, contact_messages_collection, sections_collection, machine_models_collection
 from bson import ObjectId
 from datetime import datetime
 import re
