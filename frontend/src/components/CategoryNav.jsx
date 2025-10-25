@@ -105,6 +105,18 @@ const CategoryNav = () => {
     return machineModels[selectedBrand] || [];
   };
 
+  if (loading) {
+    return (
+      <section className="py-8 bg-slate-900">
+        <div className="container mx-auto px-4">
+          <div className="text-center text-white py-12">
+            <p>Loading machine models...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-8 bg-slate-900">
       <div className="container mx-auto px-4">
