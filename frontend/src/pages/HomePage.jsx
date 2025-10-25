@@ -28,6 +28,15 @@ const HomePage = () => {
               Wholesale prices on top-quality rubber tracks and undercarriage parts for all major brands. Fast shipping from 7 warehouses nationwide.
             </p>
             
+            {/* Temporary Admin Access Button */}
+            <div className="mb-6">
+              <Link to="/admin/login">
+                <Button className="bg-red-600 hover:bg-red-700 text-white">
+                  🔒 Admin Access
+                </Button>
+              </Link>
+            </div>
+            
             {/* Search Bar */}
             <div className="bg-white rounded-lg p-2 flex gap-2 shadow-2xl">
               <Input
