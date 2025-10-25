@@ -79,9 +79,9 @@ async def seed_machine_models():
     for brand, models in TRACK_LOADER_MODELS.items():
         for model in models:
             doc = {
-                "id": str(uuid.uuid4()),
                 "brand": brand,
-                "model": model,
+                "model_name": model,
+                "full_name": f"{brand} {model}",
                 "equipment_type": "Track Loader",
                 "created_at": "2024-01-01T00:00:00Z",
                 "updated_at": "2024-01-01T00:00:00Z"
@@ -95,9 +95,9 @@ async def seed_machine_models():
     for brand, models in MINI_EXCAVATOR_MODELS.items():
         for model in models:
             doc = {
-                "id": str(uuid.uuid4()),
                 "brand": brand,
-                "model": model,
+                "model_name": model,
+                "full_name": f"{brand} {model}",
                 "equipment_type": "Mini Excavator",
                 "created_at": "2024-01-01T00:00:00Z",
                 "updated_at": "2024-01-01T00:00:00Z"
