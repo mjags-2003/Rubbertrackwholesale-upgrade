@@ -151,17 +151,32 @@ const AdminMachineModels = () => {
   };
 
   const handleBulkImport = async () => {
-    if (!window.confirm('This will import ALL machine models from machineModels.js. Existing models will be skipped. Continue?')) return;
+    if (!window.confirm('This will import ALL machine models from machineModels.js. This may take 5-10 minutes. Continue?')) return;
 
     setLoading(true);
+    toast({
+      title: "Import Started",
+      description: "Importing models... This may take several minutes. Please wait."
+    });
+
     try {
       const token = localStorage.getItem('admin_token');
       let imported = 0;
       let skipped = 0;
+      let totalModels = 0;
+      
+      // Count total models
+      for (const modelList of Object.values(machineModels)) {
+        totalModels += modelList.length;
+      }
+
+      let processed = 0;
 
       // Import models for each brand
       for (const [brand, modelList] of Object.entries(machineModels)) {
-        for (const modelName of modelList) {
+        // Process in batches of 10
+        for (let i = 0; i < modelList.length; i++) {
+          const modelName = modelList[i];
           try {
             await axios.post(`${API}/api/admin/machine-models`, {
               brand: brand,
@@ -176,11 +191,21 @@ const AdminMachineModels = () => {
               skipped++;
             }
           }
+          
+          processed++;
+          
+          // Show progress every 50 models
+          if (processed % 50 === 0) {
+            toast({
+              title: "Import Progress",
+              description: `Processed ${processed} of ${totalModels} models...`
+            });
+          }
         }
       }
 
       toast({
-        title: "Bulk Import Complete",
+        title: "Bulk Import Complete!",
         description: `Imported ${imported} models, skipped ${skipped} existing models`
       });
 
