@@ -39,7 +39,7 @@ function App() {
   return (
     <HelmetProvider>
       <div className="App">
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<><Navbar /><HomePage /><Footer /></>} />
