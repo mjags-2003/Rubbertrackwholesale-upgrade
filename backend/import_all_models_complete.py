@@ -31,7 +31,7 @@ track_loaders = {
     'Marooka': ['MST300VD', 'MST600VD', 'MST800VD', 'MST1000VD', 'MST1500VD', 'MST2000VD'],
     'Mustang': ['1750RT', '2050RT', '2054RT', '2056RT', '2086RT', '3700RT'],
     'New Holland': ['C185', 'C190', 'C227', 'C232', 'C238', 'L218', 'L220', 'L223', 'L225', 'L230'],
-    'SANY': ['SY16C', 'SY26U', 'SY35U', 'SY50U', 'SY55U', 'SY60U', 'SY75U'],
+    'SANY': ['SY16C', 'SY26U', 'SY50U', 'SY55U', 'SY60U', 'SY75U'],
     'Takeuchi': ['TL6R', 'TL8', 'TL10', 'TL12', 'TL12R2', 'TL230', 'TL240'],
     'Terex': ['PT-30', 'PT-50', 'PT-60', 'PT-70', 'PT-80', 'PT-100', 'PT-110'],
     'Terramac': ['RT6', 'RT9', 'RT14'],
