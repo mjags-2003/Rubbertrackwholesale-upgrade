@@ -21,6 +21,7 @@ const API = process.env.REACT_APP_BACKEND_URL || '';
 const AdminMachineModels = () => {
   const [models, setModels] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [brandCounts, setBrandCounts] = useState({});
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingModel, setEditingModel] = useState(null);
