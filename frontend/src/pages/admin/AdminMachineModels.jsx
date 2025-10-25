@@ -256,7 +256,7 @@ const AdminMachineModels = () => {
           </Button>
           <Button variant="outline" onClick={handleBulkImport} disabled={loading}>
             <Upload className="h-4 w-4 mr-2" />
-            Import from Code
+            {loading ? 'Importing... Please Wait' : 'Import from Code'}
           </Button>
           <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
             <DialogTrigger asChild>
