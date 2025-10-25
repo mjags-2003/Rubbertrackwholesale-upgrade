@@ -360,7 +360,7 @@ const AdminMachineModels = () => {
       {/* Filter by Brand */}
       <Card className="bg-slate-900 border-slate-800 mb-6">
         <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 mb-4">
             <Label className="text-white">Filter by Brand:</Label>
             <select
               value={selectedBrand}
@@ -376,6 +376,23 @@ const AdminMachineModels = () => {
               Showing {models.length} models
             </span>
           </div>
+          
+          {/* Brand Counts - Only show when viewing all brands */}
+          {!selectedBrand && Object.keys(brandCounts).length > 0 && (
+            <div className="border-t border-slate-700 pt-4">
+              <h4 className="text-sm font-semibold text-white mb-3">Models per Brand:</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 text-sm">
+                {Object.entries(brandCounts)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([brand, count]) => (
+                    <div key={brand} className="flex justify-between items-center bg-slate-800/50 px-3 py-1.5 rounded">
+                      <span className="text-slate-300">{brand}</span>
+                      <span className="text-orange-400 font-semibold ml-2">{count}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
