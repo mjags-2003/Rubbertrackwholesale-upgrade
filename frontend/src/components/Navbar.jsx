@@ -157,6 +157,13 @@ const Navbar = () => {
                 FAQs
               </Link>
               <Link
+                to="/admin/login"
+                className="block bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                🔒 Admin Login
+              </Link>
+              <Link
                 to="/about"
                 className="block text-slate-200 hover:text-orange-500 transition-colors py-2"
                 onClick={() => setMobileMenuOpen(false)}
