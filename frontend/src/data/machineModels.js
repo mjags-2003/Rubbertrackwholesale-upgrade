@@ -41,7 +41,7 @@ export const machineModels = {
   'Ditch Witch': [
     'SK650', 'SK750', 'SK755', 'SK800', 'SK850', 'SK1050', 'SK3000'
   ],
-  'GEHL': [
+  'Gehl': [
     'RT105', 'RT125', 'RT165', 'RT175', 'RT210', 'RT250', 'RT255', 'RT257', 'RT260', 'RT265', 
     'RT270', 'V180', 'V270', 'V330'
   ],
