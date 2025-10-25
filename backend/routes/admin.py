@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 import pandas as pd
 import io
