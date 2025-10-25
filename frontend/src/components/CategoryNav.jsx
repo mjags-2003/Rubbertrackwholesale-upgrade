@@ -1,13 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, Boxes, Cog, Disc3, Circle } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
-import { machineModels, excavatorModels } from '../data/machineModels';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const CategoryNav = () => {
   const [selectedCategory, setSelectedCategory] = useState('Track Loaders');
   const [selectedBrand, setSelectedBrand] = useState('Bobcat');
   const [selectedModel, setSelectedModel] = useState('');
+  const [machineModels, setMachineModels] = useState({});
+  const [excavatorModels, setExcavatorModels] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  // Fetch machine models from API
+  useEffect(() => {
+    const fetchMachineModels = async () => {
+      try {
+        const response = await axios.get(`${API}/api/machine-models`);
+        const models = response.data;
+        
+        // Group by equipment type and brand
+        const trackLoaders = {};
+        const miniExcavators = {};
+        
+        models.forEach(model => {
+          if (model.equipment_type === 'Track Loader') {
+            if (!trackLoaders[model.brand]) {
+              trackLoaders[model.brand] = [];
+            }
+            trackLoaders[model.brand].push(model.model_name);
+          } else if (model.equipment_type === 'Mini Excavator') {
+            if (!miniExcavators[model.brand]) {
+              miniExcavators[model.brand] = [];
+            }
+            miniExcavators[model.brand].push(model.model_name);
+          }
+        });
+        
+        setMachineModels(trackLoaders);
+        setExcavatorModels(miniExcavators);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch machine models:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchMachineModels();
+  }, []);
 
   const categories = [
     { id: 'track-loaders', name: 'Track Loaders', icon: '🚜' },
