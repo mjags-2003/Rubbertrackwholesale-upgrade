@@ -33,6 +33,7 @@ class MachineModel(BaseModel):
     brand: str  # Brand name (e.g., "Bobcat", "John Deere")
     model_name: str  # Model name (e.g., "T190", "317G")
     full_name: Optional[str] = None  # Full name (e.g., "Bobcat T190")
+    equipment_type: Optional[str] = "Track Loader"  # "Track Loader" or "Mini Excavator"
     description: Optional[str] = None
     product_image: Optional[str] = None  # URL to model image
     created_at: datetime = Field(default_factory=datetime.utcnow)
