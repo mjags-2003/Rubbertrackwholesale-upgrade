@@ -480,3 +480,36 @@ async def get_public_sections(page: Optional[str] = "home"):
     
     return [serialize_doc(section) for section in sections]
 
+
+
+# ============= MACHINE MODEL ROUTES (PUBLIC) =============
+
+@router.get("/machine-models")
+async def get_all_machine_models(
+    brand: Optional[str] = None,
+    equipment_type: Optional[str] = None
+):
+    """Get all machine models (public endpoint) - optionally filtered by brand or equipment_type"""
+    query = {}
+    if brand:
+        query["brand"] = brand
+    if equipment_type:
+        query["equipment_type"] = equipment_type
+    
+    models = await machine_models_collection.find(query).sort("brand", 1).sort("model_name", 1).to_list(length=None)
+    return [serialize_doc(model) for model in models]
+
+
+@router.get("/machine-models/brands")
+async def get_machine_model_brands():
+    """Get all unique brands that have machine models"""
+    brands = await machine_models_collection.distinct("brand")
+    return sorted(brands)
+
+
+@router.get("/machine-models/equipment-types")
+async def get_equipment_types():
+    """Get all unique equipment types"""
+    types = await machine_models_collection.distinct("equipment_type")
+    return sorted(types)
+
