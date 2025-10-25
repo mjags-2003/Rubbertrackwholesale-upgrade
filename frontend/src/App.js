@@ -79,7 +79,7 @@ function App() {
             <Route path="*" element={<><Navbar /><NotFoundPage /><Footer /></>} />
           </Routes>
           <Toaster />
-        </BrowserRouter>
+        </HashRouter>
       </div>
     </HelmetProvider>
   );
