@@ -151,6 +151,8 @@ const AdminMachineModels = () => {
   };
 
   const handleBulkImport = async () => {
+    console.log("Import button clicked!");
+    alert("Import starting - this will take 5-10 minutes. Please be patient!");
     if (!window.confirm('This will import ALL machine models from machineModels.js. This may take 5-10 minutes. Continue?')) return;
 
     setLoading(true);
