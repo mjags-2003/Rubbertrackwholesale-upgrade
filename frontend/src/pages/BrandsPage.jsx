@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
-import { brands } from '../mockData';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const BrandsPage = () => {
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await axios.get(`${API}/api/brands`);
+        setBrands(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch brands:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchBrands();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <p className="text-white text-xl">Loading brands...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950">
       {/* Header */}
