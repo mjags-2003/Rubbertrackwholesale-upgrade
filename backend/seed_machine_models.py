@@ -68,6 +68,13 @@ MINI_EXCAVATOR_MODELS = {
 async def seed_machine_models():
     """Seed all machine models into database"""
     
+    # Drop the unique index if it exists
+    try:
+        await db.machine_models.drop_index("brand_1_model_name_1")
+        print("🗑️  Dropped unique index on brand_model_name")
+    except:
+        pass
+    
     # Clear existing machine models
     await db.machine_models.delete_many({})
     print("🗑️  Cleared existing machine models")
