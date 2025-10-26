@@ -191,7 +191,22 @@ const CategoryNav = () => {
             {/* Part Type Selection */}
             <div className="mb-6">
               <label className="block text-slate-300 mb-2 font-semibold">Search For (Optional)</label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Rubber Tracks */}
+                <div className="bg-slate-700 rounded-lg p-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="partType"
+                      value="rubber_tracks"
+                      checked={selectedPartType === 'rubber_tracks'}
+                      onChange={(e) => setSelectedPartType(e.target.value)}
+                      className="w-4 h-4 text-orange-500"
+                    />
+                    <span className="text-white font-semibold">Rubber Tracks</span>
+                  </label>
+                </div>
+
                 {/* Rollers */}
                 <div className="bg-slate-700 rounded-lg p-4">
                   <label className="flex items-center gap-2 mb-3 cursor-pointer">
@@ -323,8 +338,9 @@ const CategoryNav = () => {
               )}
             </div>
 
-            {/* Track Size - Optional */}
-            <div className="mb-6">
+            {/* Track Size - Only shown when Rubber Tracks is selected */}
+            {selectedPartType === 'rubber_tracks' && (
+              <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-slate-300 font-semibold">Track Size (Optional)</label>
                 <div className="flex gap-1 text-xs">
