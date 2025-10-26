@@ -429,8 +429,8 @@ const ProductsPage = () => {
               </div>
             )}
 
-            {/* Regular Products */}
-            {filteredProducts.length > 0 && (
+            {/* Regular Products - Only show when NOT doing specific equipment search */}
+            {filteredProducts.length > 0 && !selectedModel && (
               <>
                 {partNumbers.length > 0 && (
                   <h2 className="text-2xl font-bold text-white mb-4 mt-8">
