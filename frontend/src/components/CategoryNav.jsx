@@ -149,7 +149,7 @@ const CategoryNav = () => {
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold text-white mb-6 text-center">Find Parts By Equipment</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Equipment Type */}
               <div>
                 <label className="block text-slate-300 mb-2 font-semibold">Equipment Type</label>
@@ -189,6 +189,24 @@ const CategoryNav = () => {
                   {getCurrentModels().map(model => (
                     <option key={model} value={model}>{model}</option>
                   ))}
+                </select>
+              </div>
+
+              {/* Track Size */}
+              <div>
+                <label className="block text-slate-300 mb-2 font-semibold">Track Size (Optional)</label>
+                <select
+                  value={selectedTrackSize}
+                  onChange={(e) => setSelectedTrackSize(e.target.value)}
+                  className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-3 focus:outline-none focus:border-orange-500"
+                >
+                  <option value="">All Sizes</option>
+                  {trackSizes.slice(0, 50).map(ts => (
+                    <option key={ts.id} value={ts.size}>{ts.size}</option>
+                  ))}
+                  {trackSizes.length > 50 && (
+                    <option disabled>... and {trackSizes.length - 50} more</option>
+                  )}
                 </select>
               </div>
             </div>
