@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the brand alias mapping feature to ensure 'Caterpillar' search finds 'CAT' machines"
+user_problem_statement: "Comprehensive testing of the main hero search bar to verify it works as advertised in the help text with specific search scenarios: track size search (300x55x82), machine brand search (Bobcat), machine brand + model search (Cat 299d), part number search (RT-300-82), and verify help text display"
 
 frontend:
   - task: "Homepage Main Search Bar Functionality"
