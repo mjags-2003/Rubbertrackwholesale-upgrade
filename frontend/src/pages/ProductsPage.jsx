@@ -21,29 +21,32 @@ const ProductsPage = () => {
   const [partNumbers, setPartNumbers] = useState([]);
   const [loadingParts, setLoadingParts] = useState(false);
 
-  // Fetch part numbers when search term OR category changes
+  // Fetch part numbers when search term OR category changes OR brand changes
   useEffect(() => {
-    if (searchTerm) {
-      fetchPartNumbers(searchTerm, null);
-    } else if (selectedCategory !== 'all' && (selectedCategory === 'Rollers' || selectedCategory === 'Sprockets' || selectedCategory === 'Idlers')) {
-      // Fetch by part type when category is selected
-      const partType = selectedCategory.toLowerCase().slice(0, -1); // Remove 's' from end
-      fetchPartNumbers(null, partType);
+    // Always fetch part numbers when there's any filter
+    if (searchTerm || selectedCategory !== 'all' || selectedBrand !== 'all') {
+      let partType = null;
+      if (selectedCategory === 'Rollers' || selectedCategory === 'Sprockets' || selectedCategory === 'Idlers') {
+        partType = selectedCategory.toLowerCase().slice(0, -1); // Remove 's' from end
+      }
+      
+      let brand = selectedBrand !== 'all' ? selectedBrand : null;
+      fetchPartNumbers(searchTerm || null, partType, brand);
     } else {
       setPartNumbers([]);
     }
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, selectedBrand]);
 
-  const fetchPartNumbers = async (query, partType) => {
+  const fetchPartNumbers = async (query, partType, brand) => {
     try {
       setLoadingParts(true);
       let url = `${API}/api/part-numbers/search?`;
-      if (query) {
-        url += `query=${encodeURIComponent(query)}`;
-      }
-      if (partType) {
-        url += `part_type=${partType}`;
-      }
+      const params = [];
+      if (query) params.push(`query=${encodeURIComponent(query)}`);
+      if (partType) params.push(`part_type=${partType}`);
+      if (brand) params.push(`brand=${encodeURIComponent(brand)}`);
+      
+      url += params.join('&');
       const response = await axios.get(url);
       setPartNumbers(response.data);
     } catch (error) {
