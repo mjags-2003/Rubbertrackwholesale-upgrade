@@ -292,13 +292,13 @@ const ProductsPage = () => {
                                 {part.part_subtype}
                               </span>
                             )}
-                            {part.price && (
+                            {part.is_in_stock && (
                               <span className="ml-2 px-2 py-1 rounded text-xs bg-green-600 text-white">
                                 In Stock
                               </span>
                             )}
                           </div>
-                          {part.price && (
+                          {part.is_in_stock && part.price && (
                             <span className="text-orange-500 font-bold text-lg">
                               ${part.price.toFixed(2)}
                             </span>
