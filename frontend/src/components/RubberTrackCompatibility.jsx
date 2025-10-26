@@ -102,7 +102,7 @@ const RubberTrackCompatibility = () => {
     };
   };
 
-  // Filter machines by search - more intuitive partial matching
+  // Filter machines by search - flexible matching for brand + model searches
   const filteredMachines = searchQuery
     ? compatibility.filter(comp => {
         const searchLower = searchQuery.toLowerCase().trim();
@@ -110,22 +110,51 @@ const RubberTrackCompatibility = () => {
         const modelLower = comp.model.toLowerCase();
         const combined = `${makeLower} ${modelLower}`;
         
-        // Split search into words and check if all words match
+        // Split search into words
         const searchWords = searchLower.split(/\s+/);
         
-        // Match if ALL search words are found in the combined make+model string
-        // This allows "cat 299d" to match "CAT 299D"
-        const allWordsMatch = searchWords.every(word => combined.includes(word));
+        // If single word, search in make, model, or combined
+        if (searchWords.length === 1) {
+          const word = searchWords[0];
+          return makeLower.includes(word) || 
+                 modelLower.includes(word) || 
+                 combined.includes(word);
+        }
         
-        if (allWordsMatch) return true;
+        // For multi-word searches (like "kubota svl75" or "cat 299d")
+        // Try different matching strategies:
         
-        // Also try with spaces/dashes removed for exact model numbers
+        // Strategy 1: All words found in combined string (original logic)
+        const allWordsInCombined = searchWords.every(word => combined.includes(word));
+        if (allWordsInCombined) return true;
+        
+        // Strategy 2: First word matches make, remaining words match model
+        // This handles "kubota svl75" where "kubota" should match make and "svl75" should match model
+        if (searchWords.length >= 2) {
+          const firstWord = searchWords[0];
+          const remainingWords = searchWords.slice(1);
+          
+          const firstWordMatchesMake = makeLower.includes(firstWord);
+          const remainingWordsMatchModel = remainingWords.every(word => modelLower.includes(word));
+          
+          if (firstWordMatchesMake && remainingWordsMatchModel) return true;
+          
+          // Also try: any word matches make, and any other word matches model
+          const anyWordMatchesMake = searchWords.some(word => makeLower.includes(word));
+          const anyWordMatchesModel = searchWords.some(word => modelLower.includes(word));
+          
+          if (anyWordMatchesMake && anyWordMatchesModel) return true;
+        }
+        
+        // Strategy 3: Try with spaces/dashes removed for exact model numbers
         const searchNoSpaces = searchLower.replace(/[\s-]/g, '');
         const makeNoSpaces = makeLower.replace(/[\s-]/g, '');
         const modelNoSpaces = modelLower.replace(/[\s-]/g, '');
+        const combinedNoSpaces = `${makeNoSpaces}${modelNoSpaces}`;
         
         return makeNoSpaces.includes(searchNoSpaces) || 
-               modelNoSpaces.includes(searchNoSpaces);
+               modelNoSpaces.includes(searchNoSpaces) ||
+               combinedNoSpaces.includes(searchNoSpaces);
       })
     : [];
 
