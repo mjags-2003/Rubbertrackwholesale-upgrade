@@ -511,7 +511,7 @@ Kubota,69191-21300,idler,front,Kubota K008-3 U10-3 Tension Idler,K008-3;U10-3,`;
                   <tr className="border-b">
                     <th className="text-left p-3">Part Number</th>
                     <th className="text-left p-3">Type</th>
-                    <th className="text-left p-3">Product Name</th>
+                    <th className="text-left p-3">Compatible With These Machines</th>
                     <th className="text-left p-3">Compatible Models</th>
                     <th className="text-left p-3">Price</th>
                     <th className="text-right p-3">Actions</th>
