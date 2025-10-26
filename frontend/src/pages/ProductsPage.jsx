@@ -304,6 +304,54 @@ const ProductsPage = () => {
           </div>
         ) : (
           <>
+            {/* Track Compatibility Section (Rubber Tracks for specific machine) */}
+            {trackCompatibility.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Compatible Rubber Track Sizes ({trackCompatibility.length})
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {trackCompatibility.map((track) => (
+                    <Card key={track.id} className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <span className="px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800">
+                              Rubber Track
+                            </span>
+                            {track.is_in_stock && (
+                              <span className="ml-2 px-2 py-1 rounded text-xs bg-green-600 text-white">
+                                In Stock
+                              </span>
+                            )}
+                          </div>
+                          {track.is_in_stock && track.price && (
+                            <span className="text-orange-500 font-bold text-lg">
+                              ${track.price.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="text-white font-semibold text-xl mb-2">
+                          {track.size}
+                        </h3>
+                        <p className="text-slate-400 text-sm mb-2">
+                          Width: {track.width}mm | Pitch: {track.pitch}mm | Links: {track.links}
+                        </p>
+                        <p className="text-slate-400 text-sm mb-3">
+                          {(track.width / 25.4).toFixed(1)}" x {(track.pitch / 25.4).toFixed(2)}" x {track.links}
+                        </p>
+                        <Link to="/contact">
+                          <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                            {track.is_in_stock && track.price ? 'Request Quote' : 'Contact for Price'}
+                          </Button>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Part Numbers Section (if any found) */}
             {partNumbers.length > 0 && (
               <div className="mb-8">
