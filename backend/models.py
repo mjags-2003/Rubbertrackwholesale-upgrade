@@ -370,6 +370,7 @@ class PartNumber(BaseModel):
     product_name: str  # Full product name
     compatible_models: List[str] = []  # List of compatible machine models
     price: Optional[float] = None  # Selling price
+    is_in_stock: bool = False  # In stock toggle - determines if price shows on frontend
     description: Optional[str] = None
     image_url: Optional[str] = None
     is_active: bool = True
