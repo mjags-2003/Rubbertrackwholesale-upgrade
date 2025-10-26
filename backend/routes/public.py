@@ -562,6 +562,14 @@ async def search_public_compatibility(
     query = {"is_active": True}
     
     if make:
+        query["make"] = {"$regex": make, "$options": "i"}
+    if model:
+        query["model"] = {"$regex": model, "$options": "i"}
+    if track_size:
+        query["track_sizes"] = track_size
+    
+    compatibility_entries = await compatibility_collection.find(query).sort([("make", 1), ("model", 1)]).to_list(length=500)
+    return [serialize_doc(entry) for entry in compatibility_entries]
 
 
 # ==================== Part Numbers (Public) ====================
