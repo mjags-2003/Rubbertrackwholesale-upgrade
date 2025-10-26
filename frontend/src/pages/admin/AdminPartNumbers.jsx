@@ -604,6 +604,18 @@ Kubota,69191-21300,idler,front,Fits: Kubota K008-3 U10-3 Tension Idler,K008-3;U1
                           </div>
                         )}
                       </td>
+                      <td className="p-3">
+                        <button
+                          onClick={() => handleToggleStock(part.id, part.is_in_stock)}
+                          className={`px-3 py-1 rounded text-sm font-medium ${
+                            part.is_in_stock 
+                              ? 'bg-green-600 text-white hover:bg-green-700' 
+                              : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                          }`}
+                        >
+                          {part.is_in_stock ? '✓ IN STOCK' : 'OUT OF STOCK'}
+                        </button>
+                      </td>
                       <td className="p-3 text-right">
                         <Button
                           size="sm"
