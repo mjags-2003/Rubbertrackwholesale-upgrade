@@ -137,15 +137,18 @@ frontend:
 
   - task: "Brand Alias Mapping Feature"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/utils/brandMapping.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Testing brand alias mapping functionality to ensure 'caterpillar 299d' finds CAT machines, 'cat 299d' finds CAT machines, and 'ditch witch' finds Ditch-Witch machines in both compatibility chart and top search bar"
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED - Brand alias mapping functionality works perfectly! Comprehensive testing completed: 1) 'caterpillar 299d' (lowercase) successfully finds 6 CAT 299D machines with correct track sizes (400x86x60 and 450x86x60), 2) 'cat 299d' also finds CAT 299D machines correctly, 3) 'ditch witch' finds 46+ Ditch-Witch machines, 4) Top search bar navigation works with brand aliases (navigates to /products?search=caterpillar%20299d), 5) Modal functionality works for track size details, 6) Case-insensitive search confirmed working. The brandMapping.js utility correctly handles alias conversion: 'caterpillar'→'CAT', 'ditch witch'→'Ditch-Witch'. Both compatibility chart search and top search bar use brand aliases as expected."
 
 backend:
   - task: "Track Sizes API Endpoint"
