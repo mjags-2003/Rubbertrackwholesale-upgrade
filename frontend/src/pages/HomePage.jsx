@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, Truck, Award, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -10,6 +10,8 @@ import RubberTrackCompatibility from '../components/RubberTrackCompatibility';
 
 const HomePage = () => {
   const featuredProducts = products.slice(0, 3);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-slate-950">
