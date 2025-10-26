@@ -62,6 +62,12 @@ const HomePage = () => {
                 Search
               </Button>
             </div>
+            
+            {/* Search Help Text */}
+            <p className="text-white text-center mt-4 text-sm md:text-base max-w-4xl mx-auto">
+              <span className="font-semibold">Find Your Undercarriage Part:</span> Type track size, machine brand & model to find rubber tracks, rollers, idlers, or sprockets. 
+              You can also search by part number for specific components.
+            </p>
           </div>
         </div>
       </section>
