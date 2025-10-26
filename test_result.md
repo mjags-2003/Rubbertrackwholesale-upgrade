@@ -105,17 +105,20 @@
 user_problem_statement: "Comprehensive testing of the main hero search bar to verify it works as advertised in the help text with specific search scenarios: track size search (300x55x82), machine brand search (Bobcat), machine brand + model search (Cat 299d), part number search (RT-300-82), and verify help text display"
 
 frontend:
-  - task: "Homepage Main Search Bar Functionality"
+  - task: "Homepage Main Search Bar Comprehensive Testing"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/frontend/src/pages/HomePage.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: true
         agent: "testing"
         comment: "✅ PASSED - Homepage main search bar functionality works perfectly. Tested comprehensive scenarios: 1) Search for 'cat 299d' correctly navigates to /products?search=cat%20299d and shows 'Products for cat 299d are not listed on this site yet' message with Clear All Filters and Contact Us buttons. 2) Search for 'rubber track' finds 4 products correctly. 3) Both Search button click and Enter key functionality work. 4) Mobile responsiveness confirmed. 5) URL encoding works properly. All expected functionality verified successfully."
+      - working: "NA"
+        agent: "testing"
+        comment: "Starting comprehensive testing of main hero search bar with specific scenarios: 1) Track size search (300x55x82), 2) Machine brand search (Bobcat), 3) Machine brand + model search (Cat 299d), 4) Part number search (RT-300-82), 5) Help text verification. Will verify all search types navigate to /products?search=[term] and show appropriate results."
 
   - task: "Rubber Track Compatibility Chart Search Functionality"
     implemented: true
