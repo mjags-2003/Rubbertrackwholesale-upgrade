@@ -56,7 +56,7 @@ const CategoryNav = () => {
       }
     };
     
-    fetchMachineModels();
+    fetchData();
   }, []);
 
   const categories = [
