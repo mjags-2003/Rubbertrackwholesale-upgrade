@@ -11,6 +11,7 @@ const CategoryNav = () => {
   const [selectedBrand, setSelectedBrand] = useState('Bobcat');
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedTrackSize, setSelectedTrackSize] = useState('');
+  const [trackSizeUnit, setTrackSizeUnit] = useState('mm'); // 'mm' or 'inches'
   const [machineModels, setMachineModels] = useState({});
   const [excavatorModels, setExcavatorModels] = useState({});
   const [trackSizes, setTrackSizes] = useState([]);
