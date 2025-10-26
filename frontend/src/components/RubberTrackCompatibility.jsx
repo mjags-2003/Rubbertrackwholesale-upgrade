@@ -105,16 +105,27 @@ const RubberTrackCompatibility = () => {
   // Filter machines by search - more intuitive partial matching
   const filteredMachines = searchQuery
     ? compatibility.filter(comp => {
-        const searchLower = searchQuery.toLowerCase().replace(/[\s-]/g, '');
-        const makeLower = comp.make.toLowerCase().replace(/[\s-]/g, '');
-        const modelLower = comp.model.toLowerCase().replace(/[\s-]/g, '');
+        const searchLower = searchQuery.toLowerCase().trim();
+        const makeLower = comp.make.toLowerCase();
+        const modelLower = comp.model.toLowerCase();
+        const combined = `${makeLower} ${modelLower}`;
         
-        // Match if search term is found anywhere in make or model (after removing spaces/dashes)
-        return makeLower.includes(searchLower) || 
-               modelLower.includes(searchLower) ||
-               // Also match original strings for better results
-               comp.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
-               comp.model.toLowerCase().includes(searchQuery.toLowerCase());
+        // Split search into words and check if all words match
+        const searchWords = searchLower.split(/\s+/);
+        
+        // Match if ALL search words are found in the combined make+model string
+        // This allows "cat 299d" to match "CAT 299D"
+        const allWordsMatch = searchWords.every(word => combined.includes(word));
+        
+        if (allWordsMatch) return true;
+        
+        // Also try with spaces/dashes removed for exact model numbers
+        const searchNoSpaces = searchLower.replace(/[\s-]/g, '');
+        const makeNoSpaces = makeLower.replace(/[\s-]/g, '');
+        const modelNoSpaces = modelLower.replace(/[\s-]/g, '');
+        
+        return makeNoSpaces.includes(searchNoSpaces) || 
+               modelNoSpaces.includes(searchNoSpaces);
       })
     : [];
 
