@@ -214,31 +214,34 @@ const CategoryNav = () => {
             {/* Show category links when model is selected */}
             {selectedModel ? (
               <div className="space-y-3">
-                <p className="text-slate-300 text-sm font-semibold">View parts for {selectedBrand} {selectedModel}:</p>
+                <p className="text-slate-300 text-sm font-semibold">
+                  View parts for {selectedBrand} {selectedModel}
+                  {selectedTrackSize && <span className="text-orange-500"> • Size: {selectedTrackSize}</span>}
+                </p>
                 <div className="grid grid-cols-2 gap-3">
                   <Link 
-                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rubber-tracks`}
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}${selectedTrackSize ? `?track_size=${encodeURIComponent(selectedTrackSize)}` : ''}#rubber-tracks`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
                     <Boxes className="h-4 w-4" />
                     Rubber Tracks
                   </Link>
                   <Link 
-                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#sprockets`}
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}${selectedTrackSize ? `?track_size=${encodeURIComponent(selectedTrackSize)}` : ''}#sprockets`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
                     <Cog className="h-4 w-4" />
                     Sprockets
                   </Link>
                   <Link 
-                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#idlers`}
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}${selectedTrackSize ? `?track_size=${encodeURIComponent(selectedTrackSize)}` : ''}#idlers`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
                     <Disc3 className="h-4 w-4" />
                     Idlers
                   </Link>
                   <Link 
-                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}#rollers`}
+                    to={`/models/${selectedBrand.toLowerCase().replace(/\s+/g, '-')}/${selectedModel.toLowerCase()}${selectedTrackSize ? `?track_size=${encodeURIComponent(selectedTrackSize)}` : ''}#rollers`}
                     className="bg-slate-700 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-md transition-colors text-center flex items-center justify-center gap-2"
                   >
                     <Circle className="h-4 w-4" />
