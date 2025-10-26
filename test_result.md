@@ -240,6 +240,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "CAT 277B Track Loader Search Functionality"
     - "Track Loader Compatibility Data Import"
     - "Data Consistency Validation"
   stuck_tasks:
