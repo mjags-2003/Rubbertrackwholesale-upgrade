@@ -21,25 +21,37 @@ const TrackSizeSearch = () => {
       const response = await axios.get(`${API}/api/track-sizes`);
       setTrackSizes(response.data);
       
-      // Group by width
-      const grouped = {};
+      // Group by width for both mm and inches
+      const groupedMM = {};
+      const groupedInches = {};
+      
       response.data.forEach(ts => {
-        const width = ts.width;
-        if (width) {
-          const widthKey = `${parseInt(width)}`;
-          if (!grouped[widthKey]) {
-            grouped[widthKey] = [];
+        const widthMM = ts.width;
+        if (widthMM) {
+          // Group by mm
+          const widthKeyMM = `${parseInt(widthMM)}`;
+          if (!groupedMM[widthKeyMM]) {
+            groupedMM[widthKeyMM] = [];
           }
-          grouped[widthKey].push(ts);
+          groupedMM[widthKeyMM].push(ts);
+          
+          // Group by inches (convert mm to inches: 1 inch = 25.4mm)
+          const widthInches = Math.round(widthMM / 25.4);
+          const widthKeyInches = `${widthInches}`;
+          if (!groupedInches[widthKeyInches]) {
+            groupedInches[widthKeyInches] = [];
+          }
+          groupedInches[widthKeyInches].push(ts);
         }
       });
       
-      setGroupedSizes(grouped);
+      // Store both grouped versions
+      setGroupedSizes({ mm: groupedMM, inches: groupedInches });
       
-      // Set first width as default
-      const widths = Object.keys(grouped).sort((a, b) => parseInt(a) - parseInt(b));
-      if (widths.length > 0) {
-        setSelectedWidth(widths[0]);
+      // Set first width as default based on current unit
+      const widthsMM = Object.keys(groupedMM).sort((a, b) => parseInt(a) - parseInt(b));
+      if (widthsMM.length > 0) {
+        setSelectedWidth(widthsMM[0]);
       }
       
       setLoading(false);
