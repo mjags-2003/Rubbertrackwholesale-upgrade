@@ -30,6 +30,7 @@ reviews_collection = db.reviews
 faqs_collection = db.faqs
 blog_categories_collection = db.blog_categories
 blogs_collection = db.blogs
+part_numbers_collection = db.part_numbers
 
 
 async def init_db():
