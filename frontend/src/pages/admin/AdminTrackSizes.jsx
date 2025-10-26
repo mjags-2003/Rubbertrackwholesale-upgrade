@@ -100,6 +100,7 @@ const AdminTrackSizes = () => {
   const handleEdit = (trackSize) => {
     setFormData({
       size: trackSize.size,
+      price: trackSize.price || '',
       description: trackSize.description || '',
       is_active: trackSize.is_active
     });
@@ -110,6 +111,7 @@ const AdminTrackSizes = () => {
   const resetForm = () => {
     setFormData({
       size: '',
+      price: '',
       description: '',
       is_active: true
     });
