@@ -866,6 +866,112 @@ async def update_redirect(redirect_id: str, redirect: Redirect, current_user = D
     if not ObjectId.is_valid(redirect_id):
         raise HTTPException(status_code=400, detail="Invalid redirect ID")
     
+
+
+# ==================== Part Numbers Management ====================
+
+@router.get("/part-numbers")
+async def get_part_numbers(
+    brand: Optional[str] = None,
+    part_type: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all part numbers, optionally filtered by brand and/or part type"""
+    from database import part_numbers_collection
+    
+    query = {}
+    if brand:
+        query["brand"] = brand
+    if part_type:
+        query["part_type"] = part_type
+    
+    part_numbers = await part_numbers_collection.find(query).sort([("brand", 1), ("part_number", 1)]).to_list(length=1000)
+    return [serialize_doc(part) for part in part_numbers]
+
+
+@router.get("/part-numbers/brands")
+async def get_part_number_brands(current_user: dict = Depends(get_current_user)):
+    """Get list of brands that have part numbers"""
+    from database import part_numbers_collection
+    
+    brands = await part_numbers_collection.distinct("brand")
+    return sorted(brands)
+
+
+@router.get("/part-numbers/{part_id}")
+async def get_part_number(part_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a single part number by ID"""
+    from database import part_numbers_collection
+    
+    part = await part_numbers_collection.find_one({"id": part_id})
+    if not part:
+        raise HTTPException(status_code=404, detail="Part number not found")
+    return serialize_doc(part)
+
+
+@router.post("/part-numbers")
+async def create_part_number(part: Dict, current_user: dict = Depends(get_current_user)):
+    """Create a new part number"""
+    from database import part_numbers_collection
+    import uuid
+    
+    part_dict = {
+        "id": str(uuid.uuid4()),
+        "brand": part["brand"],
+        "part_number": part["part_number"],
+        "part_type": part["part_type"],
+        "part_subtype": part.get("part_subtype"),
+        "product_name": part["product_name"],
+        "compatible_models": part.get("compatible_models", []),
+        "price": part.get("price"),
+        "description": part.get("description"),
+        "image_url": part.get("image_url"),
+        "is_active": part.get("is_active", True),
+        "created_at": datetime.utcnow(),
+        "updated_at": datetime.utcnow()
+    }
+    
+    await part_numbers_collection.insert_one(part_dict)
+    return {"success": True, "id": part_dict["id"]}
+
+
+@router.put("/part-numbers/{part_id}")
+async def update_part_number(
+    part_id: str, 
+    updates: Dict, 
+    current_user: dict = Depends(get_current_user)
+):
+    """Update a part number"""
+    from database import part_numbers_collection
+    
+    # Remove id from updates if present
+    updates.pop("id", None)
+    updates.pop("_id", None)
+    updates["updated_at"] = datetime.utcnow()
+    
+    result = await part_numbers_collection.update_one(
+        {"id": part_id},
+        {"$set": updates}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Part number not found")
+    
+    return {"success": True}
+
+
+@router.delete("/part-numbers/{part_id}")
+async def delete_part_number(part_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a part number"""
+    from database import part_numbers_collection
+    
+    result = await part_numbers_collection.delete_one({"id": part_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Part number not found")
+    
+    return {"success": True}
+
     redirect_dict = redirect.dict(by_alias=True, exclude={"id"})
     result = await redirects_collection.update_one(
         {"_id": ObjectId(redirect_id)},
