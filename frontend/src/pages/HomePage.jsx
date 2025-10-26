@@ -94,30 +94,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Shop by Brand */}
-      <section className="py-16 bg-slate-950">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">Shop by Brand</h2>
-            <p className="text-slate-400 text-lg">Select your machine brand to find compatible parts</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {brands.map((brand) => (
-              <Link key={brand.id} to={`/products?brand=${brand.name}`}>
-                <Card className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all duration-300 hover:scale-105">
-                  <CardContent className="p-6 text-center">
-                    <div className="h-20 flex items-center justify-center mb-3">
-                      <img src={brand.logo} alt={brand.name} className="max-h-full opacity-80" />
-                    </div>
-                    <h3 className="text-white font-semibold">{brand.name}</h3>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Track Size Search - REPLACES duplicate Shop by Brand */}
+      <TrackSizeSearch />
 
       {/* Featured Products */}
       <section className="py-16 bg-slate-900">
