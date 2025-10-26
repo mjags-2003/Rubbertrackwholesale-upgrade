@@ -203,7 +203,7 @@ def create_or_update_compatibility(brand, model, track_sizes):
     model = model.strip()
     
     # Check if compatibility already exists
-    existing = compatibilities_collection.find_one({'make': brand, 'model': model})
+    existing = compatibility_collection.find_one({'make': brand, 'model': model})
     
     if existing:
         # Update existing - add new track sizes if not already present
@@ -211,7 +211,7 @@ def create_or_update_compatibility(brand, model, track_sizes):
         new_sizes = set(track_sizes)
         combined_sizes = list(existing_sizes | new_sizes)
         
-        compatibilities_collection.update_one(
+        compatibility_collection.update_one(
             {'make': brand, 'model': model},
             {'$set': {'track_sizes': combined_sizes}}
         )
@@ -224,7 +224,7 @@ def create_or_update_compatibility(brand, model, track_sizes):
             'model': model,
             'track_sizes': track_sizes
         }
-        compatibilities_collection.insert_one(compatibility_doc)
+        compatibility_collection.insert_one(compatibility_doc)
         logger.info(f"Created compatibility for {brand} {model}: {track_sizes}")
 
 
