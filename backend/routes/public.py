@@ -602,15 +602,6 @@ async def search_public_part_numbers(
     part_numbers = await part_numbers_collection.find(search_query).sort([("brand", 1), ("part_number", 1)]).to_list(length=500)
     return [serialize_doc(part) for part in part_numbers]
 
-        query["make"] = {"$regex": make, "$options": "i"}
-    if model:
-        query["model"] = {"$regex": model, "$options": "i"}
-    if track_size:
-        query["track_sizes"] = track_size
-    
-    compatibility_entries = await compatibility_collection.find(query).sort([("make", 1), ("model", 1)]).to_list(length=500)
-    return [serialize_doc(entry) for entry in compatibility_entries]
-
 
 @router.get("/compatibility/by-machine/{make}/{model}")
 async def get_compatibility_by_machine(make: str, model: str):
