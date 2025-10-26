@@ -269,32 +269,6 @@ const AdminTrackSizes = () => {
         </Card>
       )}
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-slate-800 border-slate-700">
-          <CardContent className="p-6">
-            <div className="text-slate-400 text-sm">Total Track Sizes</div>
-            <div className="text-3xl font-bold text-white mt-2">{trackSizes.length}</div>
-          </CardContent>
-        </Card>
-        <Card className="bg-slate-800 border-slate-700">
-          <CardContent className="p-6">
-            <div className="text-slate-400 text-sm">Active Sizes</div>
-            <div className="text-3xl font-bold text-green-500 mt-2">
-              {trackSizes.filter(ts => ts.is_active).length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-slate-800 border-slate-700">
-          <CardContent className="p-6">
-            <div className="text-slate-400 text-sm">Unique Widths</div>
-            <div className="text-3xl font-bold text-blue-500 mt-2">
-              {new Set(trackSizes.map(ts => ts.width).filter(Boolean)).size}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Form */}
       {showForm && (
         <Card className="bg-slate-800 border-slate-700">
