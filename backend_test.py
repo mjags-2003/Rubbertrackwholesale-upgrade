@@ -230,6 +230,177 @@ def test_data_consistency():
         return False
 
 
+def test_track_loader_compatibility():
+    """Test newly imported track loader compatibility data"""
+    print("\n🔍 Testing Track Loader Compatibility Data...")
+    
+    all_passed = True
+    
+    # Test 1: CAT 277B compatibility lookup
+    print("   Test 1: CAT 277B compatibility lookup")
+    try:
+        response = requests.get(f"{BACKEND_URL}/compatibility/search?model=277B", timeout=30)
+        if response.status_code != 200:
+            print(f"      ❌ FAILED: Status {response.status_code}")
+            all_passed = False
+        else:
+            data = response.json()
+            print(f"      ✅ Found {len(data)} results for model=277B")
+            
+            # Verify response includes track size "18x4x56" and make is "CAT"
+            cat_277b_found = False
+            track_size_found = False
+            
+            for entry in data:
+                if entry.get('make', '').upper() == 'CAT' and '277B' in entry.get('model', ''):
+                    cat_277b_found = True
+                    track_sizes = entry.get('track_sizes', [])
+                    if '18x4x56' in track_sizes:
+                        track_size_found = True
+                        print(f"      ✅ CAT 277B found with track size 18x4x56")
+                        break
+            
+            if not cat_277b_found:
+                print(f"      ❌ FAILED: CAT 277B not found in results")
+                all_passed = False
+            elif not track_size_found:
+                print(f"      ❌ FAILED: Track size 18x4x56 not found for CAT 277B")
+                all_passed = False
+                
+    except Exception as e:
+        print(f"      ❌ FAILED: Error testing CAT 277B - {e}")
+        all_passed = False
+    
+    # Test 2: Brand and model filter
+    print("   Test 2: Brand and model filter (CAT + 277B)")
+    try:
+        response = requests.get(f"{BACKEND_URL}/compatibility/search?make=CAT&model=277B", timeout=30)
+        if response.status_code != 200:
+            print(f"      ❌ FAILED: Status {response.status_code}")
+            all_passed = False
+        else:
+            data = response.json()
+            print(f"      ✅ Found {len(data)} results for make=CAT&model=277B")
+            
+            # Confirm "18x4x56" is returned
+            track_size_found = False
+            for entry in data:
+                track_sizes = entry.get('track_sizes', [])
+                if '18x4x56' in track_sizes:
+                    track_size_found = True
+                    print(f"      ✅ Track size 18x4x56 confirmed in CAT 277B results")
+                    break
+            
+            if not track_size_found:
+                print(f"      ❌ FAILED: Track size 18x4x56 not found in CAT 277B filtered results")
+                all_passed = False
+                
+    except Exception as e:
+        print(f"      ❌ FAILED: Error testing CAT 277B filter - {e}")
+        all_passed = False
+    
+    # Test 3: Case insensitive search
+    print("   Test 3: Case insensitive search (cat + 277b)")
+    try:
+        response = requests.get(f"{BACKEND_URL}/compatibility/search?make=cat&model=277b", timeout=30)
+        if response.status_code != 200:
+            print(f"      ❌ FAILED: Status {response.status_code}")
+            all_passed = False
+        else:
+            data = response.json()
+            print(f"      ✅ Found {len(data)} results for make=cat&model=277b (case insensitive)")
+            
+            # Should still find the compatibility
+            if len(data) == 0:
+                print(f"      ❌ FAILED: Case insensitive search returned no results")
+                all_passed = False
+            else:
+                print(f"      ✅ Case insensitive search working correctly")
+                
+    except Exception as e:
+        print(f"      ❌ FAILED: Error testing case insensitive search - {e}")
+        all_passed = False
+    
+    # Test 4: Bobcat T550 model
+    print("   Test 4: Bobcat T550 compatibility")
+    try:
+        response = requests.get(f"{BACKEND_URL}/compatibility/search?model=T550", timeout=30)
+        if response.status_code != 200:
+            print(f"      ❌ FAILED: Status {response.status_code}")
+            all_passed = False
+        else:
+            data = response.json()
+            print(f"      ✅ Found {len(data)} results for model=T550")
+            
+            # Verify Bobcat T550 returns "18x4x56" in track_sizes
+            bobcat_t550_found = False
+            track_size_found = False
+            
+            for entry in data:
+                if 'bobcat' in entry.get('make', '').lower() and 'T550' in entry.get('model', ''):
+                    bobcat_t550_found = True
+                    track_sizes = entry.get('track_sizes', [])
+                    if '18x4x56' in track_sizes:
+                        track_size_found = True
+                        print(f"      ✅ Bobcat T550 found with track size 18x4x56")
+                        break
+            
+            if not bobcat_t550_found:
+                print(f"      ❌ FAILED: Bobcat T550 not found in results")
+                all_passed = False
+            elif not track_size_found:
+                print(f"      ❌ FAILED: Track size 18x4x56 not found for Bobcat T550")
+                all_passed = False
+                
+    except Exception as e:
+        print(f"      ❌ FAILED: Error testing Bobcat T550 - {e}")
+        all_passed = False
+    
+    return all_passed
+
+
+def test_track_sizes_verification():
+    """Test that specific track sizes were created"""
+    print("\n🔍 Testing Track Sizes Verification...")
+    
+    expected_sizes = ["18x4x56", "13x4x56", "15x4x56", "18x4x50", "18x4x51"]
+    
+    try:
+        response = requests.get(f"{BACKEND_URL}/track-sizes", timeout=30)
+        if response.status_code != 200:
+            print(f"   ❌ FAILED: Status {response.status_code}")
+            return False
+            
+        data = response.json()
+        print(f"   ✅ Retrieved {len(data)} track sizes")
+        
+        # Extract all size values
+        available_sizes = [item.get('size') for item in data if item.get('size')]
+        
+        # Check for expected sizes
+        missing_sizes = []
+        found_sizes = []
+        
+        for expected_size in expected_sizes:
+            if expected_size in available_sizes:
+                found_sizes.append(expected_size)
+                print(f"      ✅ Found track size: {expected_size}")
+            else:
+                missing_sizes.append(expected_size)
+                print(f"      ❌ Missing track size: {expected_size}")
+        
+        if missing_sizes:
+            print(f"   ❌ FAILED: Missing {len(missing_sizes)} expected track sizes: {missing_sizes}")
+            return False
+        else:
+            print(f"   ✅ SUCCESS: All {len(expected_sizes)} expected track sizes found")
+            return True
+            
+    except Exception as e:
+        print(f"   ❌ FAILED: Error verifying track sizes - {e}")
+        return False
+
+
 def test_additional_search_scenarios():
     """Test additional search scenarios"""
     print("\n🔍 Testing additional search scenarios...")
