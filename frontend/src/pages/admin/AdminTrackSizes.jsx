@@ -200,6 +200,93 @@ const AdminTrackSizes = () => {
         </Card>
         <Card className="bg-slate-800 border-slate-700">
           <CardContent className="p-6">
+            <div className="text-slate-400 text-sm">With Prices Set</div>
+            <div className="text-3xl font-bold text-green-500 mt-2">
+              {trackSizes.filter(ts => ts.price).length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Price Update Form */}
+      {showQuickPriceForm && (
+        <Card className="bg-gradient-to-r from-green-900/50 to-slate-800 border-green-500">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <span className="text-3xl">💰</span>
+              Set Selling Price for {quickPriceData.size}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={submitQuickPrice} className="space-y-4">
+              <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-4">
+                <p className="text-orange-400 font-semibold text-sm mb-2">⚡ Quick Price Update</p>
+                <p className="text-slate-300 text-sm">
+                  Set the selling price for <strong className="text-white">{quickPriceData.size}</strong>. 
+                  This price will automatically appear for <strong className="text-orange-400">ALL machines</strong> that use this track size across the entire website.
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-slate-300 mb-2 text-lg font-semibold">
+                  Selling Price (USD)
+                </label>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl text-green-400 font-bold">$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={quickPriceData.price}
+                    onChange={(e) => setQuickPriceData({...quickPriceData, price: e.target.value})}
+                    className="flex-1 bg-slate-700 border-2 border-green-500 text-white rounded-md px-4 py-3 text-2xl font-bold focus:outline-none focus:border-green-400"
+                    placeholder="1050.00"
+                    required
+                    autoFocus
+                  />
+                </div>
+                <p className="text-xs text-slate-400 mt-2">
+                  Example: Enter 1050 or 1050.00 for one thousand fifty dollars
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button type="submit" className="bg-green-500 hover:bg-green-600 text-lg px-6 py-3">
+                  ✓ Set Price - Apply to All Machines
+                </Button>
+                <Button 
+                  type="button" 
+                  onClick={() => {
+                    setShowQuickPriceForm(false);
+                    setQuickPriceData({ trackSizeId: '', size: '', price: '' });
+                  }} 
+                  className="bg-slate-700 hover:bg-slate-600"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-slate-800 border-slate-700">
+          <CardContent className="p-6">
+            <div className="text-slate-400 text-sm">Total Track Sizes</div>
+            <div className="text-3xl font-bold text-white mt-2">{trackSizes.length}</div>
+          </CardContent>
+        </Card>
+        <Card className="bg-slate-800 border-slate-700">
+          <CardContent className="p-6">
+            <div className="text-slate-400 text-sm">Active Sizes</div>
+            <div className="text-3xl font-bold text-green-500 mt-2">
+              {trackSizes.filter(ts => ts.is_active).length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-slate-800 border-slate-700">
+          <CardContent className="p-6">
             <div className="text-slate-400 text-sm">Unique Widths</div>
             <div className="text-3xl font-bold text-blue-500 mt-2">
               {new Set(trackSizes.map(ts => ts.width).filter(Boolean)).size}
