@@ -6,7 +6,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { brands, products, testimonials } from '../mockData';
 import CategoryNav from '../components/CategoryNav';
-import TrackSizeSearch from '../components/TrackSizeSearch';
+import RubberTrackCompatibility from '../components/RubberTrackCompatibility';
 
 const HomePage = () => {
   const featuredProducts = products.slice(0, 3);
