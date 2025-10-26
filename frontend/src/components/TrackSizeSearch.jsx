@@ -169,28 +169,36 @@ const TrackSizeSearch = () => {
         {/* Track Sizes Grid */}
         {selectedWidth && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {selectedSizes.map(trackSize => (
-              <Link
-                key={trackSize.id}
-                to={`/products?track_size=${encodeURIComponent(trackSize.size)}`}
-              >
-                <Card className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all duration-300 hover:scale-105 h-full">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-2xl font-bold text-white mb-2">
-                      {trackSize.size}
-                    </div>
-                    <div className="text-sm text-slate-400 space-y-1">
-                      <div>Width: {trackSize.width}mm</div>
-                      <div>Pitch: {trackSize.pitch}mm</div>
-                      <div>Links: {trackSize.links}</div>
-                    </div>
-                    <div className="mt-4 text-orange-500 font-semibold">
-                      View Products →
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+            {selectedSizes.map(trackSize => {
+              const displaySize = convertSize(trackSize);
+              return (
+                <Link
+                  key={trackSize.id}
+                  to={`/products?track_size=${encodeURIComponent(displaySize.originalSize)}`}
+                >
+                  <Card className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all duration-300 hover:scale-105 h-full">
+                    <CardContent className="p-6 text-center">
+                      <div className="text-2xl font-bold text-white mb-2">
+                        {displaySize.size}
+                      </div>
+                      <div className="text-sm text-slate-400 space-y-1">
+                        <div>Width: {displaySize.width}{unit === 'mm' ? 'mm' : '"'}</div>
+                        <div>Pitch: {displaySize.pitch}{unit === 'mm' ? 'mm' : '"'}</div>
+                        <div>Links: {displaySize.links}</div>
+                      </div>
+                      {unit === 'inches' && (
+                        <div className="text-xs text-slate-500 mt-2">
+                          ({trackSize.size} mm)
+                        </div>
+                      )}
+                      <div className="mt-4 text-orange-500 font-semibold">
+                        View Products →
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         )}
 
