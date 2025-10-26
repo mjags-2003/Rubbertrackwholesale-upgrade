@@ -10,16 +10,19 @@ const CategoryNav = () => {
   const [selectedCategory, setSelectedCategory] = useState('Track Loaders');
   const [selectedBrand, setSelectedBrand] = useState('Bobcat');
   const [selectedModel, setSelectedModel] = useState('');
+  const [selectedTrackSize, setSelectedTrackSize] = useState('');
   const [machineModels, setMachineModels] = useState({});
   const [excavatorModels, setExcavatorModels] = useState({});
+  const [trackSizes, setTrackSizes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch machine models from API
+  // Fetch machine models and track sizes from API
   useEffect(() => {
-    const fetchMachineModels = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/api/machine-models`);
-        const models = response.data;
+        // Fetch machine models
+        const modelsResponse = await axios.get(`${API}/api/machine-models`);
+        const models = modelsResponse.data;
         
         // Group by equipment type and brand
         const trackLoaders = {};
@@ -41,9 +44,14 @@ const CategoryNav = () => {
         
         setMachineModels(trackLoaders);
         setExcavatorModels(miniExcavators);
+        
+        // Fetch track sizes
+        const trackSizesResponse = await axios.get(`${API}/api/track-sizes`);
+        setTrackSizes(trackSizesResponse.data);
+        
         setLoading(false);
       } catch (error) {
-        console.error('Failed to fetch machine models:', error);
+        console.error('Failed to fetch data:', error);
         setLoading(false);
       }
     };
