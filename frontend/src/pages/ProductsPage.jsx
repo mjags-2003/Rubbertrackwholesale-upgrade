@@ -70,25 +70,34 @@ const ProductsPage = () => {
 
   const fetchTrackCompatibility = async (brand, model) => {
     try {
-      const response = await axios.get(`${API}/api/compatibility/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`);
-      if (response.data && response.data.track_sizes) {
-        // Fetch full track size details
-        const trackSizesPromises = response.data.track_sizes.map(size =>
-          axios.get(`${API}/api/track-sizes`)
-        );
-        const trackSizesResponse = await Promise.all(trackSizesPromises);
-        const allTrackSizes = trackSizesResponse[0].data; // All track sizes
+      // Use the correct compatibility search endpoint
+      const response = await axios.get(`${API}/api/compatibility/search`, {
+        params: { make: brand, model: model }
+      });
+      
+      if (response.data && response.data.length > 0) {
+        // Get track sizes from the first matching compatibility entry
+        const compatibility = response.data[0];
+        const trackSizes = compatibility.track_sizes || [];
         
-        // Filter to only the compatible ones
-        const compatibleTracks = allTrackSizes.filter(ts => 
-          response.data.track_sizes.includes(ts.size)
-        );
-        setTrackCompatibility(compatibleTracks);
+        if (trackSizes.length > 0) {
+          // Fetch full track size details
+          const trackSizesResponse = await axios.get(`${API}/api/track-sizes`);
+          const allTrackSizes = trackSizesResponse.data;
+          
+          // Filter to only the compatible ones
+          const compatibleTracks = allTrackSizes.filter(ts => 
+            trackSizes.includes(ts.size)
+          );
+          setTrackCompatibility(compatibleTracks);
+        } else {
+          setTrackCompatibility([]);
+        }
       } else {
         setTrackCompatibility([]);
       }
     } catch (error) {
-      console.error('Failed to fetch track compatibility:', error);
+      console.error('Error fetching track compatibility:', error);
       setTrackCompatibility([]);
     }
   };
