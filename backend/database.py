@@ -47,6 +47,8 @@ async def init_db():
     await track_sizes_collection.create_index("size", unique=True)
     await compatibility_collection.create_index([("make", 1), ("model", 1)], unique=True)
     await categories_collection.create_index("slug", unique=True)
+    await part_numbers_collection.create_index([("brand", 1), ("part_number", 1)], unique=True)
+    await part_numbers_collection.create_index("part_type")
     
     await customers_collection.create_index("email", unique=True)
     await orders_collection.create_index("order_number", unique=True)
