@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Search, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Save, X, Upload, Download } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
@@ -18,6 +18,17 @@ const AdminPartNumbers = () => {
   const [loading, setLoading] = useState(true);
   const [editingPart, setEditingPart] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showCSVUpload, setShowCSVUpload] = useState(false);
+  const [csvFile, setCsvFile] = useState(null);
+  const [newPart, setNewPart] = useState({
+    brand: '',
+    part_number: '',
+    part_type: 'roller',
+    part_subtype: '',
+    product_name: '',
+    compatible_models: '',
+    price: ''
+  });
 
   useEffect(() => {
     fetchBrands();
