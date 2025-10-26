@@ -45,6 +45,24 @@ class MachineModel(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+# Track Size Model (for rubber track dimensions)
+class TrackSize(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    size: str  # Track size (e.g., "300x55x82", "180x60x37")
+    width: Optional[float] = None  # Width in mm
+    pitch: Optional[float] = None  # Pitch in mm
+    links: Optional[int] = None  # Number of links
+    description: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Category Model
 class Category(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
