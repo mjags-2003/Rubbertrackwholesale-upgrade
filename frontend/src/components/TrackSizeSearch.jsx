@@ -113,10 +113,24 @@ const TrackSizeSearch = () => {
     <section className="py-12 bg-slate-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-white mb-4">Find Rubber Track by Track Size</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">Rubber Track Compatibility Chart</h2>
           <p className="text-slate-300 text-lg max-w-3xl mx-auto mb-6">
-            Browse our complete selection of rubber tracks organized by width. Select a width to view all available sizes.
+            Find which track sizes fit your machine. Browse by width or search for your specific model.
           </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by machine make or model (e.g., Bobcat T190, Kubota SVL75)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg pl-12 pr-4 py-4 focus:outline-none focus:border-orange-500"
+              />
+            </div>
+          </div>
           
           {/* Unit Toggle */}
           <div className="flex items-center justify-center gap-4 mb-4">
