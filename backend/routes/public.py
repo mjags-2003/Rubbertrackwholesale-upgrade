@@ -541,3 +541,59 @@ async def get_grouped_track_sizes():
     return grouped
 
 
+
+
+# ============= COMPATIBILITY ROUTES (PUBLIC) =============
+
+@router.get("/compatibility")
+async def get_all_public_compatibility():
+    """Get all active compatibility entries (public endpoint)"""
+    compatibility_entries = await compatibility_collection.find({"is_active": True}).sort([("make", 1), ("model", 1)]).to_list(length=None)
+    return [serialize_doc(entry) for entry in compatibility_entries]
+
+
+@router.get("/compatibility/search")
+async def search_public_compatibility(
+    make: Optional[str] = None,
+    model: Optional[str] = None,
+    track_size: Optional[str] = None
+):
+    """Search compatibility entries by make, model, or track size (public endpoint)"""
+    query = {"is_active": True}
+    
+    if make:
+        query["make"] = {"$regex": make, "$options": "i"}
+    if model:
+        query["model"] = {"$regex": model, "$options": "i"}
+    if track_size:
+        query["track_sizes"] = track_size
+    
+    compatibility_entries = await compatibility_collection.find(query).sort([("make", 1), ("model", 1)]).to_list(length=500)
+    return [serialize_doc(entry) for entry in compatibility_entries]
+
+
+@router.get("/compatibility/by-machine/{make}/{model}")
+async def get_compatibility_by_machine(make: str, model: str):
+    """Get track sizes for a specific machine"""
+    compatibility = await compatibility_collection.find_one({
+        "make": {"$regex": f"^{make}$", "$options": "i"},
+        "model": {"$regex": f"^{model}$", "$options": "i"},
+        "is_active": True
+    })
+    
+    if not compatibility:
+        raise HTTPException(status_code=404, detail="No compatibility data found for this machine")
+    
+    return serialize_doc(compatibility)
+
+
+@router.get("/compatibility/by-track-size/{track_size}")
+async def get_machines_by_track_size(track_size: str):
+    """Get all machines compatible with a specific track size"""
+    compatibility_entries = await compatibility_collection.find({
+        "track_sizes": track_size,
+        "is_active": True
+    }).sort([("make", 1), ("model", 1)]).to_list(length=None)
+    
+    return [serialize_doc(entry) for entry in compatibility_entries]
+
