@@ -143,49 +143,65 @@ const RubberTrackCompatibility = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by machine make or model (e.g., Bobcat T190, Kubota SVL75)..."
+                placeholder="Search by machine (e.g., T190, SVL75, Bobcat, Kubota)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg pl-12 pr-4 py-4 focus:outline-none focus:border-orange-500"
+                className="w-full bg-slate-800 border-2 border-slate-700 text-white rounded-lg pl-12 pr-4 py-4 focus:outline-none focus:border-orange-500 text-lg"
               />
             </div>
             
             {/* Search Results */}
             {searchQuery && filteredMachines.length > 0 && (
-              <div className="mt-4 bg-slate-800 border border-orange-500 rounded-lg max-h-96 overflow-y-auto shadow-lg">
-                <div className="p-4">
-                  <div className="text-sm font-semibold text-orange-500 mb-3">
-                    Found {filteredMachines.length} machine{filteredMachines.length !== 1 ? 's' : ''} matching "{searchQuery}"
+              <div className="mt-4 bg-slate-800 border-2 border-orange-500 rounded-lg max-h-[500px] overflow-y-auto shadow-xl">
+                <div className="p-6">
+                  <div className="text-base font-bold text-orange-500 mb-4 flex items-center justify-between">
+                    <span>✓ Found {filteredMachines.length} machine{filteredMachines.length !== 1 ? 's' : ''} matching "{searchQuery}"</span>
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="text-slate-400 hover:text-white text-sm"
+                    >
+                      Clear
+                    </button>
                   </div>
-                  <div className="space-y-2">
-                    {filteredMachines.slice(0, 20).map((machine, idx) => (
-                      <div key={idx} className="bg-slate-700 rounded-lg p-4 hover:bg-slate-600 transition">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <div className="text-white font-bold text-lg">
+                  <div className="space-y-3">
+                    {filteredMachines.slice(0, 50).map((machine, idx) => (
+                      <div key={idx} className="bg-slate-700 rounded-lg p-5 hover:bg-slate-600 transition border-l-4 border-orange-500">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="text-white font-bold text-xl mb-1">
                               {machine.make} {machine.model}
                             </div>
-                          </div>
-                          <div className="text-orange-500 text-sm font-semibold">
-                            {machine.track_sizes.length} size{machine.track_sizes.length !== 1 ? 's' : ''}
+                            <div className="text-orange-400 text-sm font-semibold">
+                              {machine.track_sizes.length} Compatible Track Size{machine.track_sizes.length !== 1 ? ' Options' : ''}
+                            </div>
                           </div>
                         </div>
-                        <div className="text-sm text-slate-300">
-                          <span className="font-semibold text-orange-400">Compatible track sizes:</span>
-                          <div className="mt-1 flex flex-wrap gap-2">
+                        <div className="bg-slate-800 rounded p-3">
+                          <div className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">All Compatible Sizes:</div>
+                          <div className="flex flex-wrap gap-2">
                             {machine.track_sizes.map((size, sizeIdx) => (
-                              <span key={sizeIdx} className="bg-slate-800 px-3 py-1 rounded-md text-white font-mono">
+                              <button
+                                key={sizeIdx}
+                                onClick={() => {
+                                  // Find this track size and show its details
+                                  const trackSize = trackSizes.find(ts => ts.size === size);
+                                  if (trackSize) {
+                                    handleTrackSizeClick(trackSize);
+                                  }
+                                }}
+                                className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md text-white font-bold font-mono text-base transition-all hover:scale-105"
+                              >
                                 {size}
-                              </span>
+                              </button>
                             ))}
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  {filteredMachines.length > 20 && (
-                    <div className="text-center text-slate-400 mt-3 text-sm">
-                      Showing first 20 of {filteredMachines.length} results
+                  {filteredMachines.length > 50 && (
+                    <div className="text-center text-slate-400 mt-4 text-sm bg-slate-700 rounded p-2">
+                      Showing first 50 of {filteredMachines.length} results. Refine your search for more specific results.
                     </div>
                   )}
                 </div>
@@ -194,9 +210,17 @@ const RubberTrackCompatibility = () => {
             
             {/* No results message */}
             {searchQuery && filteredMachines.length === 0 && (
-              <div className="mt-4 bg-slate-800 border border-slate-700 rounded-lg p-4">
-                <div className="text-slate-400 text-center">
-                  No machines found matching "{searchQuery}". Try searching for a brand name (e.g., Bobcat) or model number.
+              <div className="mt-4 bg-red-900/20 border-2 border-red-500 rounded-lg p-6">
+                <div className="text-red-300 text-center">
+                  <div className="font-bold text-lg mb-2">No machines found matching "{searchQuery}"</div>
+                  <div className="text-sm">
+                    Try searching for:
+                    <ul className="list-disc list-inside mt-2 text-left max-w-md mx-auto">
+                      <li>Brand name only (e.g., "Bobcat", "Kubota", "John Deere")</li>
+                      <li>Model number without spaces (e.g., "T190", "SVL75")</li>
+                      <li>Partial model number (e.g., "T1", "SVL")</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             )}
