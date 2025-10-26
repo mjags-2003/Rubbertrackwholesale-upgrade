@@ -34,8 +34,16 @@ const ProductsPage = () => {
       
       let brand = selectedBrand !== 'all' ? selectedBrand : null;
       fetchPartNumbers(searchTerm || null, partType, brand, selectedModel || null);
+      
+      // If searching for Rubber Tracks with brand and model, also fetch compatibility data
+      if (selectedCategory === 'Rubber Tracks' && brand && selectedModel) {
+        fetchTrackCompatibility(brand, selectedModel);
+      } else {
+        setTrackCompatibility([]);
+      }
     } else {
       setPartNumbers([]);
+      setTrackCompatibility([]);
     }
   }, [searchTerm, selectedCategory, selectedBrand, selectedModel]);
 
