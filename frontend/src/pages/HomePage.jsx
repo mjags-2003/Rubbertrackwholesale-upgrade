@@ -46,8 +46,18 @@ const HomePage = () => {
                 type="text"
                 placeholder="Search by track size, part number, or machine model..."
                 className="flex-1 border-0 text-lg focus-visible:ring-0"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+                  }
+                }}
               />
-              <Button className="bg-orange-500 hover:bg-orange-600 px-8">
+              <Button 
+                className="bg-orange-500 hover:bg-orange-600 px-8"
+                onClick={() => navigate(`/products?search=${encodeURIComponent(searchQuery)}`)}
+              >
                 <Search className="h-5 w-5 mr-2" />
                 Search
               </Button>
