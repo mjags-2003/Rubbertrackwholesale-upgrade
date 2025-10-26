@@ -347,16 +347,29 @@ const RubberTrackCompatibility = () => {
         {selectedTrackSize && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
-              <div className="p-6 border-b border-slate-700 flex justify-between items-center">
-                <div>
-                  <h3 className="text-2xl font-bold text-white">Track Size: {selectedTrackSize.size}</h3>
-                  <p className="text-slate-400 mt-1">
-                    Compatible with {compatibleMachines.length} machine{compatibleMachines.length !== 1 ? 's' : ''}
-                  </p>
+              <div className="p-6 border-b border-slate-700">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="text-3xl font-bold text-white mb-2">Track Size: {selectedTrackSize.size}</h3>
+                    <div className="flex items-center gap-4 text-slate-300">
+                      <div className="text-sm">
+                        <span className="text-slate-400">In inches:</span> {(selectedTrackSize.width / 25.4).toFixed(1)}" x {(selectedTrackSize.pitch / 25.4).toFixed(2)}" x {selectedTrackSize.links}
+                      </div>
+                      {selectedTrackSize.price && (
+                        <div className="bg-green-500 text-white px-4 py-2 rounded-lg">
+                          <div className="text-xs font-semibold">PRICE</div>
+                          <div className="text-2xl font-bold">${parseFloat(selectedTrackSize.price).toFixed(2)}</div>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-slate-400 mt-2">
+                      Compatible with {compatibleMachines.length} machine{compatibleMachines.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <button onClick={closeModal} className="text-slate-400 hover:text-white ml-4">
+                    <X className="h-6 w-6" />
+                  </button>
                 </div>
-                <button onClick={closeModal} className="text-slate-400 hover:text-white">
-                  <X className="h-6 w-6" />
-                </button>
               </div>
               
               <div className="p-6 overflow-y-auto max-h-[60vh]">
