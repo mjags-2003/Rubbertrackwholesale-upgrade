@@ -257,10 +257,156 @@ Kubota,69191-21300,idler,front,Kubota K008-3 U10-3 Tension Idler,K008-3;U10-3,`;
 
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Part Numbers Management</h1>
-        <p className="text-gray-600 mt-2">Manage rollers, sprockets & idlers by brand</p>
+      <div className="mb-6 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold">Part Numbers Management</h1>
+          <p className="text-gray-600 mt-2">Manage rollers, sprockets & idlers by brand</p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={downloadCSVTemplate} variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Download CSV Template
+          </Button>
+          <Button onClick={() => setShowCSVUpload(true)} variant="outline">
+            <Upload className="h-4 w-4 mr-2" />
+            Import CSV
+          </Button>
+          <Button onClick={() => setShowAddForm(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Part Manually
+          </Button>
+        </div>
       </div>
+
+      {/* CSV Upload Modal */}
+      {showCSVUpload && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-lg">
+            <CardHeader>
+              <CardTitle>Import Parts from CSV</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Upload a CSV file with columns: brand, part_number, part_type, part_subtype, product_name, compatible_models (semicolon-separated), price
+                  </p>
+                  <Input
+                    type="file"
+                    accept=".csv"
+                    onChange={(e) => setCsvFile(e.target.files[0])}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => { setShowCSVUpload(false); setCsvFile(null); }}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleCSVUpload}>
+                    Upload & Import
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Manual Add Form Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+          <Card className="w-full max-w-2xl m-4">
+            <CardHeader>
+              <CardTitle>Add Part Number Manually</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Brand</label>
+                  <Input
+                    value={newPart.brand}
+                    onChange={(e) => setNewPart({...newPart, brand: e.target.value})}
+                    placeholder="e.g., Kubota"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Part Number</label>
+                  <Input
+                    value={newPart.part_number}
+                    onChange={(e) => setNewPart({...newPart, part_number: e.target.value})}
+                    placeholder="e.g., 68493-21700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Part Type</label>
+                  <Select value={newPart.part_type} onValueChange={(val) => setNewPart({...newPart, part_type: val})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="roller">Roller</SelectItem>
+                      <SelectItem value="sprocket">Sprocket</SelectItem>
+                      <SelectItem value="idler">Idler</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Part Subtype (Optional)</label>
+                  <Input
+                    value={newPart.part_subtype}
+                    onChange={(e) => setNewPart({...newPart, part_subtype: e.target.value})}
+                    placeholder="e.g., bottom, top, front, rear"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium mb-2">Product Name</label>
+                  <Input
+                    value={newPart.product_name}
+                    onChange={(e) => setNewPart({...newPart, product_name: e.target.value})}
+                    placeholder="e.g., Kubota KH151 KH191 KX151 Roller"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Compatible Models (comma-separated)</label>
+                  <Input
+                    value={newPart.compatible_models}
+                    onChange={(e) => setNewPart({...newPart, compatible_models: e.target.value})}
+                    placeholder="e.g., KH151, KH191, KX151"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Price (Optional)</label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={newPart.price}
+                    onChange={(e) => setNewPart({...newPart, price: e.target.value})}
+                    placeholder="e.g., 299.99"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2 mt-6">
+                <Button variant="outline" onClick={() => {
+                  setShowAddForm(false);
+                  setNewPart({
+                    brand: '',
+                    part_number: '',
+                    part_type: 'roller',
+                    part_subtype: '',
+                    product_name: '',
+                    compatible_models: '',
+                    price: ''
+                  });
+                }}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddPart}>
+                  Add Part
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Filters */}
       <Card className="mb-6">
