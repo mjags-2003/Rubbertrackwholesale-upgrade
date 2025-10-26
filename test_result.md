@@ -174,9 +174,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Track Sizes API Endpoint"
-    - "Compatibility API Endpoint"
-    - "Compatibility Search API Endpoint"
+    - "Rubber Track Compatibility Chart Search Functionality"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
