@@ -21,19 +21,30 @@ const ProductsPage = () => {
   const [partNumbers, setPartNumbers] = useState([]);
   const [loadingParts, setLoadingParts] = useState(false);
 
-  // Fetch part numbers when search term changes
+  // Fetch part numbers when search term OR category changes
   useEffect(() => {
     if (searchTerm) {
-      fetchPartNumbers(searchTerm);
+      fetchPartNumbers(searchTerm, null);
+    } else if (selectedCategory !== 'all' && (selectedCategory === 'Rollers' || selectedCategory === 'Sprockets' || selectedCategory === 'Idlers')) {
+      // Fetch by part type when category is selected
+      const partType = selectedCategory.toLowerCase().slice(0, -1); // Remove 's' from end
+      fetchPartNumbers(null, partType);
     } else {
       setPartNumbers([]);
     }
-  }, [searchTerm]);
+  }, [searchTerm, selectedCategory]);
 
-  const fetchPartNumbers = async (query) => {
+  const fetchPartNumbers = async (query, partType) => {
     try {
       setLoadingParts(true);
-      const response = await axios.get(`${API}/api/part-numbers/search?query=${encodeURIComponent(query)}`);
+      let url = `${API}/api/part-numbers/search?`;
+      if (query) {
+        url += `query=${encodeURIComponent(query)}`;
+      }
+      if (partType) {
+        url += `part_type=${partType}`;
+      }
+      const response = await axios.get(url);
       setPartNumbers(response.data);
     } catch (error) {
       console.error('Failed to fetch part numbers:', error);
