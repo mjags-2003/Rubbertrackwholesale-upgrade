@@ -16,28 +16,29 @@ const ProductsPage = () => {
   const urlSearch = searchParams.get('search') || '';
   const [searchTerm, setSearchTerm] = useState(urlSearch);
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all');
+  const [selectedModel, setSelectedModel] = useState(searchParams.get('model') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('featured');
   const [partNumbers, setPartNumbers] = useState([]);
   const [loadingParts, setLoadingParts] = useState(false);
 
-  // Fetch part numbers when search term OR category changes OR brand changes
+  // Fetch part numbers when search term OR category changes OR brand changes OR model changes
   useEffect(() => {
     // Always fetch part numbers when there's any filter
-    if (searchTerm || selectedCategory !== 'all' || selectedBrand !== 'all') {
+    if (searchTerm || selectedCategory !== 'all' || selectedBrand !== 'all' || selectedModel) {
       let partType = null;
       if (selectedCategory === 'Rollers' || selectedCategory === 'Sprockets' || selectedCategory === 'Idlers') {
         partType = selectedCategory.toLowerCase().slice(0, -1); // Remove 's' from end
       }
       
       let brand = selectedBrand !== 'all' ? selectedBrand : null;
-      fetchPartNumbers(searchTerm || null, partType, brand);
+      fetchPartNumbers(searchTerm || null, partType, brand, selectedModel || null);
     } else {
       setPartNumbers([]);
     }
-  }, [searchTerm, selectedCategory, selectedBrand]);
+  }, [searchTerm, selectedCategory, selectedBrand, selectedModel]);
 
-  const fetchPartNumbers = async (query, partType, brand) => {
+  const fetchPartNumbers = async (query, partType, brand, model) => {
     try {
       setLoadingParts(true);
       let url = `${API}/api/part-numbers/search?`;
@@ -45,6 +46,7 @@ const ProductsPage = () => {
       if (query) params.push(`query=${encodeURIComponent(query)}`);
       if (partType) params.push(`part_type=${partType}`);
       if (brand) params.push(`brand=${encodeURIComponent(brand)}`);
+      if (model) params.push(`model=${encodeURIComponent(model)}`);
       
       url += params.join('&');
       const response = await axios.get(url);
