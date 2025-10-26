@@ -9,22 +9,45 @@ import { products, brands, categories } from '../mockData';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState('');
+  const urlSearch = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(urlSearch);
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('featured');
 
+  // Update searchTerm when URL changes
+  React.useEffect(() => {
+    setSearchTerm(urlSearch);
+  }, [urlSearch]);
+
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    // Search filter
+    // Search filter - enhanced for machine models
     if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(
-        (product) =>
-          product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.partNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.size.toLowerCase().includes(searchTerm.toLowerCase())
+        (product) => {
+          // Search in title, SKU, part number, size
+          const titleMatch = product.title.toLowerCase().includes(searchLower);
+          const skuMatch = product.sku.toLowerCase().includes(searchLower);
+          const partNumberMatch = product.partNumber.toLowerCase().includes(searchLower);
+          const sizeMatch = product.size.toLowerCase().includes(searchLower);
+          
+          // Also search in compatibleWith field if it exists (for machine models)
+          const compatibleMatch = product.compatibleWith ? 
+            product.compatibleWith.toLowerCase().includes(searchLower) : false;
+          
+          // Multi-word search for machine models (e.g., "cat 299d", "bobcat t190")
+          const searchWords = searchLower.split(/\s+/);
+          if (searchWords.length > 1) {
+            const titleWords = product.title.toLowerCase();
+            const allWordsMatch = searchWords.every(word => titleWords.includes(word));
+            if (allWordsMatch) return true;
+          }
+          
+          return titleMatch || skuMatch || partNumberMatch || sizeMatch || compatibleMatch;
+        }
       );
     }
 
