@@ -224,7 +224,7 @@ const ProductsPage = () => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
+        {filteredProducts.length === 0 && partNumbers.length === 0 ? (
           <div className="text-center py-16">
             <Filter className="h-16 w-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-2xl font-semibold text-slate-400 mb-2">
@@ -253,7 +253,77 @@ const ProductsPage = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <>
+            {/* Part Numbers Section (if any found) */}
+            {partNumbers.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Undercarriage Parts ({partNumbers.length})
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {partNumbers.map((part) => (
+                    <Card key={part.id} className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              part.part_type === 'roller' ? 'bg-blue-100 text-blue-800' :
+                              part.part_type === 'sprocket' ? 'bg-green-100 text-green-800' :
+                              'bg-purple-100 text-purple-800'
+                            }`}>
+                              {part.part_type}
+                            </span>
+                            {part.part_subtype && (
+                              <span className="ml-2 px-2 py-1 rounded text-xs bg-gray-200 text-gray-700">
+                                {part.part_subtype}
+                              </span>
+                            )}
+                          </div>
+                          {part.price && (
+                            <span className="text-orange-500 font-bold text-lg">
+                              ${part.price.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="text-white font-semibold mb-2">
+                          Part # {part.part_number}
+                        </h3>
+                        <p className="text-slate-400 text-sm mb-3">
+                          {part.brand} - {part.product_name}
+                        </p>
+                        {part.compatible_models.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {part.compatible_models.slice(0, 4).map((model, idx) => (
+                              <span key={idx} className="px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-xs">
+                                {model}
+                              </span>
+                            ))}
+                            {part.compatible_models.length > 4 && (
+                              <span className="text-xs text-slate-500">+{part.compatible_models.length - 4} more</span>
+                            )}
+                          </div>
+                        )}
+                        <Link to="/contact">
+                          <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                            Request Quote
+                          </Button>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Regular Products */}
+            {filteredProducts.length > 0 && (
+              <>
+                {partNumbers.length > 0 && (
+                  <h2 className="text-2xl font-bold text-white mb-4 mt-8">
+                    Rubber Tracks & Other Products ({filteredProducts.length})
+                  </h2>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
               <Card key={product.id} className="bg-slate-900 border-slate-800 hover:border-orange-500 transition-all duration-300 group">
                 <CardContent className="p-0">
