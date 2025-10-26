@@ -99,7 +99,7 @@ async def ensure_track_size_exists(size_str):
             'pitch': pitch,
             'links': links,
             'price': None,  # Price not available
-            'is_in_stock': True,  # Default to in stock
+            'is_in_stock': False,  # Default to not in stock - admin must manually enable
             'is_active': True  # Required for public API
         }
         await track_sizes_collection.insert_one(track_size_doc)
