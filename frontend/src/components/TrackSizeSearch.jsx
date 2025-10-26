@@ -160,7 +160,7 @@ const TrackSizeSearch = () => {
                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                 }`}
               >
-                {width}mm Width
+                {width}{unit === 'mm' ? 'mm' : '"'} Width
               </button>
             ))}
           </div>
