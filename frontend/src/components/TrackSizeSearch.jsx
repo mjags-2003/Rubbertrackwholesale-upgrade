@@ -10,6 +10,7 @@ const TrackSizeSearch = () => {
   const [groupedSizes, setGroupedSizes] = useState({});
   const [selectedWidth, setSelectedWidth] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [unit, setUnit] = useState('mm'); // 'mm' or 'inches'
 
   useEffect(() => {
     fetchTrackSizes();
