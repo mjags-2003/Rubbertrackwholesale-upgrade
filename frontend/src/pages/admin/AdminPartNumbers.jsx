@@ -358,7 +358,7 @@ Kubota,69191-21300,idler,front,Kubota K008-3 U10-3 Tension Idler,K008-3;U10-3,`;
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium mb-2">Product Name</label>
+                  <label className="block text-sm font-medium mb-2">Compatible With These Machines</label>
                   <Input
                     value={newPart.product_name}
                     onChange={(e) => setNewPart({...newPart, product_name: e.target.value})}
