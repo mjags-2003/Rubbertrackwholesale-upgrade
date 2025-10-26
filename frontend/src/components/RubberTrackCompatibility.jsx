@@ -179,21 +179,41 @@ const RubberTrackCompatibility = () => {
                         <div className="bg-slate-800 rounded p-3">
                           <div className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">All Compatible Sizes:</div>
                           <div className="flex flex-wrap gap-2">
-                            {machine.track_sizes.map((size, sizeIdx) => (
-                              <button
-                                key={sizeIdx}
-                                onClick={() => {
-                                  // Find this track size and show its details
-                                  const trackSize = trackSizes.find(ts => ts.size === size);
-                                  if (trackSize) {
-                                    handleTrackSizeClick(trackSize);
-                                  }
-                                }}
-                                className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md text-white font-bold font-mono text-base transition-all hover:scale-105"
-                              >
-                                {size}
-                              </button>
-                            ))}
+                            {machine.track_sizes.map((size, sizeIdx) => {
+                              // Find track size details including price
+                              const trackSizeDetails = trackSizes.find(ts => ts.size === size);
+                              const widthInches = trackSizeDetails ? (trackSizeDetails.width / 25.4).toFixed(1) : '';
+                              const pitchInches = trackSizeDetails ? (trackSizeDetails.pitch / 25.4).toFixed(2) : '';
+                              const links = trackSizeDetails ? trackSizeDetails.links : '';
+                              const inchSize = widthInches && pitchInches && links ? `${widthInches}"x${pitchInches}"x${links}` : '';
+                              const price = trackSizeDetails?.price;
+                              
+                              return (
+                                <div key={sizeIdx} className="flex flex-col">
+                                  <button
+                                    onClick={() => {
+                                      const trackSize = trackSizes.find(ts => ts.size === size);
+                                      if (trackSize) {
+                                        handleTrackSizeClick(trackSize);
+                                      }
+                                    }}
+                                    className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md text-white font-bold font-mono text-base transition-all hover:scale-105"
+                                  >
+                                    {size}
+                                  </button>
+                                  {inchSize && (
+                                    <div className="text-xs text-slate-400 mt-1 text-center font-mono">
+                                      {inchSize}
+                                    </div>
+                                  )}
+                                  {price && (
+                                    <div className="text-sm text-green-400 font-bold mt-1 text-center">
+                                      ${parseFloat(price).toFixed(2)}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
