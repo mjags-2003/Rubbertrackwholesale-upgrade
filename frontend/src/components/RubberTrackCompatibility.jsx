@@ -16,6 +16,7 @@ const RubberTrackCompatibility = () => {
   const [loading, setLoading] = useState(true);
   const [unit, setUnit] = useState('mm');
   const [searchQuery, setSearchQuery] = useState('');
+  const [revealedPrices, setRevealedPrices] = useState(new Set()); // Track which prices are revealed
 
   useEffect(() => {
     fetchData();
