@@ -184,7 +184,7 @@ const RubberTrackCompatibility = () => {
                         </div>
                         <div className="bg-slate-800 rounded p-3">
                           <div className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">All Compatible Sizes:</div>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap gap-3">
                             {machine.track_sizes.map((size, sizeIdx) => {
                               // Find track size details including price
                               const trackSizeDetails = trackSizes.find(ts => ts.size === size);
@@ -193,9 +193,10 @@ const RubberTrackCompatibility = () => {
                               const links = trackSizeDetails ? trackSizeDetails.links : '';
                               const inchSize = widthInches && pitchInches && links ? `${widthInches}"x${pitchInches}"x${links}` : '';
                               const price = trackSizeDetails?.price;
+                              const isPriceRevealed = revealedPrices.has(size);
                               
                               return (
-                                <div key={sizeIdx} className="flex flex-col">
+                                <div key={sizeIdx} className="flex flex-col bg-slate-700 rounded-lg p-3 hover:bg-slate-650 transition">
                                   <button
                                     onClick={() => {
                                       const trackSize = trackSizes.find(ts => ts.size === size);
@@ -203,18 +204,31 @@ const RubberTrackCompatibility = () => {
                                         handleTrackSizeClick(trackSize);
                                       }
                                     }}
-                                    className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md text-white font-bold font-mono text-base transition-all hover:scale-105"
+                                    className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md text-white font-bold font-mono text-base transition-all hover:scale-105 mb-1"
                                   >
                                     {size}
                                   </button>
                                   {inchSize && (
-                                    <div className="text-xs text-slate-400 mt-1 text-center font-mono">
+                                    <div className="text-xs text-slate-400 text-center font-mono mb-2">
                                       {inchSize}
                                     </div>
                                   )}
-                                  {price && (
-                                    <div className="text-sm text-green-400 font-bold mt-1 text-center">
-                                      ${parseFloat(price).toFixed(2)}
+                                  {price ? (
+                                    isPriceRevealed ? (
+                                      <div className="text-lg text-green-400 font-bold text-center bg-slate-800 rounded py-2">
+                                        ${parseFloat(price).toFixed(2)}
+                                      </div>
+                                    ) : (
+                                      <button
+                                        onClick={(e) => handleRevealPrice(size, e)}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded transition-all hover:scale-105"
+                                      >
+                                        Request Price Quote
+                                      </button>
+                                    )
+                                  ) : (
+                                    <div className="text-xs text-slate-500 text-center py-2">
+                                      Contact for pricing
                                     </div>
                                   )}
                                 </div>
