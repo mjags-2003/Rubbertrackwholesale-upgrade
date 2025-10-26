@@ -52,6 +52,7 @@ class TrackSize(BaseModel):
     width: Optional[float] = None  # Width in mm
     pitch: Optional[float] = None  # Pitch in mm
     links: Optional[int] = None  # Number of links
+    price: Optional[float] = None  # Selling price in USD
     description: Optional[str] = None
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
