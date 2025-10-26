@@ -243,6 +243,7 @@ const AdminTrackSizes = () => {
                   <th className="text-left text-slate-300 py-3 px-4">Width</th>
                   <th className="text-left text-slate-300 py-3 px-4">Pitch</th>
                   <th className="text-left text-slate-300 py-3 px-4">Links</th>
+                  <th className="text-left text-slate-300 py-3 px-4">Price</th>
                   <th className="text-left text-slate-300 py-3 px-4">Status</th>
                   <th className="text-right text-slate-300 py-3 px-4">Actions</th>
                 </tr>
@@ -254,6 +255,9 @@ const AdminTrackSizes = () => {
                     <td className="py-3 px-4 text-slate-300">{trackSize.width ? `${trackSize.width}mm` : '-'}</td>
                     <td className="py-3 px-4 text-slate-300">{trackSize.pitch ? `${trackSize.pitch}mm` : '-'}</td>
                     <td className="py-3 px-4 text-slate-300">{trackSize.links || '-'}</td>
+                    <td className="py-3 px-4 text-green-400 font-semibold">
+                      {trackSize.price ? `$${parseFloat(trackSize.price).toFixed(2)}` : '-'}
+                    </td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-xs ${
                         trackSize.is_active 
