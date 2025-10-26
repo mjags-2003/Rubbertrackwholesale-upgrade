@@ -37,7 +37,9 @@ const ProductsPage = () => {
       
       // If searching for Rubber Tracks with brand and model, also fetch compatibility data
       if (selectedCategory === 'Rubber Tracks' && brand && selectedModel) {
-        fetchTrackCompatibility(brand, selectedModel);
+        // Normalize brand name for compatibility API (e.g., "Caterpillar" -> "CAT")
+        const normalizedBrand = normalizeBrandName(brand);
+        fetchTrackCompatibility(normalizedBrand, selectedModel);
       } else {
         setTrackCompatibility([]);
       }
