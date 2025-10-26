@@ -67,6 +67,7 @@ function App() {
               <Route path="machine-models" element={<AdminMachineModels />} />
               <Route path="track-sizes" element={<AdminTrackSizes />} />
               <Route path="compatibility" element={<AdminCompatibility />} />
+              <Route path="part-numbers" element={<AdminPartNumbers />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="pages" element={<AdminPages />} />
               <Route path="sections" element={<AdminSections />} />
