@@ -114,6 +114,47 @@ const AdminTrackSizes = () => {
     setShowForm(true);
   };
 
+  const handleQuickPriceUpdate = (trackSize) => {
+    setQuickPriceData({
+      trackSizeId: trackSize.id,
+      size: trackSize.size,
+      price: trackSize.price || ''
+    });
+    setShowQuickPriceForm(true);
+  };
+
+  const submitQuickPrice = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('admin_token');
+      const trackSize = trackSizes.find(ts => ts.id === quickPriceData.trackSizeId);
+      
+      const updateData = {
+        ...trackSize,
+        price: parseFloat(quickPriceData.price)
+      };
+      
+      await axios.put(`${API}/api/admin/track-sizes/${quickPriceData.trackSizeId}`, updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast({
+        title: "Success",
+        description: `Price $${quickPriceData.price} set for ${quickPriceData.size}. This price will now show for all machines using this track size.`
+      });
+      
+      fetchTrackSizes();
+      setShowQuickPriceForm(false);
+      setQuickPriceData({ trackSizeId: '', size: '', price: '' });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Failed to update price",
+        variant: "destructive"
+      });
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       size: '',
