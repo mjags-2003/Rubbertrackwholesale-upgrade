@@ -44,6 +44,7 @@ async def init_db():
     # Allow same model_name for different equipment_types (e.g., Wacker Neuson 3503 for both Track Loader and Mini Excavator)
     await machine_models_collection.create_index([("brand", 1), ("model_name", 1), ("equipment_type", 1)], unique=True)
     await track_sizes_collection.create_index("size", unique=True)
+    await compatibility_collection.create_index([("make", 1), ("model", 1)], unique=True)
     await categories_collection.create_index("slug", unique=True)
     
     await customers_collection.create_index("email", unique=True)
