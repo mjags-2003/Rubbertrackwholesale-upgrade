@@ -107,11 +107,11 @@ user_problem_statement: "Test the Rubber Track Compatibility Chart feature on th
 frontend:
   - task: "Rubber Track Compatibility Chart Search Functionality"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/frontend/src/components/RubberTrackCompatibility.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "testing"
