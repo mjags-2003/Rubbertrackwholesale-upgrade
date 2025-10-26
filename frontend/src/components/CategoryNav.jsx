@@ -101,7 +101,10 @@ const CategoryNav = () => {
     if (selectedModel) params.push(`model=${encodeURIComponent(selectedModel)}`);
     
     // Part type specific parameters
-    if (selectedPartType === 'rollers') {
+    if (selectedPartType === 'rubber_tracks') {
+      params.push(`category=Rubber Tracks`);
+      if (selectedTrackSize) params.push(`track_size=${encodeURIComponent(selectedTrackSize)}`);
+    } else if (selectedPartType === 'rollers') {
       params.push(`category=Rollers`);
       if (rollerType !== 'both') params.push(`roller_type=${rollerType}`);
     } else if (selectedPartType === 'idlers') {
@@ -110,8 +113,6 @@ const CategoryNav = () => {
     } else if (selectedPartType === 'sprockets') {
       params.push(`category=Sprockets`);
     }
-    
-    if (selectedTrackSize) params.push(`track_size=${encodeURIComponent(selectedTrackSize)}`);
     
     return url + params.join('&');
   };
