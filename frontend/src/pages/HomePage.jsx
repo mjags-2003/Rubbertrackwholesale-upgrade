@@ -94,8 +94,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Track Size Search - REPLACES duplicate Shop by Brand */}
-      <TrackSizeSearch />
+      {/* Rubber Track Compatibility Chart */}
+      <RubberTrackCompatibility />
 
       {/* Featured Products */}
       <section className="py-16 bg-slate-900">
