@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
 import { Search, X, Check } from 'lucide-react';
 import axios from 'axios';
+import { searchWithBrandAliases } from '../utils/brandMapping';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
