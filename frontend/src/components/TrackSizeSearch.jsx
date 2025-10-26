@@ -105,9 +105,46 @@ const TrackSizeSearch = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-white mb-4">Find Rubber Track by Track Size</h2>
-          <p className="text-slate-300 text-lg max-w-3xl mx-auto">
+          <p className="text-slate-300 text-lg max-w-3xl mx-auto mb-6">
             Browse our complete selection of rubber tracks organized by width. Select a width to view all available sizes.
           </p>
+          
+          {/* Unit Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <span className="text-slate-400">View sizes in:</span>
+            <div className="flex bg-slate-800 rounded-lg p-1">
+              <button
+                onClick={() => {
+                  setUnit('mm');
+                  // Reset to first width in mm
+                  const widthsMM = Object.keys(groupedSizes.mm || {}).sort((a, b) => parseInt(a) - parseInt(b));
+                  if (widthsMM.length > 0) setSelectedWidth(widthsMM[0]);
+                }}
+                className={`px-6 py-2 rounded-md font-semibold transition-all ${
+                  unit === 'mm'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                Millimeters (mm)
+              </button>
+              <button
+                onClick={() => {
+                  setUnit('inches');
+                  // Reset to first width in inches
+                  const widthsInches = Object.keys(groupedSizes.inches || {}).sort((a, b) => parseInt(a) - parseInt(b));
+                  if (widthsInches.length > 0) setSelectedWidth(widthsInches[0]);
+                }}
+                className={`px-6 py-2 rounded-md font-semibold transition-all ${
+                  unit === 'inches'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-slate-300 hover:text-white'
+                }`}
+              >
+                Inches (in)
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Width Tabs */}
