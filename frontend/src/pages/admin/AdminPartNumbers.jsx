@@ -114,6 +114,26 @@ const AdminPartNumbers = () => {
     }
   };
 
+  const handleToggleStock = async (partId, currentStatus) => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      await axios.put(
+        `${API}/api/admin/part-numbers/${partId}`,
+        { is_in_stock: !currentStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Update local state
+      setPartNumbers(partNumbers.map(part =>
+        part.id === partId ? { ...part, is_in_stock: !currentStatus } : part
+      ));
+      alert(`Item marked as ${!currentStatus ? 'IN STOCK' : 'OUT OF STOCK'}`);
+    } catch (error) {
+      console.error('Failed to update stock status:', error);
+      alert('Failed to update stock status');
+    }
+  };
+
   const handleDeletePart = async (partId) => {
     if (!window.confirm('Are you sure you want to delete this part number?')) return;
 
