@@ -358,3 +358,26 @@ class ContactMessage(BaseModel):
         populate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+# Part Number Model (for rollers, sprockets, idlers organized by brand)
+class PartNumber(BaseModel):
+    id: str  # UUID
+    brand: str  # Brand name (e.g., "Kubota", "Bobcat")
+    part_number: str  # Part number (e.g., "68621-14430", "RB511-21702")
+    part_type: str  # "roller", "sprocket", "idler"
+    part_subtype: Optional[str] = None  # "bottom", "top", "front", "rear", etc.
+    product_name: str  # Full product name
+    compatible_models: List[str] = []  # List of compatible machine models
+    price: Optional[float] = None  # Selling price
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
