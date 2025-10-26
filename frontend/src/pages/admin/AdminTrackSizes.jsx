@@ -172,7 +172,7 @@ const AdminTrackSizes = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-slate-300 mb-2">Size (e.g., 300x55x82)</label>
+                <label className="block text-slate-300 mb-2">Size (e.g., 300x55x82) - in mm</label>
                 <input
                   type="text"
                   value={formData.size}
@@ -181,6 +181,19 @@ const AdminTrackSizes = () => {
                   required
                   placeholder="300x55x82"
                 />
+              </div>
+              
+              <div>
+                <label className="block text-slate-300 mb-2">Selling Price (USD)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-2"
+                  placeholder="1050.00"
+                />
+                <p className="text-xs text-slate-400 mt-1">This price will be shown for all machines using this track size</p>
               </div>
               
               <div>
