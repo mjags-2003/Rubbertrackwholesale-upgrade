@@ -514,6 +514,7 @@ Kubota,69191-21300,idler,front,Fits: Kubota K008-3 U10-3 Tension Idler,K008-3;U1
                     <th className="text-left p-3">Compatible With These Machines</th>
                     <th className="text-left p-3">Compatible Models</th>
                     <th className="text-left p-3">Price</th>
+                    <th className="text-left p-3">In Stock</th>
                     <th className="text-right p-3">Actions</th>
                   </tr>
                 </thead>
