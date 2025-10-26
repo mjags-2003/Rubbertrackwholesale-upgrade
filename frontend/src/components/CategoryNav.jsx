@@ -371,7 +371,7 @@ const CategoryNav = () => {
                 onChange={(e) => setSelectedTrackSize(e.target.value)}
                 className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-3 focus:outline-none focus:border-orange-500"
               >
-                <option value="">All Sizes</option>
+                <option value="">Select Track Size</option>
                 {trackSizes.slice(0, 50).map(ts => {
                   let displaySize = ts.size;
                   if (trackSizeUnit === 'inches' && ts.width && ts.pitch) {
@@ -388,6 +388,7 @@ const CategoryNav = () => {
                 )}
               </select>
             </div>
+            )}
 
             {/* Search Button */}
             <div className="flex justify-center">
