@@ -562,6 +562,38 @@ async def search_public_compatibility(
     query = {"is_active": True}
     
     if make:
+
+
+# ==================== Part Numbers (Public) ====================
+
+@router.get("/part-numbers/search")
+async def search_public_part_numbers(
+    query: Optional[str] = None,
+    brand: Optional[str] = None,
+    part_type: Optional[str] = None
+):
+    """Search part numbers by query string, brand, or part type (public endpoint)"""
+    from database import part_numbers_collection
+    
+    search_query = {"is_active": True}
+    
+    if brand:
+        search_query["brand"] = {"$regex": brand, "$options": "i"}
+    if part_type:
+        search_query["part_type"] = part_type
+    
+    # If query provided, search in part_number, product_name, and compatible_models
+    if query:
+        search_query["$or"] = [
+            {"part_number": {"$regex": query, "$options": "i"}},
+            {"product_name": {"$regex": query, "$options": "i"}},
+            {"compatible_models": {"$regex": query, "$options": "i"}},
+            {"brand": {"$regex": query, "$options": "i"}}
+        ]
+    
+    part_numbers = await part_numbers_collection.find(search_query).sort([("brand", 1), ("part_number", 1)]).to_list(length=500)
+    return [serialize_doc(part) for part in part_numbers]
+
         query["make"] = {"$regex": make, "$options": "i"}
     if model:
         query["model"] = {"$regex": model, "$options": "i"}
