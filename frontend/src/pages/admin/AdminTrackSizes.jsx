@@ -317,6 +317,13 @@ const AdminTrackSizes = () => {
                     <td className="py-3 px-4 text-right">
                       <div className="flex justify-end gap-2">
                         <Button
+                          onClick={() => handleQuickPriceUpdate(trackSize)}
+                          className="bg-green-500 hover:bg-green-600 h-8 px-3"
+                          title="Set/Edit Price"
+                        >
+                          <span className="font-bold">$</span>
+                        </Button>
+                        <Button
                           onClick={() => handleEdit(trackSize)}
                           className="bg-blue-500 hover:bg-blue-600 h-8 px-3"
                         >
