@@ -9,9 +9,13 @@ const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const AdminTrackSizes = () => {
   const [trackSizes, setTrackSizes] = useState([]);
+  const [filteredTrackSizes, setFilteredTrackSizes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [editingPriceId, setEditingPriceId] = useState(null);
+  const [editingPrice, setEditingPrice] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [showQuickPriceForm, setShowQuickPriceForm] = useState(false);
   const [quickPriceData, setQuickPriceData] = useState({
     trackSizeId: '',
