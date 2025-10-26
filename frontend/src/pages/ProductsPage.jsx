@@ -24,30 +24,43 @@ const ProductsPage = () => {
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    // Search filter - enhanced for machine models
+    // Search filter - enhanced for machine models with brand aliases
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase().trim();
+      const searchWords = searchLower.split(/\s+/);
+      
+      // Try to normalize first word as a brand (e.g., "caterpillar" -> "CAT")
+      const normalizedFirstWord = normalizeBrandName(searchWords[0]);
+      
       filtered = filtered.filter(
         (product) => {
           // Search in title, SKU, part number, size
-          const titleMatch = product.title.toLowerCase().includes(searchLower);
+          const titleLower = product.title.toLowerCase();
           const skuMatch = product.sku.toLowerCase().includes(searchLower);
           const partNumberMatch = product.partNumber.toLowerCase().includes(searchLower);
           const sizeMatch = product.size.toLowerCase().includes(searchLower);
           
+          // Direct title match
+          if (titleLower.includes(searchLower)) return true;
+          
           // Also search in compatibleWith field if it exists (for machine models)
           const compatibleMatch = product.compatibleWith ? 
             product.compatibleWith.toLowerCase().includes(searchLower) : false;
+          if (compatibleMatch) return true;
           
-          // Multi-word search for machine models (e.g., "cat 299d", "bobcat t190")
-          const searchWords = searchLower.split(/\s+/);
+          // Multi-word search with brand normalization (e.g., "caterpillar 299d" finds "CAT 299D")
           if (searchWords.length > 1) {
-            const titleWords = product.title.toLowerCase();
-            const allWordsMatch = searchWords.every(word => titleWords.includes(word));
+            // Check if normalized brand + remaining words match
+            const remainingWords = searchWords.slice(1).join(' ');
+            const normalizedSearch = `${normalizedFirstWord} ${remainingWords}`.toLowerCase();
+            if (titleLower.includes(normalizedSearch)) return true;
+            
+            // Also try all words in title
+            const allWordsMatch = searchWords.every(word => titleLower.includes(word));
             if (allWordsMatch) return true;
           }
           
-          return titleMatch || skuMatch || partNumberMatch || sizeMatch || compatibleMatch;
+          return skuMatch || partNumberMatch || sizeMatch;
         }
       );
     }
