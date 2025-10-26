@@ -439,7 +439,7 @@ def test_additional_search_scenarios():
 
 def main():
     """Run all backend API tests"""
-    print("🚀 Starting Backend API Tests for Rubber Track Compatibility Chart")
+    print("🚀 Starting Backend API Tests for Track Loader Compatibility Data")
     print("=" * 70)
     
     test_results = []
@@ -448,6 +448,8 @@ def main():
     test_results.append(("Track Sizes API", test_track_sizes_api()))
     test_results.append(("Compatibility API", test_compatibility_api()))
     test_results.append(("Compatibility Search API", test_compatibility_search_api()))
+    test_results.append(("Track Loader Compatibility", test_track_loader_compatibility()))
+    test_results.append(("Track Sizes Verification", test_track_sizes_verification()))
     test_results.append(("Data Consistency", test_data_consistency()))
     test_results.append(("Additional Search Scenarios", test_additional_search_scenarios()))
     
@@ -461,14 +463,14 @@ def main():
     
     for test_name, result in test_results:
         status = "✅ PASSED" if result else "❌ FAILED"
-        print(f"{test_name:<30} {status}")
+        print(f"{test_name:<35} {status}")
         if result:
             passed_tests += 1
     
     print(f"\nOverall Result: {passed_tests}/{total_tests} tests passed")
     
     if passed_tests == total_tests:
-        print("🎉 All tests passed! The Rubber Track Compatibility Chart APIs are working correctly.")
+        print("🎉 All tests passed! The Track Loader Compatibility Data is working correctly.")
         return 0
     else:
         print("⚠️  Some tests failed. Please check the detailed output above.")
