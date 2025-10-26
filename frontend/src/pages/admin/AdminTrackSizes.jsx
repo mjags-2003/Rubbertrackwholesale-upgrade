@@ -34,6 +34,18 @@ const AdminTrackSizes = () => {
     fetchTrackSizes();
   }, []);
 
+  useEffect(() => {
+    // Filter track sizes based on search query
+    if (searchQuery) {
+      const filtered = trackSizes.filter(ts =>
+        ts.size.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredTrackSizes(filtered);
+    } else {
+      setFilteredTrackSizes(trackSizes);
+    }
+  }, [searchQuery, trackSizes]);
+
   const fetchTrackSizes = async () => {
     setLoading(true);
     try {
