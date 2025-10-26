@@ -212,8 +212,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Homepage Main Search Bar Comprehensive Testing"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
