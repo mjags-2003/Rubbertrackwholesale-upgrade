@@ -274,7 +274,7 @@ const ProductsPage = () => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 && partNumbers.length === 0 ? (
+        {filteredProducts.length === 0 && partNumbers.length === 0 && trackCompatibility.length === 0 ? (
           <div className="text-center py-16">
             <Filter className="h-16 w-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-2xl font-semibold text-slate-400 mb-2">
