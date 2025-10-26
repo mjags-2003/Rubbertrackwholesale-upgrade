@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Filter, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -7,6 +7,9 @@ import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { products, brands, categories } from '../mockData';
 import { normalizeBrandName } from '../utils/brandMapping';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +18,30 @@ const ProductsPage = () => {
   const [selectedBrand, setSelectedBrand] = useState(searchParams.get('brand') || 'all');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState('featured');
+  const [partNumbers, setPartNumbers] = useState([]);
+  const [loadingParts, setLoadingParts] = useState(false);
+
+  // Fetch part numbers when search term changes
+  useEffect(() => {
+    if (searchTerm) {
+      fetchPartNumbers(searchTerm);
+    } else {
+      setPartNumbers([]);
+    }
+  }, [searchTerm]);
+
+  const fetchPartNumbers = async (query) => {
+    try {
+      setLoadingParts(true);
+      const response = await axios.get(`${API}/api/part-numbers/search?query=${encodeURIComponent(query)}`);
+      setPartNumbers(response.data);
+    } catch (error) {
+      console.error('Failed to fetch part numbers:', error);
+      setPartNumbers([]);
+    } finally {
+      setLoadingParts(false);
+    }
+  };
 
   // Update searchTerm when URL changes
   React.useEffect(() => {
