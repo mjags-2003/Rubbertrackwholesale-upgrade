@@ -12,6 +12,12 @@ const AdminTrackSizes = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [showQuickPriceForm, setShowQuickPriceForm] = useState(false);
+  const [quickPriceData, setQuickPriceData] = useState({
+    trackSizeId: '',
+    size: '',
+    price: ''
+  });
   const [formData, setFormData] = useState({
     size: '',
     price: '',
