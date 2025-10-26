@@ -195,16 +195,48 @@ const CategoryNav = () => {
 
               {/* Track Size */}
               <div>
-                <label className="block text-slate-300 mb-2 font-semibold">Track Size (Optional)</label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-slate-300 font-semibold">Track Size (Optional)</label>
+                  <div className="flex gap-1 text-xs">
+                    <button
+                      onClick={() => setTrackSizeUnit('mm')}
+                      className={`px-2 py-1 rounded ${
+                        trackSizeUnit === 'mm'
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-slate-600 text-slate-300 hover:bg-slate-500'
+                      }`}
+                    >
+                      mm
+                    </button>
+                    <button
+                      onClick={() => setTrackSizeUnit('inches')}
+                      className={`px-2 py-1 rounded ${
+                        trackSizeUnit === 'inches'
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-slate-600 text-slate-300 hover:bg-slate-500'
+                      }`}
+                    >
+                      in
+                    </button>
+                  </div>
+                </div>
                 <select
                   value={selectedTrackSize}
                   onChange={(e) => setSelectedTrackSize(e.target.value)}
                   className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-4 py-3 focus:outline-none focus:border-orange-500"
                 >
                   <option value="">All Sizes</option>
-                  {trackSizes.slice(0, 50).map(ts => (
-                    <option key={ts.id} value={ts.size}>{ts.size}</option>
-                  ))}
+                  {trackSizes.slice(0, 50).map(ts => {
+                    let displaySize = ts.size;
+                    if (trackSizeUnit === 'inches' && ts.width && ts.pitch) {
+                      const widthInches = (ts.width / 25.4).toFixed(1);
+                      const pitchInches = (ts.pitch / 25.4).toFixed(2);
+                      displaySize = `${widthInches}x${pitchInches}x${ts.links} (${ts.size}mm)`;
+                    }
+                    return (
+                      <option key={ts.id} value={ts.size}>{displaySize}</option>
+                    );
+                  })}
                   {trackSizes.length > 50 && (
                     <option disabled>... and {trackSizes.length - 50} more</option>
                   )}
