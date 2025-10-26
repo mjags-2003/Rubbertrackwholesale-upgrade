@@ -7,10 +7,10 @@ import io
 from models import (
     Product, Brand, Category, Order, Customer, 
     AdminUser, ContactMessage, Page, Section, Redirect, Review, FAQ,
-    BlogCategory, Blog, MachineModel
+    BlogCategory, Blog, MachineModel, TrackSize
 )
 from database import (
-    products_collection, brands_collection, machine_models_collection, categories_collection,
+    products_collection, brands_collection, machine_models_collection, track_sizes_collection, categories_collection,
     orders_collection, customers_collection, admin_users_collection,
     contact_messages_collection, sections_collection
 )
