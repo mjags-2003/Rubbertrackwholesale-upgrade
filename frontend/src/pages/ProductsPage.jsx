@@ -321,7 +321,7 @@ const ProductsPage = () => {
                         )}
                         <Link to="/contact">
                           <Button className="w-full bg-orange-500 hover:bg-orange-600">
-                            Request Quote
+                            {part.price ? 'Request Quote' : 'Contact for Price'}
                           </Button>
                         </Link>
                       </CardContent>
