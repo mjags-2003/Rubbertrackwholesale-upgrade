@@ -131,6 +131,105 @@ const AdminPartNumbers = () => {
     }
   };
 
+  const handleAddPart = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const compatible = newPart.compatible_models.split(',').map(m => m.trim()).filter(m => m);
+      
+      await axios.post(
+        `${API}/api/admin/part-numbers`,
+        {
+          ...newPart,
+          compatible_models: compatible,
+          price: newPart.price ? parseFloat(newPart.price) : null
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert('Part added successfully!');
+      setShowAddForm(false);
+      setNewPart({
+        brand: '',
+        part_number: '',
+        part_type: 'roller',
+        part_subtype: '',
+        product_name: '',
+        compatible_models: '',
+        price: ''
+      });
+      fetchPartNumbers();
+    } catch (error) {
+      console.error('Failed to add part:', error);
+      alert('Failed to add part: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const handleCSVUpload = async () => {
+    if (!csvFile) {
+      alert('Please select a CSV file');
+      return;
+    }
+
+    try {
+      const text = await csvFile.text();
+      const lines = text.split('\n').filter(line => line.trim());
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      const token = localStorage.getItem('admin_token');
+      let successCount = 0;
+      let errorCount = 0;
+      
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length < 4) continue;
+        
+        const part = {
+          brand: values[0] || '',
+          part_number: values[1] || '',
+          part_type: values[2]?.toLowerCase() || 'roller',
+          part_subtype: values[3] || null,
+          product_name: values[4] || '',
+          compatible_models: values[5] ? values[5].split(';').map(m => m.trim()) : [],
+          price: values[6] ? parseFloat(values[6]) : null
+        };
+        
+        try {
+          await axios.post(`${API}/api/admin/part-numbers`, part, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          successCount++;
+        } catch (error) {
+          console.error(`Failed to import row ${i}:`, error);
+          errorCount++;
+        }
+      }
+      
+      alert(`CSV Import Complete!\nSuccess: ${successCount}\nErrors: ${errorCount}`);
+      setShowCSVUpload(false);
+      setCsvFile(null);
+      fetchBrands();
+      fetchPartNumbers();
+    } catch (error) {
+      console.error('Failed to process CSV:', error);
+      alert('Failed to process CSV file');
+    }
+  };
+
+  const downloadCSVTemplate = () => {
+    const template = `brand,part_number,part_type,part_subtype,product_name,compatible_models,price
+Kubota,68493-21700,roller,bottom,Kubota KH151 KH191 KX151 Roller,KH151;KH191;KX151,
+Kubota,68621-14430,sprocket,,Kubota KX 91-2 Sprocket,KX 91-2,
+Kubota,69191-21300,idler,front,Kubota K008-3 U10-3 Tension Idler,K008-3;U10-3,`;
+    
+    const blob = new Blob([template], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'part_numbers_template.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const getPartTypeColor = (partType) => {
     switch (partType) {
       case 'roller': return 'bg-blue-100 text-blue-800';
