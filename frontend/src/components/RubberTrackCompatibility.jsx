@@ -144,19 +144,51 @@ const RubberTrackCompatibility = () => {
             
             {/* Search Results */}
             {searchQuery && filteredMachines.length > 0 && (
-              <div className="mt-4 bg-slate-800 border border-slate-700 rounded-lg max-h-96 overflow-y-auto">
+              <div className="mt-4 bg-slate-800 border border-orange-500 rounded-lg max-h-96 overflow-y-auto shadow-lg">
                 <div className="p-4">
-                  <div className="text-sm text-slate-400 mb-2">Found {filteredMachines.length} machines</div>
+                  <div className="text-sm font-semibold text-orange-500 mb-3">
+                    Found {filteredMachines.length} machine{filteredMachines.length !== 1 ? 's' : ''} matching "{searchQuery}"
+                  </div>
                   <div className="space-y-2">
                     {filteredMachines.slice(0, 20).map((machine, idx) => (
-                      <div key={idx} className="bg-slate-700 rounded p-3 hover:bg-slate-600">
-                        <div className="text-white font-semibold">{machine.make} {machine.model}</div>
-                        <div className="text-sm text-slate-300 mt-1">
-                          Compatible sizes: {machine.track_sizes.join(', ')}
+                      <div key={idx} className="bg-slate-700 rounded-lg p-4 hover:bg-slate-600 transition">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <div className="text-white font-bold text-lg">
+                              {machine.make} {machine.model}
+                            </div>
+                          </div>
+                          <div className="text-orange-500 text-sm font-semibold">
+                            {machine.track_sizes.length} size{machine.track_sizes.length !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                        <div className="text-sm text-slate-300">
+                          <span className="font-semibold text-orange-400">Compatible track sizes:</span>
+                          <div className="mt-1 flex flex-wrap gap-2">
+                            {machine.track_sizes.map((size, sizeIdx) => (
+                              <span key={sizeIdx} className="bg-slate-800 px-3 py-1 rounded-md text-white font-mono">
+                                {size}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
+                  {filteredMachines.length > 20 && (
+                    <div className="text-center text-slate-400 mt-3 text-sm">
+                      Showing first 20 of {filteredMachines.length} results
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* No results message */}
+            {searchQuery && filteredMachines.length === 0 && (
+              <div className="mt-4 bg-slate-800 border border-slate-700 rounded-lg p-4">
+                <div className="text-slate-400 text-center">
+                  No machines found matching "{searchQuery}". Try searching for a brand name (e.g., Bobcat) or model number.
                 </div>
               </div>
             )}
