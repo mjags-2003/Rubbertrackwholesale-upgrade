@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { toast } from '../../hooks/use-toast';
+import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -13,23 +14,35 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      console.log('Attempting login to:', `${API}/admin/login`);
+      console.log('Username:', credentials.username);
+      
       const response = await axios.post(`${API}/admin/login`, credentials);
-      localStorage.setItem('admin_token', response.data.access_token);
-      toast({
-        title: "Login successful!",
-        description: "Welcome to the admin dashboard.",
-      });
-      navigate('/admin/dashboard');
+      console.log('Login response:', response.data);
+      
+      if (response.data.access_token) {
+        localStorage.setItem('admin_token', response.data.access_token);
+        toast({
+          title: "Login successful!",
+          description: "Welcome to the admin dashboard.",
+        });
+        navigate('/admin/dashboard');
+      } else {
+        throw new Error('No access token received');
+      }
     } catch (error) {
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
       toast({
         title: "Login failed",
-        description: error.response?.data?.detail || "Invalid username or password",
+        description: error.response?.data?.detail || error.message || "Invalid username or password",
         variant: "destructive"
       });
     } finally {
