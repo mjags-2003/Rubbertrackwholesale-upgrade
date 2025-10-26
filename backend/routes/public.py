@@ -578,9 +578,10 @@ async def search_public_compatibility(
 async def search_public_part_numbers(
     query: Optional[str] = None,
     brand: Optional[str] = None,
-    part_type: Optional[str] = None
+    part_type: Optional[str] = None,
+    model: Optional[str] = None
 ):
-    """Search part numbers by query string, brand, or part type (public endpoint)"""
+    """Search part numbers by query string, brand, part type, or compatible model (public endpoint)"""
     from database import part_numbers_collection
     
     search_query = {"is_active": True}
@@ -589,6 +590,9 @@ async def search_public_part_numbers(
         search_query["brand"] = {"$regex": brand, "$options": "i"}
     if part_type:
         search_query["part_type"] = part_type
+    if model:
+        # Filter by compatible models - search in the array
+        search_query["compatible_models"] = {"$regex": model, "$options": "i"}
     
     # If query provided, search in part_number, product_name, and compatible_models
     if query:
