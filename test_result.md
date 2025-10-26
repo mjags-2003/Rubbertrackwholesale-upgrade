@@ -119,6 +119,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ PASSED - Rubber Track Compatibility Chart search functionality works perfectly. Search for '299D' returns 6 CAT 299D machines (299D, 299D XHP, 299D2, 299D2 XHP, 299D3, 299D3XE) with correct track sizes (400x86x60 and 450x86x60). Modal functionality works - clicking track sizes opens detailed compatibility view. All expected functionality verified successfully."
+      - working: "NA"
+        agent: "testing"
+        comment: "🔧 FIXED SEARCH ISSUE - User reported multi-word searches like 'kubota svl75' not working. Improved search logic to handle: 1) Single word searches, 2) Multi-word flexible matching (brand+model combinations), 3) Fallback with spaces/dashes removed. Changes made to RubberTrackCompatibility.jsx lines 106-130. Needs retesting to verify multi-word searches now work correctly."
 
 backend:
   - task: "Track Sizes API Endpoint"
