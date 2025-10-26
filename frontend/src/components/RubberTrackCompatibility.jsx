@@ -71,6 +71,11 @@ const RubberTrackCompatibility = () => {
     setCompatibleMachines(machines);
   };
 
+  const handleRevealPrice = (size, event) => {
+    event.stopPropagation(); // Prevent triggering modal
+    setRevealedPrices(prev => new Set([...prev, size]));
+  };
+
   const closeModal = () => {
     setSelectedTrackSize(null);
     setCompatibleMachines([]);
