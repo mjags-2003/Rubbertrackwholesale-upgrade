@@ -123,7 +123,7 @@ async def create_or_update_compatibility(brand, model, track_sizes):
         
         await compatibility_collection.update_one(
             {'make': brand, 'model': model},
-            {'$set': {'track_sizes': combined_sizes}}
+            {'$set': {'track_sizes': combined_sizes, 'is_active': True}}
         )
         logger.info(f"Updated compatibility for {brand} {model}: {combined_sizes}")
     else:
@@ -132,7 +132,8 @@ async def create_or_update_compatibility(brand, model, track_sizes):
             'id': str(uuid.uuid4()),
             'make': brand,
             'model': model,
-            'track_sizes': track_sizes
+            'track_sizes': track_sizes,
+            'is_active': True  # Required for public API
         }
         await compatibility_collection.insert_one(compatibility_doc)
         logger.info(f"Created compatibility for {brand} {model}: {track_sizes}")
