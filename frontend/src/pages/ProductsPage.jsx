@@ -68,6 +68,31 @@ const ProductsPage = () => {
     }
   };
 
+  const fetchTrackCompatibility = async (brand, model) => {
+    try {
+      const response = await axios.get(`${API}/api/compatibility/${encodeURIComponent(brand)}/${encodeURIComponent(model)}`);
+      if (response.data && response.data.track_sizes) {
+        // Fetch full track size details
+        const trackSizesPromises = response.data.track_sizes.map(size =>
+          axios.get(`${API}/api/track-sizes`)
+        );
+        const trackSizesResponse = await Promise.all(trackSizesPromises);
+        const allTrackSizes = trackSizesResponse[0].data; // All track sizes
+        
+        // Filter to only the compatible ones
+        const compatibleTracks = allTrackSizes.filter(ts => 
+          response.data.track_sizes.includes(ts.size)
+        );
+        setTrackCompatibility(compatibleTracks);
+      } else {
+        setTrackCompatibility([]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch track compatibility:', error);
+      setTrackCompatibility([]);
+    }
+  };
+
   // Update searchTerm when URL changes
   React.useEffect(() => {
     setSearchTerm(urlSearch);
