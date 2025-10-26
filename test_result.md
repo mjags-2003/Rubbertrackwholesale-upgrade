@@ -157,6 +157,18 @@ frontend:
         comment: "✅ PASSED - Brand alias mapping functionality works perfectly! Comprehensive testing completed: 1) 'caterpillar 299d' (lowercase) successfully finds 6 CAT 299D machines with correct track sizes (400x86x60 and 450x86x60), 2) 'cat 299d' also finds CAT 299D machines correctly, 3) 'ditch witch' finds 46+ Ditch-Witch machines, 4) Top search bar navigation works with brand aliases (navigates to /products?search=caterpillar%20299d), 5) Modal functionality works for track size details, 6) Case-insensitive search confirmed working. The brandMapping.js utility correctly handles alias conversion: 'caterpillar'→'CAT', 'ditch witch'→'Ditch-Witch'. Both compatibility chart search and top search bar use brand aliases as expected."
 
 backend:
+  - task: "Track Loader Compatibility Data Import"
+    implemented: true
+    working: false
+    file: "/app/backend/routes/public.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE - Track loader compatibility data partially imported but with major data consistency problems: 1) CAT 277B models NOT FOUND in compatibility data (0 results for model=277B), 2) Track sizes referenced in compatibility data don't exist in track_sizes collection (77 missing track sizes including 18x4x56, 13x4x56, 15x4x56, 18x4x50, 18x4x51), 3) Bobcat T550 ✅ FOUND with correct track size 18x4x56, 4) CAT 289/299 series ✅ FOUND but using 18x4x51 instead of 18x4x56. The compatibility collection has 4594 entries referencing 428 track sizes, but only 359 track sizes exist in track_sizes collection. This creates broken references and failed lookups."
+
   - task: "Track Sizes API Endpoint"
     implemented: true
     working: true
