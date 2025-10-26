@@ -513,3 +513,31 @@ async def get_equipment_types():
     types = await machine_models_collection.distinct("equipment_type")
     return sorted(types)
 
+
+# ============= TRACK SIZE ROUTES (PUBLIC) =============
+
+@router.get("/track-sizes")
+async def get_all_public_track_sizes():
+    """Get all active track sizes (public endpoint)"""
+    track_sizes = await track_sizes_collection.find({"is_active": True}).sort("size", 1).to_list(length=None)
+    return [serialize_doc(ts) for ts in track_sizes]
+
+
+@router.get("/track-sizes/grouped")
+async def get_grouped_track_sizes():
+    """Get track sizes grouped by width for easier navigation"""
+    track_sizes = await track_sizes_collection.find({"is_active": True}).sort("size", 1).to_list(length=None)
+    
+    grouped = {}
+    for ts in track_sizes:
+        size = ts.get('size', '')
+        width = ts.get('width')
+        if width:
+            width_key = f"{int(width)}mm"
+            if width_key not in grouped:
+                grouped[width_key] = []
+            grouped[width_key].append(serialize_doc(ts))
+    
+    return grouped
+
+
