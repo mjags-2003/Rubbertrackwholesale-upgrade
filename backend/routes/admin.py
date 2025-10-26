@@ -1312,3 +1312,119 @@ async def bulk_import_machine_models(models: List[Dict[str, str]]):
         "message": f"Imported {imported_count} models, skipped {skipped_count} existing"
     }
 
+
+
+# ============= TRACK SIZE ROUTES =============
+
+@router.get("/track-sizes")
+async def get_all_track_sizes(current_user: dict = Depends(get_current_user)):
+    """Get all track sizes"""
+    track_sizes = await track_sizes_collection.find().sort("size", 1).to_list(length=None)
+    return [serialize_doc(ts) for ts in track_sizes]
+
+
+@router.post("/track-sizes")
+async def create_track_size(track_size: TrackSize, current_user: dict = Depends(get_current_user)):
+    """Create a new track size"""
+    # Parse width, pitch, links from size string (e.g., "300x55x82")
+    size_parts = track_size.size.split('x')
+    if len(size_parts) == 3:
+        try:
+            track_size.width = float(size_parts[0])
+            track_size.pitch = float(size_parts[1])
+            track_size.links = int(size_parts[2])
+        except ValueError:
+            pass
+    
+    track_size_dict = track_size.model_dump(exclude={'id'})
+    track_size_dict['created_at'] = datetime.utcnow()
+    track_size_dict['updated_at'] = datetime.utcnow()
+    
+    result = await track_sizes_collection.insert_one(track_size_dict)
+    track_size_dict['_id'] = str(result.inserted_id)
+    return serialize_doc(track_size_dict)
+
+
+@router.put("/track-sizes/{track_size_id}")
+async def update_track_size(track_size_id: str, track_size: TrackSize, current_user: dict = Depends(get_current_user)):
+    """Update a track size"""
+    # Parse width, pitch, links from size string
+    size_parts = track_size.size.split('x')
+    if len(size_parts) == 3:
+        try:
+            track_size.width = float(size_parts[0])
+            track_size.pitch = float(size_parts[1])
+            track_size.links = int(size_parts[2])
+        except ValueError:
+            pass
+    
+    track_size_dict = track_size.model_dump(exclude={'id'})
+    track_size_dict['updated_at'] = datetime.utcnow()
+    
+    await track_sizes_collection.update_one(
+        {"_id": ObjectId(track_size_id)},
+        {"$set": track_size_dict}
+    )
+    
+    updated_track_size = await track_sizes_collection.find_one({"_id": ObjectId(track_size_id)})
+    return serialize_doc(updated_track_size)
+
+
+@router.delete("/track-sizes/{track_size_id}")
+async def delete_track_size(track_size_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a track size"""
+    await track_sizes_collection.delete_one({"_id": ObjectId(track_size_id)})
+    return {"message": "Track size deleted successfully"}
+
+
+@router.post("/track-sizes/bulk-import")
+async def bulk_import_track_sizes(current_user: dict = Depends(get_current_user)):
+    """Bulk import track sizes from predefined list"""
+    import json
+    
+    # Read track sizes from file
+    try:
+        with open('/tmp/track_sizes.json', 'r') as f:
+            track_sizes_list = json.load(f)
+    except:
+        raise HTTPException(status_code=404, detail="Track sizes data file not found")
+    
+    imported_count = 0
+    skipped_count = 0
+    
+    for size_str in track_sizes_list:
+        # Check if already exists
+        existing = await track_sizes_collection.find_one({"size": size_str})
+        if not existing:
+            # Parse dimensions
+            size_parts = size_str.split('x')
+            width, pitch, links = None, None, None
+            if len(size_parts) == 3:
+                try:
+                    width = float(size_parts[0])
+                    pitch = float(size_parts[1])
+                    links = int(size_parts[2])
+                except ValueError:
+                    pass
+            
+            track_size_dict = {
+                "size": size_str,
+                "width": width,
+                "pitch": pitch,
+                "links": links,
+                "is_active": True,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            await track_sizes_collection.insert_one(track_size_dict)
+            imported_count += 1
+        else:
+            skipped_count += 1
+    
+    return {
+        "success": True,
+        "imported": imported_count,
+        "skipped": skipped_count,
+        "message": f"Imported {imported_count} track sizes, skipped {skipped_count} existing"
+    }
+
