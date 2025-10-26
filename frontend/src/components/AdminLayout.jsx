@@ -17,6 +17,7 @@ const AdminLayout = () => {
     { path: '/admin/products', label: 'Products', icon: Package },
     { path: '/admin/brands', label: 'Brands', icon: Tag },
     { path: '/admin/machine-models', label: 'Machine Models', icon: Settings },
+    { path: '/admin/track-sizes', label: 'Track Sizes', icon: Settings },
     { path: '/admin/categories', label: 'Categories', icon: FolderOpen },
     { path: '/admin/pages', label: 'Pages (CMS)', icon: FileText },
     { path: '/admin/sections', label: 'Homepage Sections', icon: Layout },
