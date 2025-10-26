@@ -6,6 +6,7 @@ import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { products, brands, categories } from '../mockData';
+import { normalizeBrandName } from '../utils/brandMapping';
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
