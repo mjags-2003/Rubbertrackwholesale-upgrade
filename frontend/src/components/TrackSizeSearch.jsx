@@ -73,8 +73,32 @@ const TrackSizeSearch = () => {
     );
   }
 
-  const widths = Object.keys(groupedSizes).sort((a, b) => parseInt(a) - parseInt(b));
-  const selectedSizes = selectedWidth ? groupedSizes[selectedWidth] || [] : [];
+  const currentGroupedSizes = groupedSizes[unit] || {};
+  const widths = Object.keys(currentGroupedSizes).sort((a, b) => parseInt(a) - parseInt(b));
+  const selectedSizes = selectedWidth ? currentGroupedSizes[selectedWidth] || [] : [];
+  
+  // Convert size display based on unit
+  const convertSize = (trackSize) => {
+    if (unit === 'inches') {
+      // Convert width and pitch from mm to inches
+      const widthInches = (trackSize.width / 25.4).toFixed(1);
+      const pitchInches = (trackSize.pitch / 25.4).toFixed(2);
+      return {
+        size: `${widthInches}x${pitchInches}x${trackSize.links}`,
+        width: widthInches,
+        pitch: pitchInches,
+        links: trackSize.links,
+        originalSize: trackSize.size
+      };
+    }
+    return {
+      size: trackSize.size,
+      width: trackSize.width,
+      pitch: trackSize.pitch,
+      links: trackSize.links,
+      originalSize: trackSize.size
+    };
+  };
 
   return (
     <section className="py-12 bg-slate-900">
