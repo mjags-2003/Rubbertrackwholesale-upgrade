@@ -96,12 +96,20 @@ const RubberTrackCompatibility = () => {
     };
   };
 
-  // Filter machines by search
+  // Filter machines by search - more intuitive partial matching
   const filteredMachines = searchQuery
-    ? compatibility.filter(comp =>
-        comp.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        comp.model.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? compatibility.filter(comp => {
+        const searchLower = searchQuery.toLowerCase().replace(/[\s-]/g, '');
+        const makeLower = comp.make.toLowerCase().replace(/[\s-]/g, '');
+        const modelLower = comp.model.toLowerCase().replace(/[\s-]/g, '');
+        
+        // Match if search term is found anywhere in make or model (after removing spaces/dashes)
+        return makeLower.includes(searchLower) || 
+               modelLower.includes(searchLower) ||
+               // Also match original strings for better results
+               comp.make.toLowerCase().includes(searchQuery.toLowerCase()) ||
+               comp.model.toLowerCase().includes(searchQuery.toLowerCase());
+      })
     : [];
 
   if (loading) {
