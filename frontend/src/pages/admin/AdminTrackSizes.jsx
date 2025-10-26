@@ -425,7 +425,7 @@ const AdminTrackSizes = () => {
       {/* Track Sizes List */}
       <Card className="bg-slate-800 border-slate-700">
         <CardHeader>
-          <CardTitle className="text-white">Track Sizes ({trackSizes.length})</CardTitle>
+          <CardTitle className="text-white">Track Sizes ({filteredTrackSizes.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -436,20 +436,59 @@ const AdminTrackSizes = () => {
                   <th className="text-left text-slate-300 py-3 px-4">Width</th>
                   <th className="text-left text-slate-300 py-3 px-4">Pitch</th>
                   <th className="text-left text-slate-300 py-3 px-4">Links</th>
-                  <th className="text-left text-slate-300 py-3 px-4">Price</th>
+                  <th className="text-left text-slate-300 py-3 px-4">Price (Click to Edit)</th>
                   <th className="text-left text-slate-300 py-3 px-4">Status</th>
                   <th className="text-right text-slate-300 py-3 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {trackSizes.map((trackSize) => (
+                {filteredTrackSizes.map((trackSize) => (
                   <tr key={trackSize.id} className="border-b border-slate-700 hover:bg-slate-700/50">
                     <td className="py-3 px-4 text-white font-medium">{trackSize.size}</td>
                     <td className="py-3 px-4 text-slate-300">{trackSize.width ? `${trackSize.width}mm` : '-'}</td>
                     <td className="py-3 px-4 text-slate-300">{trackSize.pitch ? `${trackSize.pitch}mm` : '-'}</td>
                     <td className="py-3 px-4 text-slate-300">{trackSize.links || '-'}</td>
-                    <td className="py-3 px-4 text-green-400 font-semibold">
-                      {trackSize.price ? `$${parseFloat(trackSize.price).toFixed(2)}` : '-'}
+                    <td className="py-3 px-4">
+                      {editingPriceId === trackSize.id ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-green-400 font-bold">$</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editingPrice}
+                            onChange={(e) => setEditingPrice(e.target.value)}
+                            className="w-32 bg-slate-700 border-2 border-green-500 text-white rounded px-2 py-1 font-semibold"
+                            placeholder="1050.00"
+                            autoFocus
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter') {
+                                handlePriceSave(trackSize);
+                              } else if (e.key === 'Escape') {
+                                handlePriceCancel();
+                              }
+                            }}
+                          />
+                          <Button
+                            onClick={() => handlePriceSave(trackSize)}
+                            className="bg-green-500 hover:bg-green-600 h-7 px-2 text-xs"
+                          >
+                            ✓
+                          </Button>
+                          <Button
+                            onClick={handlePriceCancel}
+                            className="bg-slate-600 hover:bg-slate-500 h-7 px-2 text-xs"
+                          >
+                            ✕
+                          </Button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handlePriceClick(trackSize)}
+                          className="text-green-400 font-semibold hover:text-green-300 hover:bg-slate-700 px-3 py-1 rounded transition-all"
+                        >
+                          {trackSize.price ? `$${parseFloat(trackSize.price).toFixed(2)}` : '+ Add Price'}
+                        </button>
+                      )}
                     </td>
                     <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-xs ${
