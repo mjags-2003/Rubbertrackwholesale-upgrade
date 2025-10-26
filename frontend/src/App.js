@@ -21,6 +21,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminBrands from './pages/admin/AdminBrands';
 import AdminMachineModels from './pages/admin/AdminMachineModels';
 import AdminTrackSizes from './pages/admin/AdminTrackSizes';
+import AdminCompatibility from './pages/admin/AdminCompatibility';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminPages from './pages/admin/AdminPages';
 import AdminSections from './pages/admin/AdminSections';
