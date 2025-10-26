@@ -122,6 +122,44 @@ const ProductsPage = () => {
     }
   };
 
+  const fetchTrackCompatibilityForSearch = async (brand, model) => {
+    try {
+      // Try to find compatibility by model only (for universal search)
+      const response = await axios.get(`${API}/api/compatibility/search`, {
+        params: { model: model }
+      });
+      
+      if (response.data && response.data.length > 0) {
+        // Get track sizes from all matching compatibility entries
+        const allTrackSizes = [];
+        for (const compatibility of response.data) {
+          const trackSizes = compatibility.track_sizes || [];
+          allTrackSizes.push(...trackSizes);
+        }
+        
+        if (allTrackSizes.length > 0) {
+          // Fetch full track size details
+          const trackSizesResponse = await axios.get(`${API}/api/track-sizes`);
+          const allTrackSizesData = trackSizesResponse.data;
+          
+          // Filter to only the compatible ones (remove duplicates)
+          const uniqueTrackSizes = [...new Set(allTrackSizes)];
+          const compatibleTracks = allTrackSizesData.filter(ts => 
+            uniqueTrackSizes.includes(ts.size)
+          );
+          setTrackCompatibility(compatibleTracks);
+        } else {
+          setTrackCompatibility([]);
+        }
+      } else {
+        setTrackCompatibility([]);
+      }
+    } catch (error) {
+      console.error('Error fetching track compatibility for search:', error);
+      setTrackCompatibility([]);
+    }
+  };
+
   // Update searchTerm when URL changes
   React.useEffect(() => {
     setSearchTerm(urlSearch);
