@@ -79,7 +79,7 @@ TRACK_LOADER_DATA = [
 ]
 
 
-def ensure_track_size_exists(size_str):
+async def ensure_track_size_exists(size_str):
     """Ensure track size exists in database"""
     # Parse size string like "18x4x56"
     parts = size_str.split('x')
@@ -90,7 +90,7 @@ def ensure_track_size_exists(size_str):
     width, pitch, links = [int(p) for p in parts]
     
     # Check if track size already exists
-    existing = track_sizes_collection.find_one({'size': size_str})
+    existing = await track_sizes_collection.find_one({'size': size_str})
     if not existing:
         track_size_doc = {
             'id': str(uuid.uuid4()),
@@ -101,19 +101,19 @@ def ensure_track_size_exists(size_str):
             'price': None,  # Price not available
             'is_in_stock': True  # Default to in stock
         }
-        track_sizes_collection.insert_one(track_size_doc)
+        await track_sizes_collection.insert_one(track_size_doc)
         logger.info(f"Created track size: {size_str}")
     
     return size_str
 
 
-def create_or_update_compatibility(brand, model, track_sizes):
+async def create_or_update_compatibility(brand, model, track_sizes):
     """Create or update compatibility entry"""
     if not track_sizes:
         return
     
     # Check if compatibility already exists
-    existing = compatibility_collection.find_one({'make': brand, 'model': model})
+    existing = await compatibility_collection.find_one({'make': brand, 'model': model})
     
     if existing:
         # Update existing - add new track sizes if not already present
@@ -121,7 +121,7 @@ def create_or_update_compatibility(brand, model, track_sizes):
         new_sizes = set(track_sizes)
         combined_sizes = list(existing_sizes | new_sizes)
         
-        compatibility_collection.update_one(
+        await compatibility_collection.update_one(
             {'make': brand, 'model': model},
             {'$set': {'track_sizes': combined_sizes}}
         )
@@ -134,11 +134,11 @@ def create_or_update_compatibility(brand, model, track_sizes):
             'model': model,
             'track_sizes': track_sizes
         }
-        compatibility_collection.insert_one(compatibility_doc)
+        await compatibility_collection.insert_one(compatibility_doc)
         logger.info(f"Created compatibility for {brand} {model}: {track_sizes}")
 
 
-def import_manual_data():
+async def import_manual_data():
     """Import the manually curated track loader data"""
     logger.info("Starting manual import of track loader compatibility data...")
     
@@ -149,14 +149,14 @@ def import_manual_data():
         # Ensure all track sizes exist
         valid_sizes = []
         for size_str in track_sizes:
-            size = ensure_track_size_exists(size_str)
+            size = await ensure_track_size_exists(size_str)
             if size:
                 valid_sizes.append(size)
                 total_track_sizes.add(size)
         
         # Create or update compatibility
         if valid_sizes:
-            create_or_update_compatibility(brand, model, valid_sizes)
+            await create_or_update_compatibility(brand, model, valid_sizes)
             total_created += 1
     
     logger.info(f"\n{'='*60}")
@@ -168,4 +168,4 @@ def import_manual_data():
 
 
 if __name__ == "__main__":
-    import_manual_data()
+    asyncio.run(import_manual_data())
