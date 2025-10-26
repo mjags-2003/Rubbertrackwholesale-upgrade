@@ -4,7 +4,7 @@ This adds key models like CAT 277B that are missing from the Camso data
 Based on information from unitedskidtracks.com
 """
 
-from database import database_manager
+from database import db
 import uuid
 import logging
 import asyncio
@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Get collections
-track_sizes_collection = database_manager.db.track_sizes
-compatibility_collection = database_manager.db.compatibility
+track_sizes_collection = db.track_sizes
+compatibility_collection = db.compatibility
 
 # Known track loader compatibility data from unitedskidtracks.com
 # Format: (brand, model, track_sizes_list)
