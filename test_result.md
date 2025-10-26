@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the top search bar functionality on the homepage"
+user_problem_statement: "Test the brand alias mapping feature to ensure 'Caterpillar' search finds 'CAT' machines"
 
 frontend:
   - task: "Homepage Main Search Bar Functionality"
@@ -134,6 +134,18 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ CONFIRMED WORKING - Multi-word search functionality confirmed working. Previous fix for search logic successfully handles brand+model combinations like 'kubota svl75', 'cat 299d', 'bobcat t190'. All search scenarios tested and working correctly."
+
+  - task: "Brand Alias Mapping Feature"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/utils/brandMapping.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing brand alias mapping functionality to ensure 'caterpillar 299d' finds CAT machines, 'cat 299d' finds CAT machines, and 'ditch witch' finds Ditch-Witch machines in both compatibility chart and top search bar"
 
 backend:
   - task: "Track Sizes API Endpoint"
