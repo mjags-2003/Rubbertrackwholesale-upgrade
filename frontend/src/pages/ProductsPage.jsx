@@ -357,6 +357,9 @@ const ProductsPage = () => {
               </Card>
             ))}
           </div>
+              </>
+            )}
+          </>
         )}
       </div>
     </div>
