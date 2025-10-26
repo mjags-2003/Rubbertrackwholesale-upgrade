@@ -227,8 +227,11 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus:
+    - "Track Loader Compatibility Data Import"
+    - "Data Consistency Validation"
+  stuck_tasks:
+    - "Track Loader Compatibility Data Import"
   test_all: false
   test_priority: "high_first"
 
