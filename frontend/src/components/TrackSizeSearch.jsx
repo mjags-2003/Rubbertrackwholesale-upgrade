@@ -1,25 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
+import { Search } from 'lucide-react';
 import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
 const TrackSizeSearch = () => {
   const [trackSizes, setTrackSizes] = useState([]);
+  const [compatibility, setCompatibility] = useState([]);
   const [groupedSizes, setGroupedSizes] = useState({});
   const [selectedWidth, setSelectedWidth] = useState(null);
+  const [selectedTrackSize, setSelectedTrackSize] = useState(null);
   const [loading, setLoading] = useState(true);
   const [unit, setUnit] = useState('mm'); // 'mm' or 'inches'
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchTrackSizes();
+    fetchData();
   }, []);
 
-  const fetchTrackSizes = async () => {
+  const fetchData = async () => {
     try {
-      const response = await axios.get(`${API}/api/track-sizes`);
-      setTrackSizes(response.data);
+      // Fetch track sizes
+      const trackSizesResponse = await axios.get(`${API}/api/track-sizes`);
+      setTrackSizes(trackSizesResponse.data);
+      
+      // Fetch compatibility data
+      const compatibilityResponse = await axios.get(`${API}/api/compatibility`);
+      setCompatibility(compatibilityResponse.data);
       
       // Group by width for both mm and inches
       const groupedMM = {};
