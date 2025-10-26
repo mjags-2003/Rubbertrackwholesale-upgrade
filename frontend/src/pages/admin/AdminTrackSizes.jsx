@@ -14,6 +14,7 @@ const AdminTrackSizes = () => {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     size: '',
+    price: '',
     description: '',
     is_active: true
   });
