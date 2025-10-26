@@ -99,10 +99,18 @@ async def ensure_track_size_exists(size_str):
             'pitch': pitch,
             'links': links,
             'price': None,  # Price not available
-            'is_in_stock': True  # Default to in stock
+            'is_in_stock': True,  # Default to in stock
+            'is_active': True  # Required for public API
         }
         await track_sizes_collection.insert_one(track_size_doc)
         logger.info(f"Created track size: {size_str}")
+    else:
+        # Update existing to ensure it has is_active field
+        await track_sizes_collection.update_one(
+            {'size': size_str},
+            {'$set': {'is_active': True}}
+        )
+        logger.info(f"Updated track size: {size_str}")
     
     return size_str
 
