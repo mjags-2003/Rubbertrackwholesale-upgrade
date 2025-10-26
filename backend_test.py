@@ -10,7 +10,7 @@ import sys
 from typing import Dict, List, Any
 
 # Get backend URL from frontend env
-BACKEND_URL = "https://trackfinder-5.preview.emergentagent.com/api"
+BACKEND_URL = "https://rubbertracks-1.preview.emergentagent.com/api"
 
 def test_track_sizes_api():
     """Test GET /api/track-sizes endpoint"""
