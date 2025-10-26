@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import re
 import time
 import logging
-from database import track_sizes_collection, compatibilities_collection
+from database import track_sizes_collection, compatibility_collection
 import uuid
 
 logging.basicConfig(level=logging.INFO)
