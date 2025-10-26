@@ -210,13 +210,40 @@ const TrackSizeSearch = () => {
               Track sizes are specified in the format <strong className="text-orange-500">Width x Pitch x Links</strong>:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
-              <li><strong>Width:</strong> The width of the rubber track in millimeters</li>
-              <li><strong>Pitch:</strong> The distance between track links in millimeters</li>
+              <li><strong>Width:</strong> The width of the rubber track in {unit === 'mm' ? 'millimeters (mm)' : 'inches (")'}</li>
+              <li><strong>Pitch:</strong> The distance between track links in {unit === 'mm' ? 'millimeters (mm)' : 'inches (")'}</li>
               <li><strong>Links:</strong> The total number of links in the track</li>
             </ul>
             <p className="mt-4">
-              For example, a <strong className="text-orange-500">300x55x82</strong> track has a width of 300mm, pitch of 55mm, and 82 links.
+              {unit === 'mm' ? (
+                <>
+                  For example, a <strong className="text-orange-500">300x55x82</strong> track has a width of 300mm, pitch of 55mm, and 82 links.
+                  <span className="block mt-2 text-sm text-slate-400">
+                    (Tip: Switch to inches view if you prefer imperial measurements)
+                  </span>
+                </>
+              ) : (
+                <>
+                  For example, a <strong className="text-orange-500">11.8"x2.17"x82</strong> track has a width of 11.8 inches, pitch of 2.17 inches, and 82 links.
+                  <span className="block mt-2 text-sm text-slate-400">
+                    (Original metric size: 300x55x82 mm - shown below each track size)
+                  </span>
+                </>
+              )}
             </p>
+            <div className="mt-4 p-4 bg-slate-900 rounded-lg">
+              <p className="text-sm font-semibold text-orange-500 mb-2">Quick Conversion Reference:</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div><span className="text-white">7"</span> = 180mm</div>
+                <div><span className="text-white">9"</span> = 230mm</div>
+                <div><span className="text-white">10"</span> = 250mm</div>
+                <div><span className="text-white">12"</span> = 300mm</div>
+                <div><span className="text-white">13"</span> = 320mm</div>
+                <div><span className="text-white">16"</span> = 400mm</div>
+                <div><span className="text-white">18"</span> = 450mm</div>
+                <div><span className="text-white">1" = 25.4mm</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
