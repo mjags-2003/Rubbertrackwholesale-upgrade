@@ -1428,3 +1428,123 @@ async def bulk_import_track_sizes(current_user: dict = Depends(get_current_user)
         "message": f"Imported {imported_count} track sizes, skipped {skipped_count} existing"
     }
 
+
+
+# ============= COMPATIBILITY ROUTES =============
+
+@router.get("/compatibility")
+async def get_all_compatibility(current_user: dict = Depends(get_current_user)):
+    """Get all compatibility entries"""
+    compatibility_entries = await compatibility_collection.find().sort([("make", 1), ("model", 1)]).to_list(length=None)
+    return [serialize_doc(entry) for entry in compatibility_entries]
+
+
+@router.post("/compatibility")
+async def create_compatibility(compatibility: Compatibility, current_user: dict = Depends(get_current_user)):
+    """Create a new compatibility entry"""
+    compatibility_dict = compatibility.model_dump(exclude={'id'})
+    compatibility_dict['created_at'] = datetime.utcnow()
+    compatibility_dict['updated_at'] = datetime.utcnow()
+    
+    result = await compatibility_collection.insert_one(compatibility_dict)
+    compatibility_dict['_id'] = str(result.inserted_id)
+    return serialize_doc(compatibility_dict)
+
+
+@router.put("/compatibility/{compatibility_id}")
+async def update_compatibility(compatibility_id: str, compatibility: Compatibility, current_user: dict = Depends(get_current_user)):
+    """Update a compatibility entry"""
+    compatibility_dict = compatibility.model_dump(exclude={'id'})
+    compatibility_dict['updated_at'] = datetime.utcnow()
+    
+    await compatibility_collection.update_one(
+        {"_id": ObjectId(compatibility_id)},
+        {"$set": compatibility_dict}
+    )
+    
+    updated_compatibility = await compatibility_collection.find_one({"_id": ObjectId(compatibility_id)})
+    return serialize_doc(updated_compatibility)
+
+
+@router.delete("/compatibility/{compatibility_id}")
+async def delete_compatibility(compatibility_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a compatibility entry"""
+    await compatibility_collection.delete_one({"_id": ObjectId(compatibility_id)})
+    return {"message": "Compatibility entry deleted successfully"}
+
+
+@router.post("/compatibility/bulk-import")
+async def bulk_import_compatibility(current_user: dict = Depends(get_current_user)):
+    """Bulk import compatibility data from JSON file"""
+    import json
+    
+    # Read compatibility data from file
+    try:
+        with open('/tmp/compatibility_data.json', 'r') as f:
+            compatibility_list = json.load(f)
+    except:
+        raise HTTPException(status_code=404, detail="Compatibility data file not found")
+    
+    imported_count = 0
+    skipped_count = 0
+    updated_count = 0
+    
+    for entry in compatibility_list:
+        make = entry['make']
+        model = entry['model']
+        track_sizes = entry['track_sizes']
+        
+        # Check if already exists
+        existing = await compatibility_collection.find_one({"make": make, "model": model})
+        if existing:
+            # Update track sizes if different
+            if set(existing.get('track_sizes', [])) != set(track_sizes):
+                await compatibility_collection.update_one(
+                    {"_id": existing['_id']},
+                    {"$set": {"track_sizes": track_sizes, "updated_at": datetime.utcnow()}}
+                )
+                updated_count += 1
+            else:
+                skipped_count += 1
+        else:
+            # Insert new entry
+            compatibility_dict = {
+                "make": make,
+                "model": model,
+                "track_sizes": track_sizes,
+                "is_active": True,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            await compatibility_collection.insert_one(compatibility_dict)
+            imported_count += 1
+    
+    return {
+        "success": True,
+        "imported": imported_count,
+        "updated": updated_count,
+        "skipped": skipped_count,
+        "message": f"Imported {imported_count} new entries, updated {updated_count}, skipped {skipped_count} existing"
+    }
+
+
+@router.get("/compatibility/search")
+async def search_compatibility(
+    make: Optional[str] = None,
+    model: Optional[str] = None,
+    track_size: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Search compatibility entries by make, model, or track size"""
+    query = {"is_active": True}
+    
+    if make:
+        query["make"] = {"$regex": make, "$options": "i"}
+    if model:
+        query["model"] = {"$regex": model, "$options": "i"}
+    if track_size:
+        query["track_sizes"] = track_size
+    
+    compatibility_entries = await compatibility_collection.find(query).sort([("make", 1), ("model", 1)]).to_list(length=500)
+    return [serialize_doc(entry) for entry in compatibility_entries]
+
