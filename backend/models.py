@@ -63,6 +63,22 @@ class TrackSize(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+# Compatibility Model (machine to track size mapping)
+class Compatibility(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id", default=None)
+    make: str  # Brand/Make (e.g., "Bobcat", "Kubota")
+    model: str  # Machine model (e.g., "T190", "SVL75")
+    track_sizes: List[str] = []  # List of compatible track sizes (e.g., ["300x55x82", "300x52.5x84"])
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        populate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 # Category Model
 class Category(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
