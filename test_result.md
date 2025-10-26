@@ -204,7 +204,7 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Homepage Main Search Bar Functionality"
+    - "Brand Alias Mapping Feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
