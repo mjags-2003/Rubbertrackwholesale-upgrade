@@ -404,6 +404,34 @@ const CategoryNav = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Shop by Brand Section */}
+        <div className="mt-12">
+          <h2 className="text-3xl font-bold text-white mb-6 text-center">Shop by Brand</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {allBrands.slice(0, 20).map(brand => (
+              <Link key={brand} to={`/products?brand=${encodeURIComponent(brand)}`}>
+                <Card className="bg-slate-800 border-slate-700 hover:border-orange-500 transition-all duration-300 hover:scale-105 cursor-pointer">
+                  <CardContent className="p-4 text-center">
+                    <h3 className="text-white font-semibold text-lg">{brand}</h3>
+                    <p className="text-slate-400 text-sm mt-1">
+                      {allMachineModels[brand]?.length || 0} models
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+          {allBrands.length > 20 && (
+            <div className="text-center mt-6">
+              <Link to="/brands">
+                <button className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
+                  View All {allBrands.length} Brands
+                </button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
