@@ -186,11 +186,30 @@ const ProductsPage = () => {
         {filteredProducts.length === 0 ? (
           <div className="text-center py-16">
             <Filter className="h-16 w-16 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-semibold text-slate-400 mb-2">No products found</h3>
-            <p className="text-slate-500 mb-4">Try adjusting your search or filters</p>
-            <Button onClick={clearFilters} className="bg-orange-500 hover:bg-orange-600">
-              Clear All Filters
-            </Button>
+            <h3 className="text-2xl font-semibold text-slate-400 mb-2">
+              {searchTerm ? 'No products found' : 'No products match your filters'}
+            </h3>
+            <p className="text-slate-500 mb-4">
+              {searchTerm ? (
+                <>
+                  Products for <span className="text-orange-500 font-semibold">"{searchTerm}"</span> are not listed on this site yet.
+                  <br />
+                  Try searching for a different machine model or contact us for availability.
+                </>
+              ) : (
+                'Try adjusting your search or filters'
+              )}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button onClick={clearFilters} className="bg-orange-500 hover:bg-orange-600">
+                Clear All Filters
+              </Button>
+              <Link to="/contact">
+                <Button variant="outline" className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white">
+                  Contact Us
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
